@@ -1,0 +1,38 @@
+README
+======
+
+Kexx2 is a top down scrolling shoot'em up, similar to Raptor and Tyrian.
+
+The project web page is at: http://www.haeggblad.com/kexx2
+and the source code is hosted at: http://github.com/octol/kexx2
+
+Installation from source
+------------------------
+
+If you've downloaded any of the source releases (e.g kexx2-1.0.2.tar.gz) then
+running the following commands should suffice.
+
+    ./configure                     (check for compilation dependencies)
+    make                            (compile)
+    make install                    (optional)
+
+Running `make' should produce an executable `kexx2' in the src/ sub directory,
+which `make install' then copies to the system (/usr/local/bin/). Usually you
+don't need to run `make install'
+
+
+Installation from git repository
+-------------------------------
+
+When compiling from the git repository and additional step before `./configure'
+is needed to produce the necessary build files. To generate these run
+
+    autoreconf -ivf
+
+Configuring path to the game data
+---------------------------------
+
+When running the game for the first time you will be prompted to the path to
+the game data. If you're running the `kexx2' executable from the src/ sub
+directory, then this needs to be set to `../data/'. This configuration is saved
+in $HOME/.kexx2rc, in case you need to change this at some later point.

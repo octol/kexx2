@@ -1,0 +1,38 @@
+---data/kexx2.cfg
+Settings file. 
+NumPlayers=[1-2]
+Fullscreen=[0-1] 0=false, 1=true
+FPSCounter=[0-1] 0=false, 1=true
+
+---data/levels/levels.cfg
+levelfilenames... one on each row.
+
+---data/levels/level*.lev
+Level files.
+Every line represents one object. 
+In every line there are 3 values.
+The first value is the type of the object (see below for details).
+The second value is the initial horizontal position on the screen.
+The third value is the initial vertical position.
+
+---object types:
+
+ENEMYSTD (Standard enemy)
+ENEMYSIDEWAYS (Sideways enemy)
+ENEMYRAMMER (Rammer enemy)
+ENEMYBONUS (Bonus-generating enemy)
+OBJECTBIGSHIP (Big passive ship)
+
+---Some formations to make level creation easier
+
+ENEMYSTD_V_FORMATION
+ENEMYSTD_3V_FORMATION
+ENEMYSTD_DIAGONAL_FORMATION
+ENEMYSTD_MASSIVE_FORMATION
+ENEMYSIDEWAYS_VLINE_FORMATION
+ENEMYSIDEWAYS_HLINE_FORMATION
+ENEMYSIDEWAYS_V_FORMATION
+ENEMYSIDEWAYS_MASSIVE_FORMATION
+ENEMYRAMMER_VLINE_FORMATION
+ENEMYRAMMER_DIAGONAL_FORMATION
+ENEMYRAMMER_FULLDIAGONAL_FORMATION

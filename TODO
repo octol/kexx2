@@ -1,0 +1,14 @@
+TODO
+====
+
+General:
+--------
+* Variable naming conventions.
+* Go over all TODO in code.
+* Automatic detection of game data.
+
+Specific:
+---------
+BuyScreen::runLogic(), playerState argument shadows a class member.
+World:World(), seems to do too much in constructor.
+

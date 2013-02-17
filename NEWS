@@ -1,0 +1,67 @@
+NEWS
+====
+
+2013-02-16  Jon Haggblad  <jon@haeggblad.com>
+
+    After more than 10 years of being inactive, development has now
+    resumed.  The goal is to modernise the code base and bring it up to
+    modern C++11 standards.  As a first step I've updated the Autotools
+    (Autoconf + Automake + Libtool) build system and I'm in the process
+    of moving the source code from Sourceforge to Github. I have also
+    decided to split out the classes used to wrap SDL to a separate
+    library, SDLc ("SDL Classes"), also available on Github.
+
+2003-06-10  Jon Haggblad  <jon@haeggblad.com>
+
+    1.0.1b released. Includes just minor fixes (g++ 3.3 stuff among others).
+
+2002-02-02  Jon Haggblad  <jon@haeggblad.com>
+
+    1.0.0 finally released. Complete rewrite (again).
+
+2001-06-10  Jon Haggblad  <jon@haeggblad.com>
+
+    Complete rewrite with all the bells and whistles.
+    Moved to UNIX type file structure.
+    Trying to get the 1.0.0 out the door before Aug 20.
+
+2001-06-03  Jon Haggblad  <jon@haeggblad.com>
+
+    Had to comment out all the sound volume stuff for the 0.5.0 release. The 
+    meter didn't show up for some weird reason and after I'd run the game
+    once, windows would just die on me, almost every app would crash. After I 
+    commented out it things returned to normal. 
+
+2000-12-30  Jon Haggblad  <jon@haeggblad.com>
+
+    Changed name of VisualC project files from "Project Kexx" to "Kexx2".
+    Included a little "SDL Now" logo in the exit screen.
+    The intro can now be bypassed with ESCAPE.
+    The game now uses 10 pre-calculated big explosions instead of 1.
+
+2000-12-26  Jon Haggblad  <jon@haeggblad.com>
+
+    Ok 0.4.1 is out. 
+    Options are now saved to data/kexx2.cfg when you exit the game.
+    A new enemy type (EnemyRammer).
+    Two player support.
+    Getting a crash when I change the screen from fullscreen to windowed under 
+    Win98: "Unable to init screen: DDraw created surface with wrong pitch".
+
+2000-12-25  Jon Haggblad  <jon@haeggblad.com>
+
+    Added new enemy class (EnemyRammer).
+    Kexx2 now supports up to 20 levels.
+    Added credits screen.
+    Moved all the Visual C++ stuff to /visualc.
+    Kexx2 is now under the GPL.
+
+2000-12-24  Jon Haggblad  <jon@haeggblad.com>
+
+    Restructured the data directory a little.
+    Now reads from data/levels/levels.ini file to find out how many levels that 
+    are available. Way better then the old "trial-and-error" way of doing things.
+
+    Main::LoadLevel() needs to be rewritten soon, currently it works, but doesn't 
+    scale very well with a lot of levels.
+
