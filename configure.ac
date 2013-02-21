@@ -30,9 +30,9 @@ AC_LANG_PUSH([C++])
 AX_CXX_COMPILE_STDCXX_11
 AC_LANG_POP([C++])
 
-CXXFLAGS="$CXXFLAGS -pedantic -Wall -Wextra"
-CXXFLAGS="$CXXFLAGS -W -Wshadow -Wcast-qual -Wwrite-strings"
-CXXFLAGS="$CXXFLAGS -Weffc++"
+#CXXFLAGS="$CXXFLAGS -pedantic -Wall -Wextra"
+#CXXFLAGS="$CXXFLAGS -W -Wshadow -Wcast-qual -Wwrite-strings"
+#CXXFLAGS="$CXXFLAGS -Weffc++"
 #CXXFLAGS="$CXXFLAGS -Wconversion" 
 #CXXFLAGS="$CXXFLAGS -Werror"
 
