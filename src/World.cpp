@@ -35,7 +35,7 @@ World::World(Options& options, PlayerState& playerState, int level)
     : numOfPlayers(options.getHowManyPlayers()), currentLevel(level)
 
 {
-    setType(ENV_WORLD);
+    env_type_ = ENV_WORLD;
 
     // setup data
     objectManager.loadData(options.dataPath);
@@ -61,10 +61,6 @@ World::World(Options& options, PlayerState& playerState, int level)
 
     timeWhenEnteringLevel = SDL_GetTicks();
     flashingtextTimer = SDL_GetTicks();
-}
-
-World::~World()
-{
 }
 
 // -----------------------------------------------------------------------------
@@ -101,7 +97,7 @@ void World::runLogic(Timer& timer, PlayerState& playerState)
             flashingtextTimer = SDL_GetTicks();
         }
         if (SDL_GetTicks() - timeWhenAllEnemiesDead > 3500)
-            done(true);
+            done_ = true;
 
         // flashing text
         if (flashingtextTimer == 0)
@@ -122,7 +118,7 @@ void World::runLogic(Timer& timer, PlayerState& playerState)
             flashingtextTimer = SDL_GetTicks();
         }
         if (SDL_GetTicks() - timeWhenAllEnemiesDead > 4000)
-            done(true);
+            done_ = true;
 
         // flashing text
         if (flashingtextTimer == 0)

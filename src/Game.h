@@ -19,20 +19,22 @@
 #ifndef _KEXX2_GAME_H_
 #define _KEXX2_GAME_H_
 
+#include "SDLc/Font.h"
+#include "IGameState.h"
 #include "Options.h"
 #include "PlayerState.h"
-#include "SDLc/Font.h"
 
 class Screen;
 class Mixer;
 class Timer;
-class Environment;
 
 class Game {
 public:
-    Game();
+    Game() = default;
     Game(const Game& game) = delete;
-    Game& operator = (const Game& game) = delete;
+    Game(Game&& game) = delete;
+    Game& operator=(const Game& game) = delete;
+    Game& operator=(Game&& game) = delete;
     virtual ~Game();
 
     // Initialisation functions.
@@ -46,17 +48,17 @@ public:
     void draw(Screen& screen);
 
     bool done() const;
-    bool done(bool value);
+    bool set_done(bool value);
 
     Options options;
     PlayerState playerState;
 
 private:
-    Environment* environment = nullptr;
+    IGameState* game_state = nullptr;
     Font mainFont;
 
-    int currentLevel = 0;
-    bool m_done = false;
+    int current_level_ = 0;
+    bool done_ = false;
 };
 
 #endif

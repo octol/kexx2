@@ -31,16 +31,11 @@
 #include "GameOver.h"
 
 // -----------------------------------------------------------------------------
-// Construction/Destruction
+// Member Functions
 // -----------------------------------------------------------------------------
-
-Game::Game()
-{
-}
-
 Game::~Game()
 {
-    delete environment;
+    delete game_state;
 }
 
 // -----------------------------------------------------------------------------
@@ -116,94 +111,97 @@ void Game::setupEnvironment(Screen& screen, Timer& timer, Mixer& mixer)
 void Game::start()
 {
     // init game
-    environment = new Menu(options);
+    game_state = new Menu(options);
 }
 
 void Game::runLogic(Timer& timer)
 {
     // here we decide which Environment that should be used
-    if (environment && environment->done()) {
-        if (environment->getType() == ENV_MENU) {
-            delete environment;
-            environment = 0;
+    if (game_state && game_state->done()) {
+        if (game_state->type() == ENV_MENU) {
+            delete game_state;
+            game_state = 0;
 
-            currentLevel = 1;
-            if (playerState.anyoneAlive())
-                environment = new World(options, playerState, currentLevel);
-            else done(true);
-        } else if (environment->getType() == ENV_BUYSCREEN) {
-            delete environment;
-            environment = 0;
+            current_level_ = 1;
+            if (playerState.anyoneAlive()) {
+                game_state = new World(options, playerState, current_level_);
+            } else {
+                set_done(true);
+            }
+        } else if (game_state->type() == ENV_BUYSCREEN) {
+            delete game_state;
+            game_state = 0;
 
-            environment = new World(options, playerState, currentLevel);
-        } else if (environment->getType() == ENV_WORLD) {
-            delete environment;
-            environment = 0;
-            currentLevel++;
+            game_state = new World(options, playerState, current_level_);
+        } else if (game_state->type() == ENV_WORLD) {
+            delete game_state;
+            game_state = 0;
+            current_level_++;
 
             // game complete
-            if (currentLevel > options.getHowManyLevels() && 
+            if (current_level_ > options.getHowManyLevels() && 
                     playerState.anyoneAlive()) {
-                environment = new Finished(options, playerState);
+                game_state = new Finished(options, playerState);
             }
             // goto inbetween levels buyscreen
             else if (playerState.anyoneAlive()) {
-                environment = new BuyScreen(options, playerState, currentLevel);
+                game_state = new BuyScreen(options, playerState, current_level_);
             }
             // game over
             else {
-                environment = new GameOver();
+                game_state = new GameOver();
             }
         } else {
             playerState.killall();
-            delete environment;
-            environment = 0;
-            environment = new Menu(options);
+            delete game_state;
+            game_state = 0;
+            game_state = new Menu(options);
         }
     }
 
     // abort in world
     extern Input* input;
-    if (environment && environment->getType() == ENV_WORLD) {
+    if (game_state && game_state->type() == ENV_WORLD) {
         if (input->keyPressed(SDLK_ESCAPE, NO_AUTOFIRE)) {
-            delete environment;
+            delete game_state;
             playerState.killall();
-            environment = new Menu(options);
+            game_state = new Menu(options);
         }
     }
 
     // used for testing
     if (input->keyPressed(SDLK_F2, NO_AUTOFIRE)) {
-        delete environment;
-        environment = 0;
+        delete game_state;
+        game_state = 0;
     }
     if (input->keyPressed(SDLK_F3, NO_AUTOFIRE)) {
-        delete environment;
-        environment = new World(options, playerState, currentLevel = 1);
+        delete game_state;
+        game_state = new World(options, playerState, current_level_ = 1);
     }
     if (input->keyPressed(SDLK_F4, NO_AUTOFIRE)) {
-        delete environment;
-        environment = new BuyScreen(options, playerState, currentLevel);
+        delete game_state;
+        game_state = new BuyScreen(options, playerState, current_level_);
     }
 
-    if (environment)
-        environment->runLogic(timer, playerState);
+    if (game_state)
+        game_state->runLogic(timer, playerState);
 }
 
 void Game::draw(Screen& screen)
 {
-    if (environment)
-        environment->draw(screen, mainFont);
+    if (game_state) {
+        game_state->draw(screen, mainFont);
+    }
 }
 
 bool Game::done() const
 {
-    return m_done;
+    return done_;
 }
 
-bool Game::done(bool value)
+bool Game::set_done(bool value)
 {
-    return m_done = value;
+    return done_ = value;
 }
 
 // -----------------------------------------------------------------------------

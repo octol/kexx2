@@ -16,25 +16,25 @@
 //    You should have received a copy of the GNU General Public License
 //    along with Kexx2.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef _KEXX2_FINISHED_H_
-#define _KEXX2_FINISHED_H_
+#ifndef KEXX2_FINISHED_H
+#define KEXX2_FINISHED_H
 
-#include "Environment.h"
+#include "IGameState.h"
 #include "SDLc/Sound.h"
 
 class Options;
 class PlayerState;
 
-class Finished : public Environment {
+class Finished : public IGameState {
 public:
     Finished(Options& options, PlayerState& playerState);
-    virtual ~Finished();
+    virtual ~Finished() noexcept(true) {};
 
     void runLogic(Timer& timer, PlayerState& playerState);
     void draw(Screen& screen, Font& mainFont);
 
 private:
-    Sound finishedSnd;
+    Sound finishedSnd_;
 };
 
-#endif
+#endif // KEXX2_FINISHED_H

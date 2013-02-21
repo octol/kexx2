@@ -30,22 +30,18 @@
 // Construction/Destruction
 // -----------------------------------------------------------------------------
 
-BuyScreen::BuyScreen(Options& options, PlayerState& playerState_, int currentLevel_)
+BuyScreen::BuyScreen(Options& options, PlayerState& playerState, int currentLevel)
+    : currentLevel_(currentLevel),
+      howManyPlayers_(options.getHowManyPlayers()),
+      playerState_(&playerState)
 {
-    setType(ENV_BUYSCREEN);
-    currentLevel = currentLevel_;
-    howManyPlayers = options.getHowManyPlayers();
-    playerState = &playerState_;
+    env_type_ = ENV_BUYSCREEN;
 
-    selectors.gfx.load(options.dataPath + "gfx/EnemyRammer.png");
-    selectors.pos[0] = 0;
-    selectors.pos[1] = 0;
+    selectors_.gfx.load(options.dataPath + "gfx/EnemyRammer.png");
+    selectors_.pos[0] = 0;
+    selectors_.pos[1] = 0;
 
-    playerdone[0] = playerdone[1] = false;
-}
-
-BuyScreen::~BuyScreen()
-{
+    playerdone_[0] = playerdone_[1] = false;
 }
 
 // -----------------------------------------------------------------------------
@@ -60,19 +56,19 @@ void BuyScreen::runLogic(Timer& timer, PlayerState& playerState)
     keys[1] = playerState.getKeySet(2);
 
     int i;
-    if (howManyPlayers > 2)
+    if (howManyPlayers_ > 2)
         std::cout << "BuyScreen::runLogic() more than 2 players not supported" 
                   << std::endl;
     for (i = 0; i < 2; i++) {
         if (playerState.getEnergyMax(i + 1)) {
             if (input->keyPressed(keys[i].down, NO_AUTOFIRE))
-                selectors.pos[i]++;
+                selectors_.pos[i]++;
             else if (input->keyPressed(keys[i].up, NO_AUTOFIRE))
-                selectors.pos[i]--;
-            selectors.pos[i] = bound(selectors.pos[i], 0, 2);
+                selectors_.pos[i]--;
+            selectors_.pos[i] = bound(selectors_.pos[i], 0, 2);
 
             if (input->keyPressed(keys[i].fireMain, NO_AUTOFIRE)) {
-                if (selectors.pos[i] == 0 && playerState.getScore(i + 1) >= ROCKET_COST) {
+                if (selectors_.pos[i] == 0 && playerState.getScore(i + 1) >= ROCKET_COST) {
                     if (playerState.getExtraWeapon(i + 1) == "Rocket Weapon")
                         playerState.setExtraWeaponCount(i + 1, playerState.getExtraWeaponCount(i + 1) + 10);
                     else {
@@ -80,54 +76,54 @@ void BuyScreen::runLogic(Timer& timer, PlayerState& playerState)
                         playerState.setExtraWeaponCount(i + 1, 10);
                     }
                     playerState.setScore(i + 1, playerState.getScore(i + 1) - ROCKET_COST);
-                } else if (selectors.pos[i] == 2)
-                    playerdone[i] = true;
+                } else if (selectors_.pos[i] == 2)
+                    playerdone_[i] = true;
             }
-        } else playerdone[i] = true;
+        } else playerdone_[i] = true;
     }
 
     // check if done
     int tmpcount = 0;
-    for (i = 0; i < howManyPlayers; i++) {
-        if (playerdone[i])
+    for (i = 0; i < howManyPlayers_; i++) {
+        if (playerdone_[i])
             tmpcount++;
     }
-    if (tmpcount == howManyPlayers)
-        done(true);
+    if (tmpcount == howManyPlayers_)
+        done_ = true;
 }
 
 void BuyScreen::draw(Screen& screen, Font& mainFont)
 {
-    screen.print(200, 50, "level " + std::to_string(currentLevel - 1) + " complete!", mainFont);
+    screen.print(200, 50, "level " + std::to_string(currentLevel_ - 1) + " complete!", mainFont);
     screen.print(30, 100, "player 1", mainFont);
-    screen.print(60, 120, "score: " + std::to_string(playerState->getScore(1)), mainFont);
-    if (playerState->getExtraWeapon(1) != "none") {
-        int length = (playerState->getExtraWeapon(1)).length();
-        std::string text = (playerState->getExtraWeapon(1)).substr(0, length - 7);
+    screen.print(60, 120, "score: " + std::to_string(playerState_->getScore(1)), mainFont);
+    if (playerState_->getExtraWeapon(1) != "none") {
+        int length = (playerState_->getExtraWeapon(1)).length();
+        std::string text = (playerState_->getExtraWeapon(1)).substr(0, length - 7);
 
-        screen.print(60, 140, text + " count: " + std::to_string(playerState->getExtraWeaponCount(1)), mainFont);
+        screen.print(60, 140, text + " count: " + std::to_string(playerState_->getExtraWeaponCount(1)), mainFont);
     }
 
-    if (howManyPlayers > 1) {
+    if (howManyPlayers_ > 1) {
         screen.print(370, 100, "player 2", mainFont);
-        screen.print(400, 120, "score: " + std::to_string(playerState->getScore(2)), mainFont);
-        if (playerState->getExtraWeapon(2) != "none") {
-            int length = (playerState->getExtraWeapon(2)).length();
-            std::string text = (playerState->getExtraWeapon(2)).substr(0, length - 7);
-            screen.print(400, 140, text + " count: " + std::to_string(playerState->getExtraWeaponCount(2)), mainFont);
+        screen.print(400, 120, "score: " + std::to_string(playerState_->getScore(2)), mainFont);
+        if (playerState_->getExtraWeapon(2) != "none") {
+            int length = (playerState_->getExtraWeapon(2)).length();
+            std::string text = (playerState_->getExtraWeapon(2)).substr(0, length - 7);
+            screen.print(400, 140, text + " count: " + std::to_string(playerState_->getExtraWeaponCount(2)), mainFont);
         }
     }
 
-    int pos1 = selectors.pos[0], pos2 = selectors.pos[1];
-    if (selectors.pos[0] == 2)
+    int pos1 = selectors_.pos[0], pos2 = selectors_.pos[1];
+    if (selectors_.pos[0] == 2)
         pos1++;
-    if (selectors.pos[1] == 2)
+    if (selectors_.pos[1] == 2)
         pos2++;
 
-    if (!playerdone[0])
-        screen.blit(50, 200 + (20 * pos1), selectors.gfx);
-    if (!playerdone[1])
-        screen.blit(550, 200 + (20 * pos2), selectors.gfx);
+    if (!playerdone_[0])
+        screen.blit(50, 200 + (20 * pos1), selectors_.gfx);
+    if (!playerdone_[1])
+        screen.blit(550, 200 + (20 * pos2), selectors_.gfx);
     screen.print(150, 200, "buy rockets (cost: " + std::to_string(ROCKET_COST) + ")", mainFont);
     screen.print(150, 220, "buy megavapen (not avail)", mainFont);
     screen.print(150, 260, "goto next level", mainFont);

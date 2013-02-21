@@ -16,10 +16,10 @@
 //    You should have received a copy of the GNU General Public License
 //    along with Kexx2.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef _KEXX2_WORLD_H_
-#define _KEXX2_WORLD_H_
+#ifndef KEXX2_WORLD_H
+#define KEXX2_WORLD_H
 
-#include "Environment.h"
+#include "IGameState.h"
 #include "ObjectManager.h"
 #include "LevelManager.h"
 #include "ParticleManager.h"
@@ -35,11 +35,11 @@ struct WorldData
 {
 };
 
-class World : public Environment
+class World : public IGameState
 {
 public:
 	World(Options &options, PlayerState &playerState, int level);
-	virtual ~World();
+	virtual ~World() {};
 
 	void runLogic(Timer &timer, PlayerState &playerState);
 	void draw(Screen &screen, Font &mainFont);
@@ -68,4 +68,4 @@ private:
 	bool allplayersdead = false;
 };
 
-#endif
+#endif // KEXX2_WORLD_H

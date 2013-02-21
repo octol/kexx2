@@ -28,6 +28,8 @@ Timer* timer;
 Input* input;
 Mixer* mixer;
 
+void print_fps_counter(Screen&, Timer&);
+
 int main(int argc, char* argv[])
 {
     UNUSED(argc);
@@ -39,41 +41,35 @@ int main(int argc, char* argv[])
     input = new Input;
     mixer = new Mixer;
     
-    // Main game object
-    Game* kexx2 = new Game;
+    // Main game scope
+    {
+        Game kexx2;
 
-    kexx2->loadOptions();
-    kexx2->setupEnvironment(*screen, *timer, *mixer);
-    kexx2->start();
+        kexx2.loadOptions();
+        kexx2.setupEnvironment(*screen, *timer, *mixer);
+        kexx2.start();
 
-    while (!kexx2->done()) {
-        input->update();
+        while (!kexx2.done()) {
+            input->update();
 
-        // Developer mode escape key.
-        if (input->keyPressed(SDLK_F1, NO_AUTOFIRE)) {
-            kexx2->done(true);
+            // Developer mode escape key.
+            if (input->keyPressed(SDLK_F1, NO_AUTOFIRE)) 
+                kexx2.set_done(true);
+
+            kexx2.runLogic(*timer);
+            kexx2.draw(*screen);
+
+            if (kexx2.options.fpsCounter()) 
+                print_fps_counter(*screen, *timer);
+
+            screen->flipAll();
+            screen->fillRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0, 0);
+            timer->update();
         }
 
-        kexx2->runLogic(*timer);
-        kexx2->draw(*screen);
-
-        if (kexx2->options.fpsCounter()) {
-            static int FPS = static_cast<int>(timer->getFPS() + 0.5f);
-            static int ticks = timer->getTicks();
-            if ((timer->getTicks() - ticks) > 500) {
-                FPS = static_cast<int>(timer->getFPS() + 0.5f);
-                ticks = timer->getTicks();
-            }
-            screen->print(5, 5, "FPS: " + std::to_string(FPS), 255, 255, 255);
-        }
-
-        screen->flipAll();
-        screen->fillRect(0, 0, 640, 480, 0, 0, 0);
-        timer->update();
+        kexx2.writeOptions();
     }
 
-    kexx2->writeOptions();
-    delete kexx2;
     delete mixer;
     delete input;
     delete timer;
@@ -81,3 +77,13 @@ int main(int argc, char* argv[])
     return 0;
 }
 
+void print_fps_counter(Screen& screen_, Timer& timer_)
+{
+    static int FPS = static_cast<int>(timer_.getFPS() + 0.5f);
+    static int ticks = timer_.getTicks();
+    if ((timer_.getTicks() - ticks) > 500) {
+        FPS = static_cast<int>(timer_.getFPS() + 0.5f);
+        ticks = timer_.getTicks();
+    }
+    screen_.print(5, 5, "FPS: " + std::to_string(FPS), 255, 255, 255);
+}

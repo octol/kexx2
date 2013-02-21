@@ -24,22 +24,10 @@
 #include "PlayerState.h"
 #include "GameOver.h"
 
-// -----------------------------------------------------------------------------
-// Construction/Destruction
-// -----------------------------------------------------------------------------
-
 GameOver::GameOver()
 {
-    setType(ENV_GAMEOVER);
+    env_type_ = ENV_GAMEOVER;
 }
-
-GameOver::~GameOver()
-{
-}
-
-// -----------------------------------------------------------------------------
-// Member Functions
-// -----------------------------------------------------------------------------
 
 void GameOver::runLogic(Timer& timer, PlayerState& playerState)
 {
@@ -48,7 +36,7 @@ void GameOver::runLogic(Timer& timer, PlayerState& playerState)
 
     extern Input* input;
     if (input->keyPressed(SDLK_RETURN, NO_AUTOFIRE))
-        done(true);
+        done_ = true;
 }
 
 void GameOver::draw(Screen& screen, Font& mainFont)
@@ -57,6 +45,3 @@ void GameOver::draw(Screen& screen, Font& mainFont)
     screen.print(200, 200, "press enter...", mainFont);
 }
 
-// -----------------------------------------------------------------------------
-// Private Functions
-// -----------------------------------------------------------------------------

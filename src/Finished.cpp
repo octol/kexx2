@@ -31,13 +31,9 @@
 
 Finished::Finished(Options& options, PlayerState& playerState)
 {
-    setType(ENV_FINISHED);
-    finishedSnd.load(options.dataPath + "soundfx/gamecomplete.wav");
-    finishedSnd.play(0);
-}
-
-Finished::~Finished()
-{
+    env_type_ = ENV_FINISHED;
+    finishedSnd_.load(options.dataPath + "soundfx/gamecomplete.wav");
+    finishedSnd_.play(0);
 }
 
 // -----------------------------------------------------------------------------
@@ -48,7 +44,7 @@ void Finished::runLogic(Timer& timer, PlayerState& playerState)
 {
     extern Input* input;
     if (input->keyPressed(SDLK_RETURN, NO_AUTOFIRE))
-        done(true);
+        done_ = true;
 }
 
 void Finished::draw(Screen& screen, Font& mainFont)

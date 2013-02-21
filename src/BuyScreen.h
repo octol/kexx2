@@ -19,33 +19,33 @@
 #ifndef _KEXX_BUYSCREEN_H_
 #define _KEXX_BUYSCREEN_H_
 
-#include "Environment.h"
 #include "SDLc/Surface.h"
+#include "IGameState.h"
 
 class Options;
 class PlayerState;
 
 const int ROCKET_COST = 1000;
 
-class BuyScreen : public Environment {
+class BuyScreen : public IGameState {
 public:
-    BuyScreen(Options& options, PlayerState& playerState_, int currentLevel_);
-    virtual ~BuyScreen();
+    BuyScreen(Options& options, PlayerState& playerState, int currentLevel);
+    virtual ~BuyScreen() {};
 
     void runLogic(Timer& Timer, PlayerState& playerState);
     void draw(Screen& Screen, Font& mainFont);
 
 private:
-    int currentLevel;
-    int howManyPlayers;
-    PlayerState* playerState;
+    int currentLevel_;
+    int howManyPlayers_;
+    PlayerState* playerState_;
 
     struct Selector {
         Surface gfx;
         int pos[2];
-    } selectors;
+    } selectors_;
 
-    bool playerdone[2];
+    bool playerdone_[2];
 };
 
 #endif
