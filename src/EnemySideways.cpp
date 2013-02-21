@@ -60,12 +60,12 @@ void EnemySideways::think(ObjectManager& objectManager, FxManager& fxManager)
     if (active()) {
         if (left) {
             //cout << "hej" << endl;
-            setXVel(getXVel() - (100.0f /*0.0001f*/ * timer->getFrametime()));
+            setXVel(getXVel() - (100.0f /*0.0001f*/ * timer->frame_time()));
             if (getXVel() < -100.0f/*-0.1f*/)
                 left = false;
         } else {
             //cout << "nej" << endl;
-            setXVel(getXVel() + (100.0f /*0.0001f*/ * timer->getFrametime()));
+            setXVel(getXVel() + (100.0f /*0.0001f*/ * timer->frame_time()));
             if (getXVel() > 100.0f/*0.1f*/)
                 left = true;
         }

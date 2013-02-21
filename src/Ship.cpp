@@ -96,7 +96,7 @@ void Ship::think(ObjectManager& objectManager, FxManager& fxManager)
         // do some scripted movement when entering/leaving a level
         if (!levelcomplete) {
             extern Timer* timer;
-            setYVel(getYVel() + (130.0f * timer->getFrametime()));
+            setYVel(getYVel() + (130.0f * timer->frame_time()));
 
             if (getYVel() > -10.0f /*-0.0100f*/) {
                 setYVel(0);
@@ -111,7 +111,7 @@ void Ship::think(ObjectManager& objectManager, FxManager& fxManager)
             }
 
             extern Timer* timer;
-            setYVel(getYVel() - (130.0f * timer->getFrametime()));
+            setYVel(getYVel() - (130.0f * timer->frame_time()));
         }
     }
 

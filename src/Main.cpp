@@ -41,14 +41,12 @@ int main(int argc, char* argv[])
     input = new Input;
     mixer = new Mixer;
     
-    // Main game scope.
-    // We want the destructor of kexx2 be called before we shutdown the
-    // system subsystems.
+    // Main game scope. We want the destructor of kexx2 be called before we
+    // shutdown the system subsystems.
     {
         Game kexx2;
-
-        kexx2.loadOptions();
-        kexx2.setupEnvironment(*screen, *timer, *mixer);
+        kexx2.load_options();
+        kexx2.setup_environment(*screen, *timer, *mixer);
         kexx2.start();
 
         while (!kexx2.done()) {
@@ -58,7 +56,7 @@ int main(int argc, char* argv[])
             if (input->keyPressed(SDLK_F1, NO_AUTOFIRE)) 
                 kexx2.set_done(true);
 
-            kexx2.runLogic(*timer);
+            kexx2.run_logic(*input, *timer);
             kexx2.draw(*screen);
 
             if (kexx2.options.fpsCounter()) 
@@ -69,7 +67,7 @@ int main(int argc, char* argv[])
             timer->update();
         }
 
-        kexx2.writeOptions();
+        kexx2.write_options();
     }
 
     delete mixer;
@@ -81,11 +79,11 @@ int main(int argc, char* argv[])
 
 void print_fps_counter(Screen& screen_, Timer& timer_)
 {
-    static int FPS = static_cast<int>(timer_.getFPS() + 0.5f);
-    static int ticks = timer_.getTicks();
-    if ((timer_.getTicks() - ticks) > 500) {
-        FPS = static_cast<int>(timer_.getFPS() + 0.5f);
-        ticks = timer_.getTicks();
+    static int FPS = static_cast<int>(timer_.fps() + 0.5f);
+    static int ticks = timer_.ticks();
+    if ((timer_.ticks() - ticks) > 500) {
+        FPS = static_cast<int>(timer_.fps() + 0.5f);
+        ticks = timer_.ticks();
     }
     screen_.print(5, 5, "FPS: " + std::to_string(FPS), 255, 255, 255);
 }

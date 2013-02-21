@@ -70,7 +70,7 @@ World::World(Options& options, PlayerState& playerState, int level)
 void World::runLogic(Timer& timer, PlayerState& playerState)
 {
     // update scrolling position
-    worldYPos = worldYPos - SCROLLING_SPEED * timer.getFrametime();
+    worldYPos = worldYPos - SCROLLING_SPEED * timer.frame_time();
 
     // rest
     starfield.update(timer);

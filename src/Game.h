@@ -20,13 +20,14 @@
 #define _KEXX2_GAME_H_
 
 #include "SDLc/Font.h"
-#include "IGameState.h"
 #include "Options.h"
 #include "PlayerState.h"
 
 class Screen;
 class Mixer;
 class Timer;
+class Input;
+class IGameState;
 
 class Game {
 public:
@@ -38,13 +39,13 @@ public:
     virtual ~Game();
 
     // Initialisation functions.
-    void loadOptions();
-    void writeOptions();
-    void setupEnvironment(Screen& screen, Timer& timer, Mixer& mixer);
+    void load_options();
+    void write_options();
+    void setup_environment(Screen& screen, Timer& timer, Mixer& mixer);
     void start();
 
     // Functions called in the game loop.
-    void runLogic(Timer& timer);
+    void run_logic(Input& input, Timer& timer);
     void draw(Screen& screen);
 
     bool done() const;
