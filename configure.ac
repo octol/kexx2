@@ -12,7 +12,7 @@ AC_CONFIG_SRCDIR([README])
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE
-LT_INIT
+#LT_INIT
 
 AC_SUBST([KEXX2_VERSION],[1.0.2])
 
@@ -30,9 +30,9 @@ AC_LANG_PUSH([C++])
 AX_CXX_COMPILE_STDCXX_11
 AC_LANG_POP([C++])
 
-CXXFLAGS="$CXXFLAGS -pedantic -Wall -Wextra"
-CXXFLAGS="$CXXFLAGS -W -Wshadow -Wcast-qual -Wwrite-strings"
-CXXFLAGS="$CXXFLAGS -Weffc++"
+#CXXFLAGS="$CXXFLAGS -pedantic -Wall -Wextra"
+#CXXFLAGS="$CXXFLAGS -W -Wshadow -Wcast-qual -Wwrite-strings"
+#CXXFLAGS="$CXXFLAGS -Weffc++"
 #CXXFLAGS="$CXXFLAGS -Wconversion" 
 #CXXFLAGS="$CXXFLAGS -Werror"
 
@@ -105,7 +105,8 @@ PKG_CHECK_MODULES([LIBSDLC], [libsdlc-0.1 >= 0.0])
 #-------------------------------------------------------------------------------
 AC_CONFIG_FILES([Makefile
                  src/Makefile
-                 tests/gtest/Makefile
-                 tests/Makefile])
+                 ])
+                 #tests/gtest/Makefile
+                 #tests/Makefile
 #AC_CONFIG_SUBDIRS([libsdlc])
 AC_OUTPUT

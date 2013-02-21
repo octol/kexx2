@@ -1,5 +1,6 @@
 ACLOCAL_AMFLAGS = -I m4
-SUBDIRS = src tests
+SUBDIRS = src
+#SUBDIRS = src tests
 
 kexx2dir = $(datadir)/kexx2
 dist_kexx2_DATA = data/kexx2.cfg
