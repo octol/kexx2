@@ -31,7 +31,7 @@
 #include "GameOver.h"
 
 // -----------------------------------------------------------------------------
-// Member Functions
+// Construction/Destruction
 // -----------------------------------------------------------------------------
 Game::~Game()
 {
@@ -44,6 +44,7 @@ Game::~Game()
 
 void Game::loadOptions()
 {
+    // TODO: Rewrite this to look in some standard locations first.
 #ifndef WIN32
     std::string settingsfile;
     std::string filename = getenv("HOME");
@@ -103,7 +104,7 @@ void Game::setupEnvironment(Screen& screen, Timer& timer, Mixer& mixer)
 
     // TODO: move this into sdlc::Screen
     SDL_ShowCursor(false);
-    mainFont.load(options.dataPath + "fonts/font1.bmp");
+    main_font.load(options.dataPath + "fonts/font1.bmp");
     // TODO: Should incorporate this function in sdlc::Timer
     SDL_Delay(500);
 }
@@ -123,8 +124,8 @@ void Game::runLogic(Timer& timer)
             game_state = 0;
 
             current_level_ = 1;
-            if (playerState.anyoneAlive()) {
-                game_state = new World(options, playerState, current_level_);
+            if (player_state.anyoneAlive()) {
+                game_state = new World(options, player_state, current_level_);
             } else {
                 set_done(true);
             }
@@ -132,7 +133,7 @@ void Game::runLogic(Timer& timer)
             delete game_state;
             game_state = 0;
 
-            game_state = new World(options, playerState, current_level_);
+            game_state = new World(options, player_state, current_level_);
         } else if (game_state->type() == ENV_WORLD) {
             delete game_state;
             game_state = 0;
@@ -140,19 +141,19 @@ void Game::runLogic(Timer& timer)
 
             // game complete
             if (current_level_ > options.getHowManyLevels() && 
-                    playerState.anyoneAlive()) {
-                game_state = new Finished(options, playerState);
+                    player_state.anyoneAlive()) {
+                game_state = new Finished(options, player_state);
             }
             // goto inbetween levels buyscreen
-            else if (playerState.anyoneAlive()) {
-                game_state = new BuyScreen(options, playerState, current_level_);
+            else if (player_state.anyoneAlive()) {
+                game_state = new BuyScreen(options, player_state, current_level_);
             }
             // game over
             else {
                 game_state = new GameOver();
             }
         } else {
-            playerState.killall();
+            player_state.killall();
             delete game_state;
             game_state = 0;
             game_state = new Menu(options);
@@ -164,7 +165,7 @@ void Game::runLogic(Timer& timer)
     if (game_state && game_state->type() == ENV_WORLD) {
         if (input->keyPressed(SDLK_ESCAPE, NO_AUTOFIRE)) {
             delete game_state;
-            playerState.killall();
+            player_state.killall();
             game_state = new Menu(options);
         }
     }
@@ -176,21 +177,21 @@ void Game::runLogic(Timer& timer)
     }
     if (input->keyPressed(SDLK_F3, NO_AUTOFIRE)) {
         delete game_state;
-        game_state = new World(options, playerState, current_level_ = 1);
+        game_state = new World(options, player_state, current_level_ = 1);
     }
     if (input->keyPressed(SDLK_F4, NO_AUTOFIRE)) {
         delete game_state;
-        game_state = new BuyScreen(options, playerState, current_level_);
+        game_state = new BuyScreen(options, player_state, current_level_);
     }
 
     if (game_state)
-        game_state->runLogic(timer, playerState);
+        game_state->runLogic(timer, player_state);
 }
 
 void Game::draw(Screen& screen)
 {
     if (game_state) {
-        game_state->draw(screen, mainFont);
+        game_state->draw(screen, main_font);
     }
 }
 
