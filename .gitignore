@@ -17,3 +17,4 @@ missing
 cscope.out
 *.o
 *.lo
+*.swp
