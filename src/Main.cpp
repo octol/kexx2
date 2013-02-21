@@ -41,7 +41,9 @@ int main(int argc, char* argv[])
     input = new Input;
     mixer = new Mixer;
     
-    // Main game scope
+    // Main game scope.
+    // We want the destructor of kexx2 be called before we shutdown the
+    // system subsystems.
     {
         Game kexx2;
 

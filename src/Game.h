@@ -51,11 +51,11 @@ public:
     bool set_done(bool value);
 
     Options options;
-    PlayerState playerState;
+    PlayerState player_state;
 
 private:
     IGameState* game_state = nullptr;
-    Font mainFont;
+    Font main_font;
 
     int current_level_ = 0;
     bool done_ = false;
