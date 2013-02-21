@@ -5,7 +5,8 @@ General:
 --------
 * Variable naming conventions.
 * Go over all TODO in code.
-* Automatic detection of game data.
+* Automatic detection of game data path.
+* Make the timer a local object.
 
 Specific:
 ---------

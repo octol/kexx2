@@ -105,7 +105,8 @@ PKG_CHECK_MODULES([LIBSDLC], [libsdlc-0.1 >= 0.0])
 #-------------------------------------------------------------------------------
 AC_CONFIG_FILES([Makefile
                  src/Makefile
-                 tests/gtest/Makefile
-                 tests/Makefile])
+                 ])
+                 #tests/gtest/Makefile
+                 #tests/Makefile
 #AC_CONFIG_SUBDIRS([libsdlc])
 AC_OUTPUT
