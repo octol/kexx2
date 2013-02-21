@@ -162,7 +162,7 @@ void FxManager::smokepuff(int x, int y)
 {
     int i;
     extern Timer* timer;
-    int amount = (int)((float)timer->getFrametime() / 0.004f/*4.0f*/);
+    int amount = (int)((float)timer->frame_time() / 0.004f/*4.0f*/);
     for (i = 0; i < amount; i++) {
         float xVel = ((rand() % 50) - 25)/**0.001*/;
         float yVel = ((rand() % 50) - 25)/**0.001*/ + 100.0f/*0.1f*/;

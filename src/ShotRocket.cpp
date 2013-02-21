@@ -49,7 +49,7 @@ void ShotRocket::think(ObjectManager& objectManager, FxManager& fxManager)
 {
     extern Timer* timer;
     //setXVel( getXVel() * 0.007f * Timer->getFrametime());
-    setYVel(getYVel() - 500.0f /*0.0005*/*timer->getFrametime());
+    setYVel(getYVel() - 500.0f /*0.0005*/*timer->frame_time());
 
     fxManager.smokepuff((int)(getX() + getWidth() / 2), (int)(getY() + getHeight() / 2));
 

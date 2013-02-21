@@ -6,6 +6,8 @@ General:
 * Variable naming conventions.
 * Go over all TODO in code.
 * Automatic detection of game data path.
+    This requires that we set configuration stuff in .kexx2rc instead of
+    kexx2.cfg, due to write permission.
 * Make the timer a local object.
 
 Specific:

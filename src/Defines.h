@@ -16,11 +16,12 @@
 //    You should have received a copy of the GNU General Public License
 //    along with Kexx2.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef _KEXX2_DEFINES_H_
-#define _KEXX2_DEFINES_H_
+#ifndef KEXX2_DEFINES_H
+#define KEXX2_DEFINES_H
 
 #define VERSION "1.0.2"
 #define UNUSED(x) ((void)x)
+#define TESTING
 
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
@@ -97,4 +98,4 @@ enum ObjSnd {
     SND_SHOTROCKET
 };
 
-#endif
+#endif // KEXX2_DEFINES_H

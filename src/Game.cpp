@@ -29,6 +29,7 @@
 #include "Menu.h"
 #include "Finished.h"
 #include "GameOver.h"
+#include "IGameState.h"
 
 // -----------------------------------------------------------------------------
 // Construction/Destruction
@@ -42,9 +43,11 @@ Game::~Game()
 // Member Functions
 // -----------------------------------------------------------------------------
 
-void Game::loadOptions()
+void Game::load_options()
 {
     // TODO: Rewrite this to look in some standard locations first.
+    // This requires that we store options in .kexx2rc instead of kexx2.cfg
+    // TODO: Make this more robust to what the user enters.
 #ifndef WIN32
     std::string settingsfile;
     std::string filename = getenv("HOME");
@@ -72,56 +75,53 @@ void Game::loadOptions()
     options.load(options.dataPath + "kexx2.cfg");
 }
 
-void Game::writeOptions()
+void Game::write_options()
 {
     options.write(options.dataPath + "kexx2.cfg");
 }
 
-void Game::setupEnvironment(Screen& screen, Timer& timer, Mixer& mixer)
+void Game::setup_environment(Screen& screen, Timer& timer, Mixer& mixer)
 {
-    // TODO: Replace with call to sdlc::Timer
-    srand(SDL_GetTicks());
+    srand(timer.ticks());
 
-    std::string v = VERSION;
-    // Should incorporate this function in sdlc::Screen
-    SDL_WM_SetCaption(("Kexx 2 " + v).c_str(), NULL);
+    // TODO: Should incorporate this function in sdlc::Screen
+    SDL_WM_SetCaption(("Kexx 2 " + std::string(VERSION)).c_str(), NULL);
 
 #ifdef WIN32
-    int videoType;
-    if (options.fullscreen())
-        videoType = SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_FULLSCREEN;
-    else videoType = SDL_SWSURFACE;
+    int video_type = options.fullscreen() ? 
+                    SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_FULLSCREEN :
+                    SDL_SWSURFACE;
 #endif
 #ifndef WIN32
-    int videoType = SDL_SWSURFACE;
-    if (options.fullscreen())
-        videoType |= SDL_FULLSCREEN;
+    int video_type = options.fullscreen() ? SDL_SWSURFACE | SDL_FULLSCREEN
+                                          : SDL_SWSURFACE;
 #endif
 
-    screen.init(640, 480, 16, videoType);
+    screen.init(640, 480, 16, video_type);
     timer.init();
     mixer.init();
 
     // TODO: move this into sdlc::Screen
     SDL_ShowCursor(false);
     main_font.load(options.dataPath + "fonts/font1.bmp");
-    // TODO: Should incorporate this function in sdlc::Timer
-    SDL_Delay(500);
+    timer.delay(500);
 }
 
 void Game::start()
 {
     // init game
+    delete game_state;
     game_state = new Menu(options);
 }
 
-void Game::runLogic(Timer& timer)
+void Game::run_logic(Input& input, Timer& timer)
 {
-    // here we decide which Environment that should be used
+    // here we decide which Game state that should be used
     if (game_state && game_state->done()) {
-        if (game_state->type() == ENV_MENU) {
+        switch (game_state->type()) {
+        case ENV_MENU:
             delete game_state;
-            game_state = 0;
+            game_state = nullptr;
 
             current_level_ = 1;
             if (player_state.anyoneAlive()) {
@@ -129,14 +129,16 @@ void Game::runLogic(Timer& timer)
             } else {
                 set_done(true);
             }
-        } else if (game_state->type() == ENV_BUYSCREEN) {
-            delete game_state;
-            game_state = 0;
+            break;
 
-            game_state = new World(options, player_state, current_level_);
-        } else if (game_state->type() == ENV_WORLD) {
+        case ENV_BUYSCREEN:
             delete game_state;
-            game_state = 0;
+            game_state = new World(options, player_state, current_level_);
+            break;
+
+        case ENV_WORLD:
+            delete game_state;
+            game_state = nullptr;
             current_level_++;
 
             // game complete
@@ -152,37 +154,40 @@ void Game::runLogic(Timer& timer)
             else {
                 game_state = new GameOver();
             }
-        } else {
+            break;
+
+        default:
             player_state.killall();
             delete game_state;
-            game_state = 0;
             game_state = new Menu(options);
+            break;
         }
     }
 
     // abort in world
-    extern Input* input;
     if (game_state && game_state->type() == ENV_WORLD) {
-        if (input->keyPressed(SDLK_ESCAPE, NO_AUTOFIRE)) {
+        if (input.keyPressed(SDLK_ESCAPE, NO_AUTOFIRE)) {
             delete game_state;
             player_state.killall();
             game_state = new Menu(options);
         }
     }
 
+#ifdef TESTING
     // used for testing
-    if (input->keyPressed(SDLK_F2, NO_AUTOFIRE)) {
+    if (input.keyPressed(SDLK_F2, NO_AUTOFIRE)) {
         delete game_state;
-        game_state = 0;
+        game_state = nullptr;
     }
-    if (input->keyPressed(SDLK_F3, NO_AUTOFIRE)) {
+    if (input.keyPressed(SDLK_F3, NO_AUTOFIRE)) {
         delete game_state;
         game_state = new World(options, player_state, current_level_ = 1);
     }
-    if (input->keyPressed(SDLK_F4, NO_AUTOFIRE)) {
+    if (input.keyPressed(SDLK_F4, NO_AUTOFIRE)) {
         delete game_state;
         game_state = new BuyScreen(options, player_state, current_level_);
     }
+#endif
 
     if (game_state)
         game_state->runLogic(timer, player_state);
