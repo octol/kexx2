@@ -22,15 +22,38 @@
 #define VERSION "1.1.0"
 #define UNUSED(x) ((void)x)
 
-//extern int newCount;
+const int SCREEN_WIDTH = 640;
+const int SCREEN_HEIGHT = 480;
 
 const float SCROLLING_SPEED = 50.0f; //0.05f;
 const int NUM_OF_POSSIBLE_PLAYERS = 2;
 
-enum EnvironmentType { ENV_NONE, ENV_INTRO, ENV_FINISHED, ENV_MENU, ENV_WORLD, ENV_BUYSCREEN, ENV_GAMEOVER };
-enum SoundChannel { SND_DIV, SND_W_BLASTER, SND_W_ROCKET, SND_EXPL_SMALL, SND_EXPL_BIG, SND_EXPL_PLAYER, SND_ALARM };
-enum Owner   { OWNER_NONE, OWNER_PLAYER1, OWNER_PLAYER2, OWNER_ENEMY };
-enum ObjType     { OBJ_UNDEFINED, OBJ_PASSIVE, OBJ_ENEMY, OBJ_BONUS, OBJ_PLAYER, OBJ_PLAYERPASSIVE, OBJ_SHOT };
+enum SoundChannel { 
+    SND_DIV,
+    SND_W_BLASTER,
+    SND_W_ROCKET,
+    SND_EXPL_SMALL,
+    SND_EXPL_BIG,
+    SND_EXPL_PLAYER,
+    SND_ALARM 
+};
+
+enum Owner { OWNER_NONE,
+    OWNER_PLAYER1,
+    OWNER_PLAYER2,
+    OWNER_ENEMY 
+};
+
+enum ObjType { 
+    OBJ_UNDEFINED, 
+    OBJ_PASSIVE,
+    OBJ_ENEMY,
+    OBJ_BONUS,
+    OBJ_PLAYER,
+    OBJ_PLAYERPASSIVE,
+    OBJ_SHOT 
+};
+
 enum ObjIndex {
     PLAYER1,
     PLAYER2,

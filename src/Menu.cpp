@@ -34,7 +34,7 @@ using namespace std;
 Menu::Menu(Options& options_)
 {
     options = &options_;
-    setType(ENV_MENU);
+    env_type_ = ENV_MENU;
 
     logo.load(options->dataPath + "gfx/Menulogo.png");
     bgmusic.load(options->dataPath + "music/bgmusic1.xm");
@@ -49,10 +49,6 @@ Menu::Menu(Options& options_)
         bgdata[i].alloc(640, 480);
         precalcbgsurface(bgdata[i]);
     }
-}
-
-Menu::~Menu()
-{
 }
 
 // -----------------------------------------------------------------------------
@@ -89,7 +85,7 @@ void Menu::runLogic(Timer& timer, PlayerState& playerState)
                 if (options->getHowManyPlayers() >= 2)
                     playerState.setEnergyMax(2, 3);
 
-                done(true);
+                done_ = true;
             } else if (selector.pos == 1) {
                 whichMenu = MENU_OPTIONS;
                 selector.pos = 0;
@@ -134,7 +130,7 @@ void Menu::runLogic(Timer& timer, PlayerState& playerState)
 
     // exit screen
     if (whichMenu == MENU_EXIT && SDL_GetTicks() - exittimer > 3000)
-        done(true);
+        done_ = true;
 
     // set option strings
     players = std::to_string(options->getHowManyPlayers());

@@ -16,48 +16,64 @@
 //    You should have received a copy of the GNU General Public License
 //    along with Kexx2.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "Environment.h"
+// -----------------------------------------------------------------------------
+// Interface for the different game states. Used to represent the menu, the
+// game world, the screen between different levels etc.
+// -----------------------------------------------------------------------------
+
+#ifndef KEXX2_IGAMESTATE_H
+#define KEXX2_IGAMESTATE_H
+
+#include "Defines.h"
+
+class Screen;
+class Timer;
+class Font;
+class PlayerState;
+
+enum EnvironmentType { 
+    ENV_NONE, 
+    ENV_INTRO, 
+    ENV_FINISHED, 
+    ENV_MENU, 
+    ENV_WORLD, 
+    ENV_BUYSCREEN, 
+    ENV_GAMEOVER 
+};
+
+class IGameState {
+public:
+    virtual ~IGameState() {};
+
+    // Main game state functions
+    virtual void runLogic(Timer& Timer, PlayerState& playerState) = 0;
+    virtual void draw(Screen& Screen, Font& mainFont) = 0;
+
+    // Querying the game state.
+    virtual EnvironmentType type() const; 
+    virtual bool done() const;
+
+protected:
+    // TODO: change to const
+    EnvironmentType env_type_ = ENV_NONE;
+    bool done_ = false;
+};
 
 // -----------------------------------------------------------------------------
-// Construction/Destruction
+// Inlines
 // -----------------------------------------------------------------------------
 
-Environment::Environment()
+inline
+EnvironmentType IGameState::type() const
 {
+    return env_type_;
 }
 
-Environment::~Environment()
+inline
+bool IGameState::done() const
 {
+    return done_;
 }
 
-// -----------------------------------------------------------------------------
-// Member Functions
-// -----------------------------------------------------------------------------
+#endif // KEXX2_IGAMESTATE_H
 
-EnvironmentType Environment::getType() const
-{
-    return envType;
-}
-
-bool Environment::done() const
-{
-    return m_done;
-}
-
-// -----------------------------------------------------------------------------
-// Protected Functions
-// -----------------------------------------------------------------------------
-
-EnvironmentType Environment::setType(EnvironmentType type)   
-{
-    return envType = type;
-}
-
-bool Environment::done(bool value) 
-{
-    return m_done = value;
-}
-
-// -----------------------------------------------------------------------------
-// Private Functions
-// -----------------------------------------------------------------------------

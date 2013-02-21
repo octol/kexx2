@@ -19,7 +19,7 @@
 #ifndef _KEXX2_MENU_H_
 #define _KEXX2_MENU_H_
 
-#include "Environment.h"
+#include "IGameState.h"
 #include "SDLc/Surface.h"
 #include "SDLc/Music.h"
 
@@ -35,10 +35,10 @@ enum MENU_WHICH {
     MENU_EXIT
 };
 
-class Menu : public Environment {
+class Menu : public IGameState {
 public:
     Menu(Options& options_);
-    virtual ~Menu();
+    virtual ~Menu() {};
 
     void runLogic(Timer& timer, PlayerState& playerState);
     void draw(Screen& screen, Font& mainFont);

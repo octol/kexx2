@@ -19,15 +19,15 @@
 #ifndef _KEXX2_GAMEOVER_H_
 #define _KEXX2_GAMEOVER_H_
 
-#include "Environment.h"
+#include "IGameState.h"
 
 class Options;
 class PlayerState;
 
-class GameOver : public Environment {
+class GameOver : public IGameState {
 public:
     GameOver();
-    virtual ~GameOver();
+    virtual ~GameOver() {};
 
     void runLogic(Timer& timer, PlayerState& playerState);
     void draw(Screen& screen, Font& mainFont);
