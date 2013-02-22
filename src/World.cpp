@@ -31,54 +31,54 @@
 // Construction/Destruction
 // -----------------------------------------------------------------------------
 
-World::World(Options& options, PlayerState& playerState, int level)
-    : numOfPlayers(options.getHowManyPlayers()), currentLevel(level)
-
+World::World(Options& options, PlayerState& player_state, int level)
+    : IGameState(ENV_WORLD),
+      numOfPlayers(options.num_of_players()), 
+      currentLevel(level),
+      timeWhenEnteringLevel(SDL_GetTicks()),
+      flashingtextTimer(SDL_GetTicks())
 {
-    env_type_ = ENV_WORLD;
-
     // setup data
-    objectManager.loadData(options.dataPath);
+    objectManager.loadData(options.data_path);
 
     // ship(s)
-    objectManager.createShips(playerState);
+    objectManager.createShips(player_state);
 
     // level
-    levelManager.loadLevel(options.dataPath, level, objectManager);
+    levelManager.loadLevel(options.data_path, level, objectManager);
 
     // effects
-    fxManager.load(particleManager, options.dataPath);
+    fxManager.load(particleManager, options.data_path);
 
     // bgmusic
-    bgmusic.load(options.dataPath + "music/bgmusic1.xm");
+    bgmusic.load(options.data_path + "music/bgmusic1.xm");
     bgmusic.play(-1);
 
     // sounds
-    levelcompleteSnd.load(options.dataPath + "soundfx/levelcomplete.wav");
-    gameoverSnd.load(options.dataPath + "soundfx/die.wav");
-    enteringlevelSnd.load(options.dataPath + "soundfx/newlevel.wav");
+    levelcompleteSnd.load(options.data_path + "soundfx/levelcomplete.wav");
+    gameoverSnd.load(options.data_path + "soundfx/die.wav");
+    enteringlevelSnd.load(options.data_path + "soundfx/newlevel.wav");
     enteringlevelSnd.play(0);
-
-    timeWhenEnteringLevel = SDL_GetTicks();
-    flashingtextTimer = SDL_GetTicks();
 }
 
 // -----------------------------------------------------------------------------
 // Member Functions
 // -----------------------------------------------------------------------------
 
-void World::runLogic(Timer& timer, PlayerState& playerState)
+void World::run_logic(Input& input, Timer& timer, PlayerState& player_state)
 {
     // update scrolling position
     worldYPos = worldYPos - SCROLLING_SPEED * timer.frame_time();
 
     // rest
     starfield.update(timer);
-    objectManager.update(timer, fxManager, worldYPos, playerState);
+    objectManager.update(timer, fxManager, worldYPos, player_state);
     particleManager.update(timer);
     fxManager.update(timer);
-    interface.update(numOfPlayers, playerState);
+    interface.update(numOfPlayers, player_state);
 
+    // TODO: remove the calls to SDL_GetTicks()
+    
     // when entering level
     if (timeWhenEnteringLevel) {
         if (SDL_GetTicks() - timeWhenEnteringLevel > 3000) {

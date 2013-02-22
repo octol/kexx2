@@ -27,11 +27,12 @@ class PlayerState;
 
 class Finished : public IGameState {
 public:
-    Finished(Options& options, PlayerState& playerState);
-    virtual ~Finished() noexcept(true) {};
+    Finished(Options& options, PlayerState& player_state);
+    virtual ~Finished() {};
 
-    void runLogic(Timer& timer, PlayerState& playerState);
-    void draw(Screen& screen, Font& mainFont);
+    void run_logic(Input& input, Timer& timer, 
+                   PlayerState& player_state) override;
+    void draw(Screen& screen, Font& font);
 
 private:
     Sound finishedSnd_;

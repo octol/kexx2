@@ -22,6 +22,7 @@
 #include "SDLc/Mixer.h"
 #include "SDLc/Misc.h"
 #include "Game.h"
+#include "Defines.h"
 
 Screen* screen;
 Timer* timer;
@@ -42,7 +43,7 @@ int main(int argc, char* argv[])
     mixer = new Mixer;
     
     // Main game scope. We want the destructor of kexx2 be called before we
-    // shutdown the system subsystems.
+    // shutdown the subsystems.
     {
         Game kexx2;
         kexx2.load_options();
@@ -52,14 +53,16 @@ int main(int argc, char* argv[])
         while (!kexx2.done()) {
             input->update();
 
+#ifdef TESTING
             // Developer mode escape key.
             if (input->keyPressed(SDLK_F1, NO_AUTOFIRE)) 
                 kexx2.set_done(true);
+#endif
 
             kexx2.run_logic(*input, *timer);
             kexx2.draw(*screen);
 
-            if (kexx2.options.fpsCounter()) 
+            if (kexx2.options.fps_counter()) 
                 print_fps_counter(*screen, *timer);
 
             screen->flipAll();

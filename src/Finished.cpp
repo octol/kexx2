@@ -29,10 +29,10 @@
 // Construction/Destruction
 // -----------------------------------------------------------------------------
 
-Finished::Finished(Options& options, PlayerState& playerState)
+Finished::Finished(Options& options, PlayerState& player_state)
+    : IGameState(ENV_FINISHED)
 {
-    env_type_ = ENV_FINISHED;
-    finishedSnd_.load(options.dataPath + "soundfx/gamecomplete.wav");
+    finishedSnd_.load(options.data_path + "soundfx/gamecomplete.wav");
     finishedSnd_.play(0);
 }
 
@@ -40,16 +40,15 @@ Finished::Finished(Options& options, PlayerState& playerState)
 // Member Functions
 // -----------------------------------------------------------------------------
 
-void Finished::runLogic(Timer& timer, PlayerState& playerState)
+void Finished::run_logic(Input& input, Timer& timer, PlayerState& player_state)
 {
-    extern Input* input;
-    if (input->keyPressed(SDLK_RETURN, NO_AUTOFIRE))
+    if (input.keyPressed(SDLK_RETURN, NO_AUTOFIRE))
         done_ = true;
 }
 
-void Finished::draw(Screen& screen, Font& mainFont)
+void Finished::draw(Screen& screen, Font& font)
 {
-    screen.print(100, 100, "game complete!", mainFont);
+    screen.print(100, 100, "game complete!", font);
 }
 
 // -----------------------------------------------------------------------------

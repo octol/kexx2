@@ -16,8 +16,8 @@
 //    You should have received a copy of the GNU General Public License
 //    along with Kexx2.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef _KEXX2_GAME_H_
-#define _KEXX2_GAME_H_
+#ifndef KEXX2_GAME_H
+#define KEXX2_GAME_H
 
 #include "SDLc/Font.h"
 #include "Options.h"
@@ -62,4 +62,4 @@ private:
     bool done_ = false;
 };
 
-#endif
+#endif // KEXX2_GAME_H

@@ -16,8 +16,8 @@
 //    You should have received a copy of the GNU General Public License
 //    along with Kexx2.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef _KEXX2_MENU_H_
-#define _KEXX2_MENU_H_
+#ifndef KEXX2_MENU_H
+#define KEXX2_MENU_H
 
 #include "IGameState.h"
 #include "SDLc/Surface.h"
@@ -29,7 +29,7 @@ class Font;
 class PlayerState;
 class Options;
 
-enum MENU_WHICH {
+enum MenuWhich {
     MENU_ROOT,
     MENU_OPTIONS,
     MENU_EXIT
@@ -40,8 +40,10 @@ public:
     Menu(Options& options_);
     virtual ~Menu() {};
 
-    void runLogic(Timer& timer, PlayerState& playerState);
-    void draw(Screen& screen, Font& mainFont);
+    void run_logic(Input& input, Timer& timer, 
+                   PlayerState& player_state) override;
+    void draw(Screen& screen, Font& font) override;
+
 private:
     void precalcbgsurface(Surface& surface);
     void drawgroup(int x, int y, Surface& surface);
@@ -50,7 +52,7 @@ private:
     Surface sdllogo;
     Surface bgdata[10];
     Music bgmusic;
-    MENU_WHICH whichMenu;
+    MenuWhich whichMenu;
 
     struct Selector {
         Surface gfx;
@@ -62,4 +64,4 @@ private:
     int exittimer;
 };
 
-#endif
+#endif // KEXX2_MENU_H

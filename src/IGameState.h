@@ -28,6 +28,7 @@
 
 class Screen;
 class Timer;
+class Input;
 class Font;
 class PlayerState;
 
@@ -43,19 +44,20 @@ enum EnvironmentType {
 
 class IGameState {
 public:
+    IGameState(EnvironmentType env_type) : env_type_(env_type) {};
     virtual ~IGameState() {};
 
     // Main game state functions
-    virtual void runLogic(Timer& Timer, PlayerState& playerState) = 0;
-    virtual void draw(Screen& Screen, Font& mainFont) = 0;
+    virtual void run_logic(Input& input, Timer& timer, 
+                           PlayerState& player_state) = 0;
+    virtual void draw(Screen& screen, Font& font) = 0;
 
     // Querying the game state.
     virtual EnvironmentType type() const; 
     virtual bool done() const;
 
 protected:
-    // TODO: change to const
-    EnvironmentType env_type_ = ENV_NONE;
+    const EnvironmentType env_type_ = ENV_NONE;
     bool done_ = false;
 };
 

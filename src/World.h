@@ -31,41 +31,40 @@
 class Options;
 class PlayerState;
 
-struct WorldData
-{
+struct WorldData {
 };
 
-class World : public IGameState
-{
+class World : public IGameState {
 public:
-	World(Options &options, PlayerState &playerState, int level);
-	virtual ~World() {};
+    World(Options& options, PlayerState& player_state, int level);
+    virtual ~World() {};
 
-	void runLogic(Timer &timer, PlayerState &playerState);
-	void draw(Screen &screen, Font &mainFont);
+    void run_logic(Input& input, Timer& timer, 
+                   PlayerState& player_state) override;
+    void draw(Screen& screen, Font& font);
 
 private:
-	ObjectManager objectManager;
-	LevelManager levelManager;
-	ParticleManager particleManager;
-	FxManager fxManager;
-	Starfield starfield;
-	WorldData worldData;
-	Interface interface;
+    ObjectManager objectManager;
+    LevelManager levelManager;
+    ParticleManager particleManager;
+    FxManager fxManager;
+    Starfield starfield;
+    WorldData worldData;
+    Interface interface;
 
-	float worldYPos = 0; // how much the screen has scrolled
-	int numOfPlayers;
-	int currentLevel = 0;
-	Music bgmusic;
-	Sound levelcompleteSnd;
-	Sound enteringlevelSnd;
-	Sound gameoverSnd;
+    float worldYPos = 0; // how much the screen has scrolled
+    int numOfPlayers;
+    int currentLevel = 0;
+    Music bgmusic;
+    Sound levelcompleteSnd;
+    Sound enteringlevelSnd;
+    Sound gameoverSnd;
 
-	// minor stuff
-	int timeWhenEnteringLevel;
-	int timeWhenAllEnemiesDead = 0;
-	int flashingtextTimer = 0;
-	bool allplayersdead = false;
+    // minor stuff
+    int timeWhenEnteringLevel;
+    int timeWhenAllEnemiesDead = 0;
+    int flashingtextTimer = 0;
+    bool allplayersdead = false;
 };
 
 #endif // KEXX2_WORLD_H

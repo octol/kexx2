@@ -25,22 +25,20 @@
 #include "SDLc/Misc.h"
 #include "PlayerState.h"
 #include "Options.h"
-using namespace std;
 
 // -----------------------------------------------------------------------------
 // Construction/Destruction
 // -----------------------------------------------------------------------------
 
-Menu::Menu(Options& options_)
+Menu::Menu(Options& options_) : IGameState(ENV_MENU)
 {
     options = &options_;
-    env_type_ = ENV_MENU;
 
-    logo.load(options->dataPath + "gfx/Menulogo.png");
-    bgmusic.load(options->dataPath + "music/bgmusic1.xm");
+    logo.load(options->data_path + "gfx/Menulogo.png");
+    bgmusic.load(options->data_path + "music/bgmusic1.xm");
     bgmusic.play(-1);
     whichMenu = MENU_ROOT;
-    selector.gfx.load(options->dataPath + "gfx/EnemySideways.png");
+    selector.gfx.load(options->data_path + "gfx/EnemySideways.png");
     selector.pos = 0;
     exittimer = 0;
 
@@ -54,14 +52,12 @@ Menu::Menu(Options& options_)
 // -----------------------------------------------------------------------------
 // Member Functions
 // -----------------------------------------------------------------------------
-void Menu::runLogic(Timer& timer, PlayerState& playerState)
+void Menu::run_logic(Input& input, Timer& timer, PlayerState& player_state)
 {
-    extern Input* input;
-
     // up/down
-    if (input->keyPressed(SDLK_UP, NO_AUTOFIRE))
+    if (input.keyPressed(SDLK_UP, NO_AUTOFIRE))
         selector.pos--;
-    else if (input->keyPressed(SDLK_DOWN, NO_AUTOFIRE))
+    else if (input.keyPressed(SDLK_DOWN, NO_AUTOFIRE))
         selector.pos++;
 
     // limits
@@ -72,36 +68,36 @@ void Menu::runLogic(Timer& timer, PlayerState& playerState)
         selector.pos = 3;
 
     // when return is pressed
-    if (input->keyPressed(SDLK_RETURN, NO_AUTOFIRE)) {
+    if (input.keyPressed(SDLK_RETURN, NO_AUTOFIRE)) {
         if (whichMenu == MENU_ROOT) {
             if (selector.pos == 0) {
-                playerState.killall();
+                player_state.killall();
 
-                playerState.setEnergyMax(1, 3);
-                //playerState.setExtraWeapon(1, WEAPON_EXTRA_ROCKET);
-                playerState.setExtraWeapon(1, "Rocket Weapon");
-                playerState.setExtraWeaponCount(1, 10);
+                player_state.setEnergyMax(1, 3);
+                //player_state.setExtraWeapon(1, WEAPON_EXTRA_ROCKET);
+                player_state.setExtraWeapon(1, "Rocket Weapon");
+                player_state.setExtraWeaponCount(1, 10);
 
-                if (options->getHowManyPlayers() >= 2)
-                    playerState.setEnergyMax(2, 3);
+                if (options->num_of_players() >= 2)
+                    player_state.setEnergyMax(2, 3);
 
                 done_ = true;
             } else if (selector.pos == 1) {
                 whichMenu = MENU_OPTIONS;
                 selector.pos = 0;
             } else if (selector.pos == 2) {
-                playerState.killall();
+                player_state.killall();
                 whichMenu = MENU_EXIT;
                 exittimer = SDL_GetTicks();
                 Mix_FadeOutMusic(3000);
             }
         } else if (whichMenu == MENU_OPTIONS) {
             if (selector.pos == 0) {
-                options->setHowManyPlayers(options->getHowManyPlayers() + 1);
-                if (options->getHowManyPlayers() > NUM_OF_POSSIBLE_PLAYERS)
-                    options->setHowManyPlayers(1);
+                options->set_num_of_players(options->num_of_players() + 1);
+                if (options->num_of_players() > NUM_OF_POSSIBLE_PLAYERS)
+                    options->set_num_of_players(1);
             } else if (selector.pos == 1) {
-                options->fullscreen(!options->fullscreen());
+                options->set_fullscreen(!options->fullscreen());
 
 #ifdef WIN32
                 int type;
@@ -120,7 +116,7 @@ void Menu::runLogic(Timer& timer, PlayerState& playerState)
                 screen->init(640, 480, 16, type);
 #endif
             } else if (selector.pos == 2)
-                options->fpsCounter(!options->fpsCounter());
+                options->set_fps_counter(!options->fps_counter());
             else if (selector.pos == 3) {
                 whichMenu = MENU_ROOT;
                 selector.pos = 1;
@@ -133,7 +129,7 @@ void Menu::runLogic(Timer& timer, PlayerState& playerState)
         done_ = true;
 
     // set option strings
-    players = std::to_string(options->getHowManyPlayers());
+    players = std::to_string(options->num_of_players());
 
     if (options->fullscreen()) {
         display = "fullscreen";
@@ -141,14 +137,14 @@ void Menu::runLogic(Timer& timer, PlayerState& playerState)
         display = "windowed";
     }
 
-    if (options->fpsCounter()) {
+    if (options->fps_counter()) {
         fps = "yes";
     } else {
         fps = "no";
     }
 }
 
-void Menu::draw(Screen& screen, Font& mainFont)
+void Menu::draw(Screen& screen, Font& font)
 {
     screen.blit(0, 0, bgdata[rand() % 10]);
 
@@ -159,14 +155,14 @@ void Menu::draw(Screen& screen, Font& mainFont)
 
     /////////
     if (whichMenu == MENU_ROOT) {
-        screen.print(270, 200, "start", mainFont);
-        screen.print(270, 230, "options", mainFont);
-        screen.print(270, 260, "exit", mainFont);
+        screen.print(270, 200, "start", font);
+        screen.print(270, 230, "options", font);
+        screen.print(270, 260, "exit", font);
     } else if (whichMenu == MENU_OPTIONS) {
-        screen.print(270, 200, "players: " + players, mainFont);;
-        screen.print(270, 230, "display: " + display, mainFont);
-        screen.print(270, 260, "show fps: " + fps, mainFont);
-        screen.print(270, 300, "return", mainFont);
+        screen.print(270, 200, "players: " + players, font);;
+        screen.print(270, 230, "display: " + display, font);
+        screen.print(270, 260, "show fps: " + fps, font);
+        screen.print(270, 300, "return", font);
 
 #ifdef WIN32
         if (selector.pos == 1)
@@ -175,26 +171,28 @@ void Menu::draw(Screen& screen, Font& mainFont)
     } else if (whichMenu == MENU_EXIT) {
         static bool tmpB = false;
         if (tmpB == false)
-            sdllogo.load(options->dataPath + "gfx/SDLnow.png");
+            sdllogo.load(options->data_path + "gfx/SDLnow.png");
         tmpB = true;
         screen.blit(640 - sdllogo.getWidth(), 480 - sdllogo.getHeight(), sdllogo);
 
         int x = 170, y = 100;
-        screen.print(x, y, "programming by:", mainFont);
-        screen.print(x + 40, y + 30, "jon haggblad", mainFont);
+        screen.print(x, y, "programming by:", font);
+        screen.print(x + 40, y + 30, "jon haggblad", font);
 
-        screen.print(x, y + 70, "additional work by:", mainFont);
-        screen.print(x + 40, y + 100, "birger hedman", mainFont);
-        screen.print(x + 40, y + 120, "petter ulfberg", mainFont);
+        screen.print(x, y + 70, "additional work by:", font);
+        screen.print(x + 40, y + 100, "birger hedman", font);
+        screen.print(x + 40, y + 120, "petter ulfberg", font);
 
-        screen.print(x, y + 160, "special thanks to:", mainFont);
-        screen.print(x + 40, y + 190, "jesper rojestal", mainFont);
-        screen.print(x + 40, y + 210, "john degerman", mainFont);
-        screen.print(x + 40, y + 230, "markus haggblad", mainFont);
-    } else cout << "Menu::draw() undefined 'whichMenu'" << endl;
+        screen.print(x, y + 160, "special thanks to:", font);
+        screen.print(x + 40, y + 190, "jesper rojestal", font);
+        screen.print(x + 40, y + 210, "john degerman", font);
+        screen.print(x + 40, y + 230, "markus haggblad", font);
+    } else {
+        std::cout << "Menu::draw() undefined 'whichMenu'" << std::endl;
+    }
 
-    string v = VERSION;
-    screen.print(5, 455, "v " + v, mainFont);
+    std::string v = VERSION;
+    screen.print(5, 455, "v " + v, font);
 }
 
 // -----------------------------------------------------------------------------

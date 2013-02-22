@@ -67,17 +67,17 @@ void Game::load_options()
     }
     file.close();
 
-    options.dataPath = settingsfile + "/";
+    options.data_path = settingsfile + "/";
 #endif
 #ifdef WIN32
-    options.dataPath = "../data/";
+    options.data_path = "../data/";
 #endif
-    options.load(options.dataPath + "kexx2.cfg");
+    options.load(options.data_path + "kexx2.cfg");
 }
 
 void Game::write_options()
 {
-    options.write(options.dataPath + "kexx2.cfg");
+    options.write(options.data_path + "kexx2.cfg");
 }
 
 void Game::setup_environment(Screen& screen, Timer& timer, Mixer& mixer)
@@ -89,8 +89,8 @@ void Game::setup_environment(Screen& screen, Timer& timer, Mixer& mixer)
 
 #ifdef WIN32
     int video_type = options.fullscreen() ? 
-                    SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_FULLSCREEN :
-                    SDL_SWSURFACE;
+                        SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_FULLSCREEN :
+                        SDL_SWSURFACE;
 #endif
 #ifndef WIN32
     int video_type = options.fullscreen() ? SDL_SWSURFACE | SDL_FULLSCREEN
@@ -103,7 +103,7 @@ void Game::setup_environment(Screen& screen, Timer& timer, Mixer& mixer)
 
     // TODO: move this into sdlc::Screen
     SDL_ShowCursor(false);
-    main_font.load(options.dataPath + "fonts/font1.bmp");
+    main_font.load(options.data_path + "fonts/font1.bmp");
     timer.delay(500);
 }
 
@@ -142,7 +142,7 @@ void Game::run_logic(Input& input, Timer& timer)
             current_level_++;
 
             // game complete
-            if (current_level_ > options.getHowManyLevels() && 
+            if (current_level_ > options.num_of_levels() && 
                     player_state.anyoneAlive()) {
                 game_state = new Finished(options, player_state);
             }
@@ -190,7 +190,7 @@ void Game::run_logic(Input& input, Timer& timer)
 #endif
 
     if (game_state)
-        game_state->runLogic(timer, player_state);
+        game_state->run_logic(input, timer, player_state);
 }
 
 void Game::draw(Screen& screen)

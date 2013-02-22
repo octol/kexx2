@@ -22,132 +22,73 @@
 #include <fstream>
 #include <iostream>
 #include <vector>
-using namespace std;
 
-// -----------------------------------------------------------------------------
-// Construction/Destruction
-// -----------------------------------------------------------------------------
-
-Options::Options()
+void Options::load(std::string path)
 {
-    dataPath = "";
-    m_fullscreen = false;
-    m_fpsCounter = false;
-    howManyLevelsAvailable = 0;
-    numOfPlayers = 0;
-}
+    int file_players, file_fullscreen, file_fps_counter;
 
-Options::~Options()
-{
-}
-
-// -----------------------------------------------------------------------------
-// Member Functions
-// -----------------------------------------------------------------------------
-
-void Options::load(string path)
-{
-    int filePlayers, fileFullscreen, fileFpsCounter;
-
-    // read the file information
-    ifstream optionsFile(path.c_str());
-    if (!optionsFile) {
-        cerr << "Error opening " << path << " for reading, ";
-        cerr << "using default options!" << endl;
+    std::ifstream options_file(path);
+    if (!options_file) {
+        std::cerr << "Error opening " << path << " for reading, ";
+        std::cerr << "using default options!" << std::endl;
     } else {
-        optionsFile.ignore(80, '=');
-        optionsFile >> filePlayers;
-        optionsFile.ignore(80, '=');
-        optionsFile >> fileFullscreen;
-        optionsFile.ignore(80, '=');
-        optionsFile >> fileFpsCounter;
+        options_file.ignore(80, '=');
+        options_file >> file_players;
+        options_file.ignore(80, '=');
+        options_file >> file_fullscreen;
+        options_file.ignore(80, '=');
+        options_file >> file_fps_counter;
     }
-    optionsFile.close();
+    options_file.close();
 
-    // use the file information
-    setHowManyPlayers(filePlayers);
-
-    if (fileFullscreen == 1)
-        fullscreen(true);
-    else fullscreen(false);
-
-    if (fileFpsCounter == 1)
-        fpsCounter(true);
-    else fpsCounter(false);
+    set_num_of_players(file_players);
+    set_fullscreen(file_fullscreen == 1);
+    set_fps_counter(file_fps_counter == 1);
 }
 
-void Options::write(string path)
+void Options::write(std::string path)
 {
-    int filePlayers, fileFullscreen, fileFpsCounter;
-
     // set up the information in variables
-    filePlayers = getHowManyPlayers();
-
-    if (fullscreen())
-        fileFullscreen = 1;
-    else fileFullscreen = 0;
-
-    if (fpsCounter())
-        fileFpsCounter = 1;
-    else fileFpsCounter = 0;
+    int file_players = num_of_players();
+    int file_fullscreen = fullscreen() ? 1 : 0;
+    int file_fps_counter = fps_counter() ? 1 : 0; 
 
     // write the information to disk
-    ofstream optionsFile(path.c_str());
-    if (!optionsFile)
-        cerr << "Error opening file " << path << " for writing!" << endl;
-    else {
-        optionsFile << "NumPlayers=" << filePlayers << "\n";
-        optionsFile << "Fullscreen=" << fileFullscreen << "\n";
-        optionsFile << "FPSCounter=" << fileFpsCounter << "\n";
+    std::ofstream options_file(path.c_str());
+    if (!options_file) {
+        std::cerr << "Error writing to: " << path << std::endl;
+    } else {
+        options_file << "NumPlayers=" << file_players << "\n";
+        options_file << "Fullscreen=" << file_fullscreen << "\n";
+        options_file << "FPSCounter=" << file_fps_counter << "\n";
     }
-    optionsFile.close();
+    options_file.close();
 }
-/*
-int Options::getHowManyLevelsAvailable()
+
+int Options::set_num_of_players(int value)
 {
-    if(howManyLevelsAvailable == 0)
-    {
-        cerr << "warning: check disk for amount of levels before calling ";
-        cerr << "Options::getHowManyLevelsAvailable()!" << endl;
+    if (value < 0) {
+        std::cerr << "Warning: Options::set_num_of_players() negative!" 
+            << std::endl;
     }
-    return howManyLevelsAvailable;
+    return num_of_players_ = value;
 }
 
-int Options::setHowManyLevelsAvailable(int value)
+int Options::num_of_levels()
 {
-    if(value < 1)
-        cerr << "warning: Options::setHowManyLevelsAvailable() set to less than one!" << endl;
-    return (howManyLevelsAvailable = value);
-}
-*/
-int Options::setHowManyPlayers(int value)
-{
-    if (value < 0)
-        cerr << "warning: Options::setHowManyPlayers() set to negative!" << endl;
-    return (numOfPlayers = value);
-}
+    std::vector<std::string> level_filename;
+    std::ifstream levels_file(data_path + "levels/levels.cfg");
 
-int Options::getHowManyLevels()
-{
-    std::vector<std::string> levelFilename;
-    int i = 0;
-    ifstream levelsFile((dataPath + "levels/levels.cfg").c_str());
-
-    string tmpFilename;
-    levelFilename.clear();
-
-    while (!levelsFile.eof()) {
-        levelsFile >> tmpFilename;
-        levelFilename.push_back(tmpFilename);
-//      cout << levelFilename[i] << endl;
-        i++;
-
-        if (levelsFile.eof())
-            break;
+    std::string tmp_filename;
+    while (!levels_file.eof()) {
+        levels_file >> tmp_filename;
+        level_filename.push_back(tmp_filename);
     }
 
-    levelsFile.close();
-    return levelFilename.size() - 1; // number of levels
+    levels_file.close();
+    std::cout << "num_of_levels(): " 
+        << level_filename.size() - 1 << std::endl;
+    return level_filename.size() - 1; // number of levels
 }
 
 // -----------------------------------------------------------------------------
