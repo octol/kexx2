@@ -42,36 +42,33 @@ int main(int argc, char* argv[])
     input = new Input;
     mixer = new Mixer;
     
-    // Main game scope. We want the destructor of kexx2 be called before we
-    // shutdown the subsystems.
-    {
-        Game kexx2;
-        kexx2.load_options();
-        kexx2.setup_environment(*screen, *timer, *mixer);
-        kexx2.start();
+    auto kexx2 = std::unique_ptr<Game>(new Game);
+    kexx2->load_options();
+    kexx2->setup_environment(*screen, *timer, *mixer);
+    kexx2->start();
 
-        while (!kexx2.done()) {
-            input->update();
+    while (!kexx2->done()) {
+        input->update();
 
 #ifdef TESTING
-            // Developer mode escape key.
-            if (input->keyPressed(SDLK_F1, NO_AUTOFIRE)) 
-                kexx2.set_done(true);
+        // Developer mode escape key.
+        if (input->keyPressed(SDLK_F1, NO_AUTOFIRE)) 
+            kexx2->set_done(true);
 #endif
 
-            kexx2.run_logic(*input, *timer);
-            kexx2.draw(*screen);
+        kexx2->run_logic(*input, *timer, *mixer);
+        kexx2->draw(*screen);
 
-            if (kexx2.options.fps_counter()) 
-                print_fps_counter(*screen, *timer);
+        if (kexx2->options.fps_counter()) 
+            print_fps_counter(*screen, *timer);
 
-            screen->flipAll();
-            screen->fillRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0, 0);
-            timer->update();
-        }
-
-        kexx2.write_options();
+        screen->flipAll();
+        screen->fillRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0, 0);
+        timer->update();
     }
+
+    kexx2->write_options();
+    kexx2.reset();
 
     delete mixer;
     delete input;

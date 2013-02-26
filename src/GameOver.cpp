@@ -36,7 +36,8 @@ GameOver::GameOver() : IGameState(ENV_GAMEOVER)
 // Member Functions
 // -----------------------------------------------------------------------------
 
-void GameOver::run_logic(Input& input, Timer& timer, PlayerState& player_state)
+void GameOver::run_logic(Input& input, Timer& timer, Mixer& mixer, 
+                         PlayerState& player_state)
 {
     UNUSED(timer);
     UNUSED(player_state);

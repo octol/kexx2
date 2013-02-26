@@ -65,7 +65,8 @@ World::World(Options& options, PlayerState& player_state, int level)
 // Member Functions
 // -----------------------------------------------------------------------------
 
-void World::run_logic(Input& input, Timer& timer, PlayerState& player_state)
+void World::run_logic(Input& input, Timer& timer, Mixer& mixer,
+                      PlayerState& player_state)
 {
     // update scrolling position
     worldYPos = worldYPos - SCROLLING_SPEED * timer.frame_time();

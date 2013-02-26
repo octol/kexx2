@@ -40,7 +40,8 @@ Finished::Finished(Options& options, PlayerState& player_state)
 // Member Functions
 // -----------------------------------------------------------------------------
 
-void Finished::run_logic(Input& input, Timer& timer, PlayerState& player_state)
+void Finished::run_logic(Input& input, Timer& timer, Mixer& mixer, 
+                         PlayerState& player_state)
 {
     if (input.keyPressed(SDLK_RETURN, NO_AUTOFIRE))
         done_ = true;

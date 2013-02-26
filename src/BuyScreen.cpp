@@ -30,11 +30,10 @@
 // Construction/Destruction
 // -----------------------------------------------------------------------------
 
-BuyScreen::BuyScreen(Options& options, PlayerState& player_state, int current_level)
+BuyScreen::BuyScreen(Options& options, int current_level)
     : IGameState(ENV_BUYSCREEN),
       currentLevel_(current_level),
-      howManyPlayers_(options.num_of_players()),
-      playerState_(&player_state)
+      howManyPlayers_(options.num_of_players())
 {
     selectors_.gfx.load(options.data_path + "gfx/EnemyRammer.png");
     selectors_.pos[0] = 0;
@@ -47,7 +46,8 @@ BuyScreen::BuyScreen(Options& options, PlayerState& player_state, int current_le
 // Member Functions
 // -----------------------------------------------------------------------------
 
-void BuyScreen::run_logic(Input& input, Timer& timer, PlayerState& player_state)
+void BuyScreen::run_logic(Input& input, Timer& timer, Mixer& mixer, 
+                          PlayerState& player_state)
 {
     KeySet keys[2];
     keys[0] = player_state.getKeySet(1);

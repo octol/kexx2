@@ -28,6 +28,7 @@
 
 class Screen;
 class Timer;
+class Mixer;
 class Input;
 class Font;
 class PlayerState;
@@ -48,7 +49,7 @@ public:
     virtual ~IGameState() {};
 
     // Main game state functions
-    virtual void run_logic(Input& input, Timer& timer, 
+    virtual void run_logic(Input& input, Timer& timer, Mixer& mixer,
                            PlayerState& player_state) = 0;
     virtual void draw(Screen& screen, Font& font) = 0;
 

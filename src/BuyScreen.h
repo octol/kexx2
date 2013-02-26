@@ -29,11 +29,10 @@ const int ROCKET_COST = 1000;
 
 class BuyScreen : public IGameState {
 public:
-    BuyScreen(Options& options, PlayerState& player_state, int current_level);
+    BuyScreen(Options& options, int current_level);
     virtual ~BuyScreen() {};
 
-    // TODO: do we really need to pass in player_state again?
-    void run_logic(Input& input, Timer& Timer, 
+    void run_logic(Input& input, Timer& Timer, Mixer& mixer,
                    PlayerState& player_state) override;
     void draw(Screen& Screen, Font& font);
 

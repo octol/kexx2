@@ -22,6 +22,7 @@
 #include "IGameState.h"
 #include "SDLc/Surface.h"
 #include "SDLc/Music.h"
+#include <array>
 
 class Timer;
 class Screen;
@@ -37,10 +38,12 @@ enum MenuWhich {
 
 class Menu : public IGameState {
 public:
-    Menu(Options& options_);
+    Menu(Options& options);
     virtual ~Menu() {};
 
-    void run_logic(Input& input, Timer& timer, 
+    void load_data();
+
+    void run_logic(Input& input, Timer& timer, Mixer& mixer, 
                    PlayerState& player_state) override;
     void draw(Screen& screen, Font& font) override;
 
@@ -48,20 +51,22 @@ private:
     void precalcbgsurface(Surface& surface);
     void drawgroup(int x, int y, Surface& surface);
 
-    Surface logo;
-    Surface sdllogo;
-    Surface bgdata[10];
-    Music bgmusic;
-    MenuWhich whichMenu;
+    Surface logo_;
+    Surface sdl_logo_;
+    std::array<Surface,10> bg_data_;
+    Music bg_music_;
+    MenuWhich which_menu_ = MENU_ROOT;
 
     struct Selector {
         Surface gfx;
-        int pos;
-    } selector;
+        int pos = 0;
+    } selector_;
 
-    Options* options;
-    std::string players, display, fps;
-    int exittimer;
+    Options& options_;
+    std::string players_;
+    std::string display_;
+    std::string fps_;
+    int exit_timer_ = 0;
 };
 
 #endif // KEXX2_MENU_H

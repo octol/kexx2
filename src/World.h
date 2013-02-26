@@ -39,7 +39,7 @@ public:
     World(Options& options, PlayerState& player_state, int level);
     virtual ~World() {};
 
-    void run_logic(Input& input, Timer& timer, 
+    void run_logic(Input& input, Timer& timer, Mixer& mixer,
                    PlayerState& player_state) override;
     void draw(Screen& screen, Font& font);
 

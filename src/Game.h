@@ -22,22 +22,16 @@
 #include "SDLc/Font.h"
 #include "Options.h"
 #include "PlayerState.h"
+#include "IGameState.h"
+#include <memory>
 
 class Screen;
 class Mixer;
 class Timer;
 class Input;
-class IGameState;
 
 class Game {
 public:
-    Game() = default;
-    Game(const Game& game) = delete;
-    Game(Game&& game) = delete;
-    Game& operator=(const Game& game) = delete;
-    Game& operator=(Game&& game) = delete;
-    virtual ~Game();
-
     // Initialisation functions.
     void load_options();
     void write_options();
@@ -45,7 +39,7 @@ public:
     void start();
 
     // Functions called in the game loop.
-    void run_logic(Input& input, Timer& timer);
+    void run_logic(Input& input, Timer& timer, Mixer& mixer);
     void draw(Screen& screen);
 
     bool done() const;
@@ -55,8 +49,8 @@ public:
     PlayerState player_state;
 
 private:
-    IGameState* game_state = nullptr;
-    Font main_font;
+    std::unique_ptr<IGameState> game_state_;
+    Font main_font_;
 
     int current_level_ = 0;
     bool done_ = false;
