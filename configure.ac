@@ -30,8 +30,8 @@ AC_LANG_PUSH([C++])
 AX_CXX_COMPILE_STDCXX_11
 AC_LANG_POP([C++])
 
-#CXXFLAGS="$CXXFLAGS -pedantic -Wall -Wextra"
-#CXXFLAGS="$CXXFLAGS -W -Wshadow -Wcast-qual -Wwrite-strings"
+CXXFLAGS="$CXXFLAGS -pedantic -Wall -Wextra"
+CXXFLAGS="$CXXFLAGS -W -Wshadow -Wcast-qual -Wwrite-strings"
 #CXXFLAGS="$CXXFLAGS -Weffc++"
 #CXXFLAGS="$CXXFLAGS -Wconversion" 
 #CXXFLAGS="$CXXFLAGS -Werror"
@@ -95,7 +95,7 @@ LIBS="$LIBS -lSDL_image"
 #-------------------------------------------------------------------------------
 # Check for SDLc
 #-------------------------------------------------------------------------------
-PKG_CHECK_MODULES([LIBSDLC], [libsdlc-0.1 >= 0.0])
+PKG_CHECK_MODULES([LIBSDLC], [libsdlc-0.2 >= 0.0])
 
 #-------------------------------------------------------------------------------
 # Finally create all the generated files
