@@ -48,7 +48,7 @@ void GameOver::run_logic(Input& input, Timer& timer, Mixer& mixer,
 
 void GameOver::draw(Screen& screen, Font& font)
 {
-    screen.print(200, 180, "game over", font);
-    screen.print(200, 200, "press enter...", font);
+    screen.print(250, 180, "game over", font);
+    screen.print(250, 200, "press enter...", font);
 }
 

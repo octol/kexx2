@@ -30,7 +30,7 @@ class Mixer;
 class Timer;
 class Input;
 
-class Game {
+class Game final {
 public:
     // Initialisation functions.
     void load_options();

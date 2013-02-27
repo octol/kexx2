@@ -39,7 +39,8 @@ enum SoundChannel {
     SND_ALARM 
 };
 
-enum Owner { OWNER_NONE,
+enum Owner { 
+    OWNER_NONE,
     OWNER_PLAYER1,
     OWNER_PLAYER2,
     OWNER_ENEMY 

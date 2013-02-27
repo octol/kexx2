@@ -31,12 +31,14 @@
 class Options;
 class PlayerState;
 
+// TODO: moved fields to this struct.
 struct WorldData {
 };
 
 class World : public IGameState {
 public:
-    World(Options& options, PlayerState& player_state, int level);
+    World(Timer& timer, Options& options,
+          PlayerState& player_state, int level);
     virtual ~World() {};
 
     void run_logic(Input& input, Timer& timer, Mixer& mixer,
@@ -44,27 +46,27 @@ public:
     void draw(Screen& screen, Font& font);
 
 private:
-    ObjectManager objectManager;
-    LevelManager levelManager;
-    ParticleManager particleManager;
-    FxManager fxManager;
-    Starfield starfield;
-    WorldData worldData;
-    Interface interface;
+    ObjectManager object_manager_;
+    LevelManager level_manager_;
+    ParticleManager particle_manager_;
+    FxManager fx_manager_;
+    Starfield starfield_;
+    WorldData world_data_;
+    Interface interface_;
 
-    float worldYPos = 0; // how much the screen has scrolled
-    int numOfPlayers;
-    int currentLevel = 0;
-    Music bgmusic;
-    Sound levelcompleteSnd;
-    Sound enteringlevelSnd;
-    Sound gameoverSnd;
+    float world_y_pos_ = 0; // how much the screen has scrolled
+    int num_of_players_ = 1;
+    int current_level_ = 0;
+    Music bg_music_;
+    Sound level_complete_snd_;
+    Sound entering_level_snd_;
+    Sound game_over_snd_;
 
     // minor stuff
-    int timeWhenEnteringLevel;
-    int timeWhenAllEnemiesDead = 0;
-    int flashingtextTimer = 0;
-    bool allplayersdead = false;
+    int time_when_entering_level_ = 0;
+    int time_when_all_enemies_dead_ = 0;
+    int flashing_text_timer_ = 0;
+    bool all_players_dead_ = false;
 };
 
 #endif // KEXX2_WORLD_H

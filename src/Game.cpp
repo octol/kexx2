@@ -106,14 +106,14 @@ void Game::run_logic(Input& input, Timer& timer, Mixer& mixer)
             current_level_ = 1;
             if (player_state.anyoneAlive())
                 game_state_ = std::unique_ptr<World>
-                    (new World(options, player_state, current_level_));
+                    (new World(timer, options, player_state, current_level_));
             else
                 set_done(true);
             break;
 
         case ENV_BUYSCREEN:
             game_state_ = std::unique_ptr<World>
-                (new World(options, player_state, current_level_));
+                (new World(timer, options, player_state, current_level_));
             break;
 
         case ENV_WORLD:
@@ -157,7 +157,7 @@ void Game::run_logic(Input& input, Timer& timer, Mixer& mixer)
     }
     if (input.keyPressed(SDLK_F3, NO_AUTOFIRE)) {
         game_state_ = std::unique_ptr<World>
-            (new World(options, player_state, current_level_ = 1));
+            (new World(timer, options, player_state, current_level_ = 1));
     }
     if (input.keyPressed(SDLK_F4, NO_AUTOFIRE)) {
         game_state_ = std::unique_ptr<BuyScreen>

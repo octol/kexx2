@@ -16,8 +16,8 @@
 //    You should have received a copy of the GNU General Public License
 //    along with Kexx2.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef _KEXX_BUYSCREEN_H_
-#define _KEXX_BUYSCREEN_H_
+#ifndef KEXX_BUYSCREEN_H
+#define KEXX_BUYSCREEN_H
 
 #include "SDLc/Surface.h"
 #include "IGameState.h"
@@ -49,4 +49,4 @@ private:
     bool playerdone_[2];
 };
 
-#endif
+#endif // KEXX2_BUYSCREEN_H

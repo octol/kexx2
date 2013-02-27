@@ -16,8 +16,8 @@
 //    You should have received a copy of the GNU General Public License
 //    along with Kexx2.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef _KEXX2_INTERFACE_H_
-#define _KEXX2_INTERFACE_H_
+#ifndef KEXX2_INTERFACE_H
+#define KEXX2_INTERFACE_H
 
 #include "Defines.h"
 #include "PlayerState.h"
@@ -27,22 +27,17 @@ class Screen;
 
 class Interface {
 public:
-    Interface();
-    virtual ~Interface();
-
-    void update(int numOfPlayers_, PlayerState& playerState);
+    void update(int num_of_players, const PlayerState& player_state);
     void draw(Font& font, Screen& screen);
 
 private:
-    void drawEnergy(int x, int y, int value, int maxValue, Font& font, Screen& screen);
-    void drawScore(int x, int y, int value, Font& font, Screen& screen);
-    void drawWeapons(int x, int y, PlayerState& ps, int player, Font& font, Screen& screen);
+    void draw_energy(int x, int y, int value, int max_value, Font& font, Screen& screen);
+    void draw_score(int x, int y, int value, Font& font, Screen& screen);
+    void draw_weapons(int x, int y, PlayerState& ps, int player, Font& font, Screen& screen);
 
-    //int score[NUM_OF_POSSIBLE_PLAYERS];
-    //int energy[NUM_OF_POSSIBLE_PLAYERS];
-    //int energyMax[NUM_OF_POSSIBLE_PLAYERS];
-    PlayerState playerStateCopy;
-    int numOfPlayers;
+    // TODO: switch to reference?
+    PlayerState player_state_;
+    int num_of_players_ = 0;
 };
 
 #endif

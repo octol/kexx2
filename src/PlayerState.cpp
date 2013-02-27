@@ -22,121 +22,96 @@
 // Construction/Destruction
 // -----------------------------------------------------------------------------
 
-KeySet::KeySet()
-{
-    left = right = up = down = fireMain = fireExtra = 0;
-}
-
-PlayerState::PlayerState()
-{
-    int i;
-    for (i = 0; i < NUM_OF_POSSIBLE_PLAYERS; i++) {
-        player_[i].energy = 0;
-        player_[i].energyMax = 0;
-        player_[i].score = 0;
-        player_[i].mainWeaponLevel = 1;
-        player_[i].extraWeaponCount = 0;
-        player_[i].mainWeapon = "Blaster Weapon";
-        player_[i].extraWeapon = "none";
-        //player_[i].mainWeapon = WEAPON_MAIN_BLASTER;
-        //player_[i].extraWeapon = WEAPON_NONE;
-    }
-}
-
-PlayerState::~PlayerState()
-{
-}
-
 // -----------------------------------------------------------------------------
 // Member Functions
 // -----------------------------------------------------------------------------
 
-int PlayerState::getEnergy(int player)
+int PlayerState::energy(int player)
 {
     return player_[player - 1].energy;
 }
 
-int PlayerState::setEnergy(int player, int value)
+int PlayerState::set_energy(int player, int value)
 {
     return (player_[player - 1].energy = value);
 }
 
-int PlayerState::getEnergyMax(int player)
+int PlayerState::energy_max(int player)
 {
-    return player_[player - 1].energyMax;
+    return player_[player - 1].energy_max;
 }
 
-int PlayerState::setEnergyMax(int player, int value)
+int PlayerState::set_energy_max(int player, int value)
 {
-    return (player_[player - 1].energyMax = value);
+    return (player_[player - 1].energy_max = value);
 }
 
-int PlayerState::getScore(int player)
+int PlayerState::score(int player)
 {
     return player_[player - 1].score;
 }
 
-int PlayerState::setScore(int player, int score)
+int PlayerState::set_score(int player, int score)
 {
     return (player_[player - 1].score = score);
 }
 
-int PlayerState::getMainWeaponLevel(int player)
+int PlayerState::main_weapon_level(int player)
 {
-    return player_[player - 1].mainWeaponLevel;
+    return player_[player - 1].main_weaponLevel;
 }
 
-int PlayerState::setMainWeaponLevel(int player, int level)
+int PlayerState::set_main_weapon_level(int player, int level)
 {
-    return (player_[player - 1].mainWeaponLevel = level);
+    return (player_[player - 1].main_weaponLevel = level);
 }
 
-int PlayerState::getExtraWeaponCount(int player)
+int PlayerState::extra_weapon_count(int player)
 {
-    return player_[player - 1].extraWeaponCount;
+    return player_[player - 1].extra_weaponCount;
 }
 
-int PlayerState::setExtraWeaponCount(int player, int count)
+int PlayerState::set_extra_weapon_count(int player, int count)
 {
-    return (player_[player - 1].extraWeaponCount = count);
+    return (player_[player - 1].extra_weaponCount = count);
 }
 
-std::string PlayerState::getMainWeapon(int player)
+std::string PlayerState::main_weapon(int player)
 {
-    return player_[player - 1].mainWeapon;
+    return player_[player - 1].main_weapon;
 }
 
-std::string PlayerState::setMainWeapon(int player, std::string s)
+std::string PlayerState::set_main_weapon(int player, std::string s)
 {
-    return (player_[player - 1].mainWeapon = s);
+    return (player_[player - 1].main_weapon = s);
 }
 
-std::string PlayerState::getExtraWeapon(int player)
+std::string PlayerState::extra_weapon(int player)
 {
-    return player_[player - 1].extraWeapon;
+    return player_[player - 1].extra_weapon;
 }
 
-std::string PlayerState::setExtraWeapon(int player, std::string s)
+std::string PlayerState::set_extra_weapon(int player, std::string s)
 {
-    return (player_[player - 1].extraWeapon = s);
+    return (player_[player - 1].extra_weapon = s);
 }
 
-KeySet PlayerState::getKeySet(int player)
+KeySet PlayerState::keyset(int player)
 {
-    return player_[player - 1].keySet;
+    return player_[player - 1].keyset;
 }
 
-KeySet PlayerState::setKeySet(int player, KeySet keySet_)
+KeySet PlayerState::set_keyset(int player, KeySet keyset_)
 {
-    return (player_[player - 1].keySet = keySet_);
+    return (player_[player - 1].keyset = keyset_);
 }
 
-bool PlayerState::anyoneAlive()
+bool PlayerState::anyone_alive()
 {
     bool a = false;
     int i;
     for (i = 0; i < NUM_OF_POSSIBLE_PLAYERS; i++) {
-        if (player_[i].energyMax)
+        if (player_[i].energy_max)
             a = true;
     }
     return a;
@@ -146,22 +121,22 @@ void PlayerState::killall()
 {
     int i;
     for (i = 0; i < NUM_OF_POSSIBLE_PLAYERS; i++) {
-        player_[i].energyMax = 0;
+        player_[i].energy_max = 0;
         player_[i].energy = 0;
         player_[i].score = 0;
-        player_[i].mainWeaponLevel = 1;
-        player_[i].extraWeaponCount = 0;
-        player_[i].mainWeapon = "Blaster Weapon";
-        player_[i].extraWeapon = "none";
+        player_[i].main_weaponLevel = 1;
+        player_[i].extra_weaponCount = 0;
+        player_[i].main_weapon = "Blaster Weapon";
+        player_[i].extra_weapon = "none";
 
         /*int energy;
-        int energyMax;
+        int energy_max;
         int score;
-        int mainWeaponLevel;
-        int extraWeaponCount;
-        std::string mainWeapon;
-        std::string extraWeapon;
-        KeySet keySet;*/
+        int main_weaponLevel;
+        int extra_weaponCount;
+        std::string main_weapon;
+        std::string extra_weapon;
+        KeySet keyset;*/
     }
 }
 
