@@ -50,30 +50,30 @@ void BuyScreen::run_logic(Input& input, Timer& timer, Mixer& mixer,
                           PlayerState& player_state)
 {
     KeySet keys[2];
-    keys[0] = player_state.getKeySet(1);
-    keys[1] = player_state.getKeySet(2);
+    keys[0] = player_state.keyset(1);
+    keys[1] = player_state.keyset(2);
 
     int i;
     if (howManyPlayers_ > 2)
         std::cout << "BuyScreen::runLogic() more than 2 players not supported" 
                   << std::endl;
     for (i = 0; i < 2; i++) {
-        if (player_state.getEnergyMax(i + 1)) {
+        if (player_state.energy_max(i + 1)) {
             if (input.keyPressed(keys[i].down, NO_AUTOFIRE))
                 selectors_.pos[i]++;
             else if (input.keyPressed(keys[i].up, NO_AUTOFIRE))
                 selectors_.pos[i]--;
             selectors_.pos[i] = bound(selectors_.pos[i], 0, 2);
 
-            if (input.keyPressed(keys[i].fireMain, NO_AUTOFIRE)) {
-                if (selectors_.pos[i] == 0 && player_state.getScore(i + 1) >= ROCKET_COST) {
-                    if (player_state.getExtraWeapon(i + 1) == "Rocket Weapon")
-                        player_state.setExtraWeaponCount(i + 1, player_state.getExtraWeaponCount(i + 1) + 10);
+            if (input.keyPressed(keys[i].fire_main, NO_AUTOFIRE)) {
+                if (selectors_.pos[i] == 0 && player_state.score(i + 1) >= ROCKET_COST) {
+                    if (player_state.extra_weapon(i + 1) == "Rocket Weapon")
+                        player_state.set_extra_weapon_count(i + 1, player_state.extra_weapon_count(i + 1) + 10);
                     else {
-                        player_state.setExtraWeapon(i + 1, "Rocket Weapon");
-                        player_state.setExtraWeaponCount(i + 1, 10);
+                        player_state.set_extra_weapon(i + 1, "Rocket Weapon");
+                        player_state.set_extra_weapon_count(i + 1, 10);
                     }
-                    player_state.setScore(i + 1, player_state.getScore(i + 1) - ROCKET_COST);
+                    player_state.set_score(i + 1, player_state.score(i + 1) - ROCKET_COST);
                 } else if (selectors_.pos[i] == 2)
                     playerdone_[i] = true;
             }
@@ -94,21 +94,21 @@ void BuyScreen::draw(Screen& screen, Font& font)
 {
     screen.print(200, 50, "level " + std::to_string(currentLevel_ - 1) + " complete!", font);
     screen.print(30, 100, "player 1", font);
-    screen.print(60, 120, "score: " + std::to_string(playerState_->getScore(1)), font);
-    if (playerState_->getExtraWeapon(1) != "none") {
-        int length = (playerState_->getExtraWeapon(1)).length();
-        std::string text = (playerState_->getExtraWeapon(1)).substr(0, length - 7);
+    screen.print(60, 120, "score: " + std::to_string(playerState_->score(1)), font);
+    if (playerState_->extra_weapon(1) != "none") {
+        int length = (playerState_->extra_weapon(1)).length();
+        std::string text = (playerState_->extra_weapon(1)).substr(0, length - 7);
 
-        screen.print(60, 140, text + " count: " + std::to_string(playerState_->getExtraWeaponCount(1)), font);
+        screen.print(60, 140, text + " count: " + std::to_string(playerState_->extra_weapon_count(1)), font);
     }
 
     if (howManyPlayers_ > 1) {
         screen.print(370, 100, "player 2", font);
-        screen.print(400, 120, "score: " + std::to_string(playerState_->getScore(2)), font);
-        if (playerState_->getExtraWeapon(2) != "none") {
-            int length = (playerState_->getExtraWeapon(2)).length();
-            std::string text = (playerState_->getExtraWeapon(2)).substr(0, length - 7);
-            screen.print(400, 140, text + " count: " + std::to_string(playerState_->getExtraWeaponCount(2)), font);
+        screen.print(400, 120, "score: " + std::to_string(playerState_->score(2)), font);
+        if (playerState_->extra_weapon(2) != "none") {
+            int length = (playerState_->extra_weapon(2)).length();
+            std::string text = (playerState_->extra_weapon(2)).substr(0, length - 7);
+            screen.print(400, 140, text + " count: " + std::to_string(playerState_->extra_weapon_count(2)), font);
         }
     }
 

@@ -16,8 +16,8 @@
 //    You should have received a copy of the GNU General Public License
 //    along with Kexx2.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef _OBJECT_H_
-#define _OBJECT_H_
+#ifndef KEXX2_OBJECT_H
+#define KEXX2_OBJECT_H
 
 #include "SDLc/Sprite.h"
 #include <list>
@@ -29,97 +29,152 @@ class FxManager;
 class Object : public Sprite {
 public:
     Object();
-    Object(std::string n, int energy, int score, Surface& s, ObjType t, float initYVel);
+    Object(std::string n, int energy, ObjType t);
+    Object(std::string n, int energy, Surface& s, ObjType t);
+    Object(std::string n, int energy, int score, Surface& s, ObjType t, float init_y_vel);
     virtual ~Object();
 
-    virtual void activate(ObjectManager& objectManager);
-    virtual void think(ObjectManager& objectManager, FxManager& fxManager);
-    virtual void checkCollisions(ObjectManager& objectManager, \
-                                 FxManager& fxManager);
+    virtual void activate(ObjectManager& object_manager);
+    virtual void think(ObjectManager& object_manager, FxManager& fx_manager);
+    virtual void check_collisions(ObjectManager& object_manager, FxManager& fx_manager);
     virtual void update(Timer& timer);
-    virtual void hurt(int value, ObjectManager& objectManager, \
-                      FxManager& fxManager);
-    virtual void kill(ObjectManager& objectManager, FxManager& fxManager);
+    virtual void hurt(int value, ObjectManager& object_manager, FxManager& fx_manager);
+    virtual void kill(ObjectManager& object_manager, FxManager& fx_manager);
 
-    ObjType getType()       {
-        return type;
-    };
-    ObjType setType(ObjType value)  {
-        return (type = value);
-    };
-    int getEnergy()         {
-        return energy;
-    };
-    inline int setEnergy(int value);
-    int adjustEnergy(int e)         {
-        return setEnergy(getEnergy() + e);
-    };
-    int getEnergyMax()          {
-        return energyMax;
-    };
-    int setEnergyMax(int value)     {
-        return (energyMax = value);
-    };
+    ObjType type();
+    ObjType set_type(ObjType value);
+    int energy();
+    int set_energy(int value);
+    int adjust_energy(int e);
+    int energy_max();
+    int set_energy_max(int value);
 
-    bool active()           {
-        return m_active;
-    };
-    bool active(bool value)     {
-        return (m_active = value);
-    };
+    bool active();
+    bool active(bool value);
 
-    float setActivationYVel(float value);
+    float set_activation_y_vel(float value);
 
-    int getScore()          {
-        return score;
-    };
-    inline int setScore(int value);
-    int adjustScore(int value)  {
-        return setScore(getScore() + value);
-    };
+    int score();
+    int set_score(int value);
+    int adjust_score(int value);
 
-    //protected:
-    Owner getOwner()        {
-        return owner;
-    };
-    Owner setOwner(Owner value) {
-        return (owner = value);
-    };
+    // TODO:
+    // protected:
+    Owner owner();
+    Owner set_owner(Owner value);
 
 protected:
-    virtual void calculateHitImg();
-    Surface hitImg;
-    int hitTimer;
+    virtual void calculate_hit_img();
+    Surface hit_img;
+    int hit_timer = 0;
 
 private:
-    ObjType type;
-    bool m_active;
-    int energy;
-    int energyMax;
+    ObjType type_ = OBJ_UNDEFINED;
+    bool active_ = false;
+    int energy_ = 0;
+    int energy_max_ = 0;
 
-    bool activationYVelSet;
-    float activationYVel;
+    bool activation_y_vel_set_ = false;
+    float activation_y_vel_ = 0;
 
-    int score;
-    Owner owner;
+    int score_ = 0;
+    Owner owner_ = OWNER_NONE;
 };
 
 // -----------------------------------------------------------------------------
 // Inlines
 // -----------------------------------------------------------------------------
 
-int Object::setEnergy(int value)
+inline
+ObjType Object::type()       
 {
-    if (value < 0) value = 0;
-    if (energyMax != 0 && value > energyMax) value = energyMax;
-
-    return (energy = value);
+    return type_;
 }
 
-int Object::setScore(int value)
+inline
+ObjType Object::set_type(ObjType value)  
 {
-    if (value < 0) value = 0;
-    return (score = value);
+    return type_ = value;
 }
 
-#endif
+inline
+int Object::energy()         
+{
+    return energy_;
+}
+
+inline
+int Object::set_energy(int value)
+{
+    if (value < 0) 
+        value = 0;
+    if (energy_max() != 0 && value > energy_max())
+        value = energy_max();
+
+    return energy_ = value;
+}
+
+inline
+int Object::adjust_energy(int e)         
+{
+    return set_energy(energy() + e);
+}
+
+inline
+int Object::energy_max()          
+{
+    return energy_max_;
+}
+
+inline
+int Object::set_energy_max(int value)     
+{
+    return energy_max_ = value;
+}
+
+inline
+bool Object::active()           
+{
+    return active_;
+}
+
+inline
+bool Object::active(bool value)     
+{
+    return active_ = value;
+}
+
+inline
+int Object::score()          
+{
+    return score_;
+}
+
+inline
+int Object::set_score(int value)
+{
+    if (value < 0) 
+        value = 0;
+    return score_ = value;
+}
+
+inline
+int Object::adjust_score(int value)  
+{
+    return set_score(score() + value);
+}
+
+// TODO: why protected?
+//protected:
+inline
+Owner Object::owner()        
+{
+    return owner_;
+}
+
+inline
+Owner Object::set_owner(Owner value) 
+{
+    return owner_ = value;
+}
+#endif // KEXX2_OBJECT_H

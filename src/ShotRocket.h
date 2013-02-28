@@ -16,21 +16,21 @@
 //    You should have received a copy of the GNU General Public License
 //    along with Kexx2.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef _KEXX2_SHOTROCKET_H_
-#define _KEXX2_SHOTROCKET_H_
+#ifndef KEXX2_SHOTROCKET_H
+#define KEXX2_SHOTROCKET_H
 
 #include "Shot.h"
 
 class ShotRocket : public Shot {
 public:
-    ShotRocket(std::string name_, int energy, Surface& s, Owner owner);
+    ShotRocket(std::string name, int energy, Surface& s, Owner owner);
     virtual ~ShotRocket();
 
-    void think(ObjectManager& objectManager, FxManager& fxManager);
-    void kill(ObjectManager& objectManager, FxManager& fxManager);
+    void think(ObjectManager& object_manager, FxManager& fx_manager);
+    void kill(ObjectManager& object_manager, FxManager& fx_manager);
 
 private:
-    int timeWhenShot;
+    int time_when_shot_;
 };
 
-#endif
+#endif // KEXX2_SHOTROCKET_H

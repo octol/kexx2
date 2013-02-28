@@ -16,19 +16,19 @@
 //    You should have received a copy of the GNU General Public License
 //    along with Kexx2.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef _KEXX2_SHOT_H_
-#define _KEXX2_SHOT_H_
+#ifndef KEXX2_SHOT_H
+#define KEXX2_SHOT_H
 
 #include "Object.h"
 
 class Shot : public Object {
 public:
     Shot();
-    Shot(std::string name_, int energy, Surface& s, Owner owner);
+    Shot(std::string name, int energy, Surface& s, Owner owner);
     virtual ~Shot();
 
-    void checkCollisions(ObjectManager& objectManager, FxManager& fxManager);
-    void kill(ObjectManager& objectManager, FxManager& fxManager);
+    void check_collisions(ObjectManager& object_manager, FxManager& fx_manager);
+    void kill(ObjectManager& object_manager, FxManager& fx_manager);
 };
 
-#endif
+#endif // KEXX2_SHOT_H

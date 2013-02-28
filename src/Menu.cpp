@@ -75,12 +75,12 @@ void Menu::run_logic(Input& input, Timer& timer, Mixer& mixer, PlayerState& play
             if (selector_.pos == 0) {
                 player_state.killall();
 
-                player_state.setEnergyMax(1, 3);
-                player_state.setExtraWeapon(1, "Rocket Weapon");
-                player_state.setExtraWeaponCount(1, 10);
+                player_state.set_energy_max(1, 3);
+                player_state.set_extra_weapon(1, "Rocket Weapon");
+                player_state.set_extra_weapon_count(1, 10);
 
                 if (options_.num_of_players() >= 2)
-                    player_state.setEnergyMax(2, 3);
+                    player_state.set_energy_max(2, 3);
 
                 done_ = true;
             } else if (selector_.pos == 1) {

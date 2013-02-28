@@ -16,17 +16,17 @@
 //    You should have received a copy of the GNU General Public License
 //    along with Kexx2.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef _KEXX2_ENEMYRAMMER_H_
-#define _KEXX2_ENEMYRAMMER_H_
+#ifndef KEXX2_ENEMYRAMMER_H
+#define KEXX2_ENEMYRAMMER_H
 
 #include "Object.h"
 
 class EnemyRammer : public Object {
 public:
-    EnemyRammer(std::string name_, int energy, int score, Surface& s);
+    EnemyRammer(std::string name, int energy, int score, Surface& s);
     virtual ~EnemyRammer();
 
-    void activate(ObjectManager& objectManager);
+    void activate(ObjectManager& object_manager);
 };
 
-#endif
+#endif // KEXX2_ENEMYRAMMER_H

@@ -25,18 +25,10 @@
 // Construction/Destruction
 // -----------------------------------------------------------------------------
 
-EnemySideways::EnemySideways(std::string name_, int energy, int score, Surface& s)
+EnemySideways::EnemySideways(std::string name, int energy, int score, Surface& s)
+    : Object(name, energy, score, s, OBJ_ENEMY, 0),
+      left_(false), time_when_last_shot_(0)
 {
-    setType(OBJ_ENEMY);
-
-    name = name_;
-    setEnergy(setEnergyMax(energy));
-    setScore(score);
-    link(s.data);
-    calculateHitImg();
-
-    left = false;
-    timeWhenLastShot = 0;
 }
 
 EnemySideways::~EnemySideways()
@@ -47,33 +39,36 @@ EnemySideways::~EnemySideways()
 // Member Functions
 // -----------------------------------------------------------------------------
 
-void EnemySideways::activate(ObjectManager& objectManager)
+void EnemySideways::activate(ObjectManager& object_manager)
 {
     setXVel(-100.0f/*-0.1f*/);
     setYVel(80.0f/*0.08f*/);
-    timeWhenLastShot = SDL_GetTicks() - (rand() % 2000);
+    // TODO: user Timer object passed down.
+    extern Timer* timer;
+    time_when_last_shot_ = timer->ticks() - (rand() % 2000);
 }
 
-void EnemySideways::think(ObjectManager& objectManager, FxManager& fxManager)
+void EnemySideways::think(ObjectManager& object_manager, FxManager& fx_manager)
 {
+    // TODO: remove extern
     extern Timer* timer;
     if (active()) {
-        if (left) {
-            //cout << "hej" << endl;
+        if (left_) {
             setXVel(getXVel() - (100.0f /*0.0001f*/ * timer->frame_time()));
             if (getXVel() < -100.0f/*-0.1f*/)
-                left = false;
+                left_ = false;
         } else {
-            //cout << "nej" << endl;
             setXVel(getXVel() + (100.0f /*0.0001f*/ * timer->frame_time()));
             if (getXVel() > 100.0f/*0.1f*/)
-                left = true;
+                left_ = true;
         }
 
         // shooting
-        if (SDL_GetTicks() - timeWhenLastShot > 2000) {
-            objectManager.createObject((int)(getX() + getWidth() / 2), (int)(getY() + getHeight()), 0, /*0.2f*/200.0f, SHOTENEMYSTD, OWNER_ENEMY);
-            timeWhenLastShot = SDL_GetTicks();
+        if (timer->ticks() - time_when_last_shot_ > 2000) {
+            object_manager.createObject((int)(getX() + getWidth() / 2), 
+                    (int)(getY() + getHeight()), 
+                    0, /*0.2f*/200.0f, SHOTENEMYSTD, OWNER_ENEMY);
+            time_when_last_shot_ = timer->ticks();
         }
     }
 }

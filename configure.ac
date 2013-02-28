@@ -12,7 +12,7 @@ AC_CONFIG_SRCDIR([README])
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE
-#LT_INIT
+LT_INIT
 
 AC_SUBST([KEXX2_VERSION],[1.0.2])
 
@@ -95,7 +95,7 @@ LIBS="$LIBS -lSDL_image"
 #-------------------------------------------------------------------------------
 # Check for SDLc
 #-------------------------------------------------------------------------------
-PKG_CHECK_MODULES([LIBSDLC], [libsdlc-0.2 >= 0.0])
+PKG_CHECK_MODULES([LIBSDLC], [libsdlc-0.2 >= 0.1])
 
 #-------------------------------------------------------------------------------
 # Finally create all the generated files

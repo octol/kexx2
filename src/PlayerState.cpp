@@ -58,22 +58,22 @@ int PlayerState::set_score(int player, int score)
 
 int PlayerState::main_weapon_level(int player)
 {
-    return player_[player - 1].main_weaponLevel;
+    return player_[player - 1].main_weapon_level;
 }
 
 int PlayerState::set_main_weapon_level(int player, int level)
 {
-    return (player_[player - 1].main_weaponLevel = level);
+    return (player_[player - 1].main_weapon_level = level);
 }
 
 int PlayerState::extra_weapon_count(int player)
 {
-    return player_[player - 1].extra_weaponCount;
+    return player_[player - 1].extra_weapon_count;
 }
 
 int PlayerState::set_extra_weapon_count(int player, int count)
 {
-    return (player_[player - 1].extra_weaponCount = count);
+    return (player_[player - 1].extra_weapon_count = count);
 }
 
 std::string PlayerState::main_weapon(int player)
@@ -124,16 +124,16 @@ void PlayerState::killall()
         player_[i].energy_max = 0;
         player_[i].energy = 0;
         player_[i].score = 0;
-        player_[i].main_weaponLevel = 1;
-        player_[i].extra_weaponCount = 0;
+        player_[i].main_weapon_level = 1;
+        player_[i].extra_weapon_count = 0;
         player_[i].main_weapon = "Blaster Weapon";
         player_[i].extra_weapon = "none";
 
         /*int energy;
         int energy_max;
         int score;
-        int main_weaponLevel;
-        int extra_weaponCount;
+        int main_weapon_level;
+        int extra_weapon_count;
         std::string main_weapon;
         std::string extra_weapon;
         KeySet keyset;*/

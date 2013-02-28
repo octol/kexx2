@@ -12,6 +12,7 @@ General:
 * Pass SDLc classes in constructors only? Or Maybe pass references to game
   specific classes in ctor and system class to separate check_input(),
   run_logic(), draw() functions?
+* Systematic way of doing dependency injection in e.g Interface.
 
 Specific:
 ---------

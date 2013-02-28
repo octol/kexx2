@@ -104,7 +104,7 @@ void Game::run_logic(Input& input, Timer& timer, Mixer& mixer)
         switch (game_state_->type()) {
         case ENV_MENU:
             current_level_ = 1;
-            if (player_state.anyoneAlive())
+            if (player_state.anyone_alive())
                 game_state_ = std::unique_ptr<World>
                     (new World(timer, options, player_state, current_level_));
             else
@@ -121,12 +121,12 @@ void Game::run_logic(Input& input, Timer& timer, Mixer& mixer)
 
             // game complete
             if (current_level_ > options.num_of_levels() &&
-                    player_state.anyoneAlive()) {
+                    player_state.anyone_alive()) {
                 game_state_ = std::unique_ptr<Finished>
                     (new Finished(options, player_state));
             }
             // goto inbetween levels buyscreen
-            else if (player_state.anyoneAlive()) {
+            else if (player_state.anyone_alive()) {
                 game_state_ = std::unique_ptr<BuyScreen>
                     (new BuyScreen(options, current_level_));
             }

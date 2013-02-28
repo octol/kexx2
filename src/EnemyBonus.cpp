@@ -24,15 +24,9 @@
 // Construction/Destruction
 // -----------------------------------------------------------------------------
 
-EnemyBonus::EnemyBonus(std::string name_, int energy, int score, Surface& s)
+EnemyBonus::EnemyBonus(std::string name, int energy, int score, Surface& s)
+    : Object(name, energy, score, s, OBJ_ENEMY, 0)
 {
-    setType(OBJ_ENEMY);
-
-    name = name_;
-    setEnergy(setEnergyMax(energy));
-    setScore(score);
-    link(s.data);
-    calculateHitImg();
 }
 
 EnemyBonus::~EnemyBonus()
@@ -43,18 +37,21 @@ EnemyBonus::~EnemyBonus()
 // Member Functions
 // -----------------------------------------------------------------------------
 
-void EnemyBonus::activate(ObjectManager& objectManager)
+void EnemyBonus::activate(ObjectManager& object_manager)
 {
     setYVel(120.0f/*0.12f*/);
 }
 
-void EnemyBonus::kill(ObjectManager& objectManager, FxManager& fxManager)
+void EnemyBonus::kill(ObjectManager& object_manager, FxManager& fx_manager)
 {
-    setEnergy(0);
-    fxManager.explodeNormal((int)(getX() + getWidth() / 2), (int)(getY() + getHeight() / 2));
+    set_energy(0);
+    fx_manager.explodeNormal((int)(getX() + getWidth() / 2), 
+            (int)(getY() + getHeight() / 2));
 
     int type = (rand() % 1) + BONUSBLASTER;
-    objectManager.createObject((int)(getX() + getWidth() / 2), (int)(getY() + getHeight() / 2), 0, 0/*0.1f*/, (ObjIndex)type, OWNER_NONE);
+    object_manager.createObject((int)(getX() + getWidth() / 2), 
+            (int)(getY() + getHeight() / 2), 0, 0/*0.1f*/, 
+            (ObjIndex)type, OWNER_NONE);
 }
 
 // -----------------------------------------------------------------------------
