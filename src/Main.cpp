@@ -31,8 +31,6 @@ sdlc::Mixer* mixer;
 
 void print_fps_counter(sdlc::Screen&, sdlc::Timer&);
 
-void print_fps_counter(Screen&, Timer&);
-
 int main(int argc, char* argv[])
 {
     UNUSED(argc);
@@ -49,9 +47,8 @@ int main(int argc, char* argv[])
     kexx2->setup_environment(*screen, *timer, *mixer);
     kexx2->start();
 
-            // Developer mode escape key.
-            if (input->keyPressed(SDLK_F1, NO_AUTOFIRE)) 
-                kexx2.set_done(true);
+    while (!kexx2->done()) {
+        input->update();
 
 #ifdef TESTING
         // Developer mode escape key.
