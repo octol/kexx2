@@ -25,10 +25,8 @@
 #define KEXX2_IGAMESTATE_H
 
 #include "Defines.h"
+#include "SDLc.h"
 
-class Screen;
-class Timer;
-class Font;
 class PlayerState;
 
 enum EnvironmentType { 
@@ -43,19 +41,20 @@ enum EnvironmentType {
 
 class IGameState {
 public:
+    IGameState(EnvironmentType env_type) : env_type_(env_type) {};
     virtual ~IGameState() {};
 
     // Main game state functions
-    virtual void runLogic(Timer& Timer, PlayerState& playerState) = 0;
-    virtual void draw(Screen& Screen, Font& mainFont) = 0;
+    virtual void run_logic(sdlc::Input& input, sdlc::Timer& timer, sdlc::Mixer& mixer,
+                           PlayerState& player_state) = 0;
+    virtual void draw(sdlc::Screen& screen, sdlc::Font& font) = 0;
 
     // Querying the game state.
     virtual EnvironmentType type() const; 
     virtual bool done() const;
 
 protected:
-    // TODO: change to const
-    EnvironmentType env_type_ = ENV_NONE;
+    const EnvironmentType env_type_ = ENV_NONE;
     bool done_ = false;
 };
 
