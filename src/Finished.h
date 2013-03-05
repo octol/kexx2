@@ -20,21 +20,22 @@
 #define KEXX2_FINISHED_H
 
 #include "IGameState.h"
-#include "SDLc/Sound.h"
+#include "SDLc.h"
 
 class Options;
 class PlayerState;
 
 class Finished : public IGameState {
 public:
-    Finished(Options& options, PlayerState& playerState);
-    virtual ~Finished() noexcept(true) {};
+    Finished(Options& options, PlayerState& player_state);
+    virtual ~Finished() {};
 
-    void runLogic(Timer& timer, PlayerState& playerState);
-    void draw(Screen& screen, Font& mainFont);
+    void run_logic(sdlc::Input& input, sdlc::Timer& timer, sdlc::Mixer& mixer,
+                   PlayerState& player_state) override;
+    void draw(sdlc::Screen& screen, sdlc::Font& font);
 
 private:
-    Sound finishedSnd_;
+    sdlc::Sound finishedSnd_;
 };
 
 #endif // KEXX2_FINISHED_H

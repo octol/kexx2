@@ -29,19 +29,7 @@
 #include "Menu.h"
 #include "Finished.h"
 #include "GameOver.h"
-#include "IGameState.h"
-
-// -----------------------------------------------------------------------------
-// Construction/Destruction
-// -----------------------------------------------------------------------------
-Game::~Game()
-{
-    delete game_state;
-}
-
-// -----------------------------------------------------------------------------
-// Member Functions
-// -----------------------------------------------------------------------------
+#include "Defines.h"
 
 void Game::load_options()
 {
@@ -67,136 +55,124 @@ void Game::load_options()
     }
     file.close();
 
-    options.dataPath = settingsfile + "/";
+    options.data_path = settingsfile + "/";
 #endif
 #ifdef WIN32
-    options.dataPath = "../data/";
+    options.data_path = "../data/";
 #endif
-    options.load(options.dataPath + "kexx2.cfg");
+    options.load(options.data_path + "kexx2.cfg");
 }
 
 void Game::write_options()
 {
-    options.write(options.dataPath + "kexx2.cfg");
+    options.write(options.data_path + "kexx2.cfg");
 }
 
-void Game::setup_environment(Screen& screen, Timer& timer, Mixer& mixer)
+void Game::setup_environment(sdlc::Screen& screen, sdlc::Timer& timer, sdlc::Mixer& mixer)
 {
     srand(timer.ticks());
-
-    // TODO: Should incorporate this function in sdlc::Screen
-    SDL_WM_SetCaption(("Kexx 2 " + std::string(VERSION)).c_str(), NULL);
+    screen.set_caption(("Kexx 2 " + std::string(VERSION)).c_str());
 
 #ifdef WIN32
-    int video_type = options.fullscreen() ? 
-                    SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_FULLSCREEN :
-                    SDL_SWSURFACE;
+    int video_type = options.fullscreen() ?
+                     SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_FULLSCREEN :
+                     SDL_SWSURFACE;
 #endif
 #ifndef WIN32
     int video_type = options.fullscreen() ? SDL_SWSURFACE | SDL_FULLSCREEN
-                                          : SDL_SWSURFACE;
+                     : SDL_SWSURFACE;
 #endif
 
-    screen.init(640, 480, 16, video_type);
+    screen.init(SCREEN_WIDTH, SCREEN_HEIGHT, 16, video_type);
     timer.init();
     mixer.init();
 
-    // TODO: move this into sdlc::Screen
-    SDL_ShowCursor(false);
-    main_font.load(options.dataPath + "fonts/font1.bmp");
+    screen.show_cursor(false);
+    main_font_.load(options.data_path + "fonts/font1.bmp");
     timer.delay(500);
 }
 
 void Game::start()
 {
-    // init game
-    delete game_state;
-    game_state = new Menu(options);
+    game_state_ = std::unique_ptr<Menu>(new Menu(options));
 }
 
-void Game::run_logic(Input& input, Timer& timer)
+void Game::run_logic(sdlc::Input& input, sdlc::Timer& timer, sdlc::Mixer& mixer)
 {
     // here we decide which Game state that should be used
-    if (game_state && game_state->done()) {
-        switch (game_state->type()) {
+    if (game_state_ && game_state_->done()) {
+        switch (game_state_->type()) {
         case ENV_MENU:
-            delete game_state;
-            game_state = nullptr;
-
             current_level_ = 1;
-            if (player_state.anyoneAlive()) {
-                game_state = new World(options, player_state, current_level_);
-            } else {
+            if (player_state.anyone_alive())
+                game_state_ = std::unique_ptr<World>
+                    (new World(timer, options, player_state, current_level_));
+            else
                 set_done(true);
-            }
             break;
 
         case ENV_BUYSCREEN:
-            delete game_state;
-            game_state = new World(options, player_state, current_level_);
+            game_state_ = std::unique_ptr<World>
+                (new World(timer, options, player_state, current_level_));
             break;
 
         case ENV_WORLD:
-            delete game_state;
-            game_state = nullptr;
             current_level_++;
 
             // game complete
-            if (current_level_ > options.getHowManyLevels() && 
-                    player_state.anyoneAlive()) {
-                game_state = new Finished(options, player_state);
+            if (current_level_ > options.num_of_levels() &&
+                    player_state.anyone_alive()) {
+                game_state_ = std::unique_ptr<Finished>
+                    (new Finished(options, player_state));
             }
             // goto inbetween levels buyscreen
-            else if (player_state.anyoneAlive()) {
-                game_state = new BuyScreen(options, player_state, current_level_);
+            else if (player_state.anyone_alive()) {
+                game_state_ = std::unique_ptr<BuyScreen>
+                    (new BuyScreen(options, current_level_));
             }
             // game over
             else {
-                game_state = new GameOver();
+                game_state_ = std::unique_ptr<GameOver>(new GameOver());
             }
             break;
 
         default:
             player_state.killall();
-            delete game_state;
-            game_state = new Menu(options);
+            game_state_ = std::unique_ptr<Menu>(new Menu(options));
             break;
         }
     }
 
     // abort in world
-    if (game_state && game_state->type() == ENV_WORLD) {
-        if (input.keyPressed(SDLK_ESCAPE, NO_AUTOFIRE)) {
-            delete game_state;
+    if (game_state_ && game_state_->type() == ENV_WORLD) {
+        if (input.keyPressed(SDLK_ESCAPE, sdlc::NO_AUTOFIRE)) {
             player_state.killall();
-            game_state = new Menu(options);
+            game_state_ = std::unique_ptr<Menu>(new Menu(options));
         }
     }
 
 #ifdef TESTING
     // used for testing
-    if (input.keyPressed(SDLK_F2, NO_AUTOFIRE)) {
-        delete game_state;
-        game_state = nullptr;
+    if (input.keyPressed(SDLK_F2, sdlc::NO_AUTOFIRE)) {
     }
-    if (input.keyPressed(SDLK_F3, NO_AUTOFIRE)) {
-        delete game_state;
-        game_state = new World(options, player_state, current_level_ = 1);
+    if (input.keyPressed(SDLK_F3, sdlc::NO_AUTOFIRE)) {
+        game_state_ = std::unique_ptr<World>
+            (new World(timer, options, player_state, current_level_ = 1));
     }
-    if (input.keyPressed(SDLK_F4, NO_AUTOFIRE)) {
-        delete game_state;
-        game_state = new BuyScreen(options, player_state, current_level_);
+    if (input.keyPressed(SDLK_F4, sdlc::NO_AUTOFIRE)) {
+        game_state_ = std::unique_ptr<BuyScreen>
+            (new BuyScreen(options, current_level_));
     }
 #endif
 
-    if (game_state)
-        game_state->runLogic(timer, player_state);
+    if (game_state_)
+        game_state_->run_logic(input, timer, mixer, player_state);
 }
 
-void Game::draw(Screen& screen)
+void Game::draw(sdlc::Screen& screen)
 {
-    if (game_state) {
-        game_state->draw(screen, main_font);
+    if (game_state_) {
+        game_state_->draw(screen, main_font_);
     }
 }
 

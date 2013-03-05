@@ -9,9 +9,18 @@ General:
     This requires that we set configuration stuff in .kexx2rc instead of
     kexx2.cfg, due to write permission.
 * Make the timer a local object.
+* Pass SDLc classes in constructors only? Or Maybe pass references to game
+  specific classes in ctor and system class to separate check_input(),
+  run_logic(), draw() functions?
+* Systematic way of doing dependency injection in e.g Interface.
 
 Specific:
 ---------
 BuyScreen::runLogic(), playerState argument shadows a class member.
 World:World(), seems to do too much in constructor.
+
+libsdlc:
+--------
+- introduce namespace.
+- single header at top level.
 

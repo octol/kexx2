@@ -36,7 +36,7 @@ kexx2_SOURCES = \
 	World.cpp World.h
 	
 ## For when libsdlc is included in source tree.
-#kexx2_LDADD = ../libsdlc/libsdlc-0.1.la
+#kexx2_LDADD = ../libsdlc/libsdlc-0.2.la
 
 ## For when libsdlc is installed on the system. This makes use of pkg-config.
 kexx2_LDADD = $(LIBSDLC_LIBS)

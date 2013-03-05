@@ -25,15 +25,10 @@
 // Construction/Destruction
 // -----------------------------------------------------------------------------
 
-ShotRocket::ShotRocket(std::string name_, int energy, Surface& s, Owner owner)
+ShotRocket::ShotRocket(std::string name, int energy, sdlc::Surface& s, Owner owner)
+    : Shot(name, energy, s, owner),
+      time_when_shot_(SDL_GetTicks())
 {
-    name = name_;
-    setEnergy(setEnergyMax(energy));
-    setOwner(owner);
-    setType(OBJ_SHOT);
-    timeWhenShot = SDL_GetTicks();
-
-    link(s.data);
     initAnimation(50, 2, 0);
 }
 
@@ -45,30 +40,30 @@ ShotRocket::~ShotRocket()
 // Member Functions
 // -----------------------------------------------------------------------------
 
-void ShotRocket::think(ObjectManager& objectManager, FxManager& fxManager)
+void ShotRocket::think(ObjectManager& object_manager, FxManager& fx_manager)
 {
-    extern Timer* timer;
+    extern sdlc::Timer* timer;
     //setXVel( getXVel() * 0.007f * Timer->getFrametime());
     setYVel(getYVel() - 500.0f /*0.0005*/*timer->frame_time());
 
-    fxManager.smokepuff((int)(getX() + getWidth() / 2), (int)(getY() + getHeight() / 2));
+    fx_manager.smokepuff((int)(getX() + getWidth() / 2), (int)(getY() + getHeight() / 2));
 
-    if (SDL_GetTicks() - timeWhenShot > 1000)
-        kill(objectManager, fxManager);
+    if (SDL_GetTicks() - time_when_shot_ > 1000)
+        kill(object_manager, fx_manager);
 }
 
-void ShotRocket::kill(ObjectManager& objectManager, FxManager& fxManager)
+void ShotRocket::kill(ObjectManager& object_manager, FxManager& fx_manager)
 {
-    setEnergy(0);
-    fxManager.explodeNormal((int)(getX() + getWidth() / 2), (int)(getY() + getHeight() / 2));
+    set_energy(0);
+    fx_manager.explodeNormal((int)(getX() + getWidth() / 2), (int)(getY() + getHeight() / 2));
 
-    int i;
-    for (i = 0; i < 64; i++) {
+    // TODO: remove magic number
+    for (int i = 0; i < 64; i++) {
         float vel = 500.0f/*0.5f*/ + (rand() % 10 - 5) * 5.0f/*0.005*/;
         float angle = rand() % 360;
         float x = getX() + getWidth() / 2;
         float y = getY() + getHeight() / 2;
-        objectManager.createObject((int)x, (int)y, SHOTBOMBFRAGMENT, vel, angle, getOwner());
+        object_manager.createObject((int)x, (int)y, SHOTBOMBFRAGMENT, vel, angle, owner());
     }
 }
 

@@ -16,50 +16,51 @@
 //    You should have received a copy of the GNU General Public License
 //    along with Kexx2.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef _KEXX2_SHIP_H_
-#define _KEXX2_SHIP_H_
+#ifndef KEXX2_SHIP_H
+#define KEXX2_SHIP_H
 
 #include "Object.h"
 #include <list>
 #include "PlayerState.h"
+
 class Weapon;
 
 const int BLINKING = 1;
 const int INPUT_LOCKED = 2;
 
 class Ship : public Object {
-    //friend class Interface;
     friend class ObjectManager;
 public:
-    Ship(std::string n, int energy, int score, Surface& s, \
-         Weapon* main, Weapon* extra, KeySet keySet_);
+    Ship(std::string n, int energy, int score, Surface& s, 
+         Weapon* main, Weapon* extra, KeySet keyset);
     virtual ~Ship();
 
-    void think(ObjectManager& objectManager, FxManager& fxManager);
-    void checkCollisions(ObjectManager& objectManager, FxManager& fxManager);
-    void update(Timer& timer);
-    void hurt(int value, ObjectManager& objectManager, FxManager& fxManager);
-    void kill(ObjectManager& objectManager, FxManager& fxManager);
+    void think(ObjectManager& object_manager, FxManager& fx_manager);
+    void check_collisions(ObjectManager& object_manager, FxManager& fx_manager);
+    void update(sdlc::Timer& timer);
+    void hurt(int value, ObjectManager& object_manager, FxManager& fx_manager);
+    void kill(ObjectManager& object_manager, FxManager& fx_manager);
 
-    void setMainWeapon(Weapon* w);
-    void setExtraWeapon(Weapon* w);
+    void set_main_weapon(Weapon* w);
+    void set_extra_weapon(Weapon* w);
 
 private:
-    void updateSmoketrail(ObjectManager& objectManager);
-    void removeSmoketrail(ObjectManager& objectManager);
+    void update_smoketrail(ObjectManager& object_manager);
+    void remove_smoketrail(ObjectManager& object_manager);
 
-    void calculateHitImg();
+    void calculate_hit_img();
 
-    Weapon* mainWeapon;
-    Weapon* extraWeapon;
-    KeySet keySet;
+    // TODO: change to std::unique_ptr
+    Weapon* main_weapon_ = nullptr;
+    Weapon* extra_weapon_ = nullptr;
+    KeySet keyset_;
 
-    int invincible;
-    bool levelcomplete;
-    int blinkingTimer;
-    int timesBlinked;
+    int invincible_ = INPUT_LOCKED;
+    bool level_complete_ = false;
+    int blinking_timer_ = 0;
+    int times_blinked_ = 0;
 
-    Sound hitSnd;
+    sdlc::Sound hit_snd;
 };
 
-#endif
+#endif // KEXX2_SHIP_H

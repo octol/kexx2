@@ -28,8 +28,8 @@ public:
     Starfield();
     virtual ~Starfield();
 
-    void update(Timer& timer);
-    void draw(Screen& screen);
+    void update(sdlc::Timer& timer);
+    void draw(sdlc::Screen& screen);
 };
 
 #endif

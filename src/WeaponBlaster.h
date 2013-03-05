@@ -19,6 +19,7 @@
 #ifndef _KEXX2_WEAPONBLASTER_H_
 #define _KEXX2_WEAPONBLASTER_H_
 
+#include "SDLc.h"
 #include "Weapon.h"
 #include "Defines.h"
 class Shot;
@@ -26,7 +27,7 @@ class Shot;
 class WeaponBlaster : public Weapon
 {
  public:
-	WeaponBlaster(Sound &sound, Owner owner);
+	WeaponBlaster(sdlc::Sound &sound, Owner owner);
 	virtual ~WeaponBlaster();
 	
 	void shoot(int x, int y, ObjectManager &objectManager);

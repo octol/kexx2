@@ -90,7 +90,7 @@ void ObjectManager::loadData(std::string dataPath)
     obj[SMOKETRAIL].load(dataPath + "gfx/Flame.png");
 }
 
-void ObjectManager::update(Timer& timer, FxManager& fxManager, float worldYPos_, PlayerState& playerState)
+void ObjectManager::update(sdlc::Timer& timer, FxManager& fxManager, float worldYPos_, PlayerState& playerState)
 {
     worldYPos = worldYPos_;
 
@@ -99,26 +99,26 @@ void ObjectManager::update(Timer& timer, FxManager& fxManager, float worldYPos_,
         Object* current = *iterator;
         iterator++;
 
-        if (current->getEnergy()) {
+        if (current->energy()) {
             // main functions
             current->think(*this, fxManager);
             current->update(timer);
-            current->checkCollisions(*this, fxManager);
+            current->check_collisions(*this, fxManager);
 
             // kill objects who move outside their allowed area
             if (current->getY() > 480) {
-                ObjType t = current->getType();
+                ObjType t = current->type();
                 if (t == OBJ_ENEMY || t == OBJ_PASSIVE || \
                         t == OBJ_BONUS || t == OBJ_SHOT)
-                    current->setEnergy(0);
-            } else if (current->getType() == OBJ_SHOT) {
+                    current->set_energy(0);
+            } else if (current->type() == OBJ_SHOT) {
                 if (current->getY() < 0 - current->getHeight() || \
                         current->getX() > 640 || \
                         current->getX() < 0 - current->getWidth())
-                    current->setEnergy(0);
+                    current->set_energy(0);
             }
             // debug
-            if (current->getType() == OBJ_UNDEFINED)
+            if (current->type() == OBJ_UNDEFINED)
                 cout << "warning: object with undefined " << \
                      "type detected!" << endl;
             if (current->name == "Generic Object")
@@ -134,7 +134,7 @@ void ObjectManager::update(Timer& timer, FxManager& fxManager, float worldYPos_,
     updateEnemyCount(); // update/count how many enemies
 }
 
-void ObjectManager::draw(Screen& screen)
+void ObjectManager::draw(sdlc::Screen& screen)
 {
     ObjectList::iterator i = list.begin();
     for (; i != list.end(); i++) {
@@ -194,7 +194,7 @@ Object* ObjectManager::createObject(int x, int y, float xVel, float yVel, \
         // misc
         else if (object == SMOKETRAIL) {
             tmp = new Object("Smoketrail", 1, 0, obj[SMOKETRAIL], OBJ_PLAYERPASSIVE, 0);
-            tmp->setOwner(owner);
+            tmp->set_owner(owner);
             tmp->initAnimation(40, 2, 0);
         }
 
@@ -226,46 +226,46 @@ void ObjectManager::createShips(PlayerState& playerState)
 {
     int i, j;
     for (i = 1; i <= NUM_OF_POSSIBLE_PLAYERS; i++) {
-        if (playerState.getEnergyMax(i)) {
+        if (playerState.energy_max(i)) {
             Weapon* w1 = 0;
             Weapon* w2 = 0;
             int count = 0;
 
-            //if(playerState.getMainWeapon(i) == WEAPON_MAIN_BLASTER)
-            if (playerState.getMainWeapon(i) == "Blaster Weapon")
+            //if(playerState.main_weapon(i) == WEAPON_MAIN_BLASTER)
+            if (playerState.main_weapon(i) == "Blaster Weapon")
                 w1 = new WeaponBlaster(snd[SND_SHOTBLASTER], (Owner)(OWNER_PLAYER1 + i - 1));
-            for (j = 1; j < playerState.getMainWeaponLevel(i); j++)
+            for (j = 1; j < playerState.main_weapon_level(i); j++)
                 w1->upgrade();
 
-            //if(playerState.getExtraWeapon(i) == WEAPON_EXTRA_ROCKET)
-            if (playerState.getExtraWeapon(i) == "Rocket Weapon") {
+            //if(playerState.extra_weapon(i) == WEAPON_EXTRA_ROCKET)
+            if (playerState.extra_weapon(i) == "Rocket Weapon") {
                 w2 = new WeaponRocket(snd[SND_SHOTROCKET], (Owner)(OWNER_PLAYER1 + i - 1));
-                w2->setCount(playerState.getExtraWeaponCount(i));
+                w2->setCount(playerState.extra_weapon_count(i));
             }
             string name = "Player " + std::to_string(i);
-            KeySet keySet;
+            KeySet keyset;
             if (i == 1) {
-                keySet.up = SDLK_UP;
-                keySet.left = SDLK_LEFT;
-                keySet.down = SDLK_DOWN;
-                keySet.right = SDLK_RIGHT;
-                keySet.fireMain = SDLK_RCTRL;
-                keySet.fireExtra = SDLK_RSHIFT;
+                keyset.up = SDLK_UP;
+                keyset.left = SDLK_LEFT;
+                keyset.down = SDLK_DOWN;
+                keyset.right = SDLK_RIGHT;
+                keyset.fire_main = SDLK_RCTRL;
+                keyset.fire_extra = SDLK_RSHIFT;
             } else if (i == 2) {
-                keySet.up = SDLK_w;
-                keySet.left = SDLK_a;
-                keySet.down = SDLK_s;
-                keySet.right = SDLK_d;
-                keySet.fireMain = SDLK_LSHIFT;
-                keySet.fireExtra = SDLK_GREATER;
+                keyset.up = SDLK_w;
+                keyset.left = SDLK_a;
+                keyset.down = SDLK_s;
+                keyset.right = SDLK_d;
+                keyset.fire_main = SDLK_LSHIFT;
+                keyset.fire_extra = SDLK_GREATER;
             } else cout << "ObjectManager::createShips() keys not set!" << endl;
 
-            playerState.setKeySet(i, keySet);
+            playerState.set_keyset(i, keyset);
 
-            int e = playerState.getEnergyMax(i);
-            playerState.setEnergy(i, e);
-            int s = playerState.getScore(i);
-            Object* tmp = new Ship(name, e, s, obj[PLAYER1 + i - 1], w1, w2, keySet);
+            int e = playerState.energy_max(i);
+            playerState.set_energy(i, e);
+            int s = playerState.score(i);
+            Object* tmp = new Ship(name, e, s, obj[PLAYER1 + i - 1], w1, w2, keyset);
 
             tmp->lockedToScreen(false);
             tmp->setX(213 * i - tmp->getWidth());
@@ -384,36 +384,36 @@ void ObjectManager::updatePlayerState(PlayerState& playerState)
     for (; i != list.end(); i++) {
         Object* obj = *i;
 
-        if (obj->getType() == OBJ_PLAYER) {
+        if (obj->type() == OBJ_PLAYER) {
             int which = obj->name[obj->name.length() - 1] - (int)'0';
 
-            playerState.setEnergy(which, obj->getEnergy());
-            playerState.setEnergyMax(which, obj->getEnergyMax());
-            playerState.setScore(which, obj->getScore());
+            playerState.set_energy(which, obj->energy());
+            playerState.set_energy_max(which, obj->energy_max());
+            playerState.set_score(which, obj->score());
 
             Ship* tmp;
             tmp = (Ship*)obj;
-            if (tmp->mainWeapon) {
-                playerState.setMainWeapon(which, tmp->mainWeapon->name);
-                playerState.setMainWeaponLevel(which, tmp->mainWeapon->getLevel());
+            if (tmp->main_weapon_) {
+                playerState.set_main_weapon(which, tmp->main_weapon_->name);
+                playerState.set_main_weapon_level(which, tmp->main_weapon_->getLevel());
             }
-            if (tmp->extraWeapon) {
-                playerState.setExtraWeapon(which, tmp->extraWeapon->name);
-                playerState.setExtraWeaponCount(which, tmp->extraWeapon->getCount());
-            } else playerState.setExtraWeapon(which, "none");
+            if (tmp->extra_weapon_) {
+                playerState.set_extra_weapon(which, tmp->extra_weapon_->name);
+                playerState.set_extra_weapon_count(which, tmp->extra_weapon_->getCount());
+            } else playerState.set_extra_weapon(which, "none");
 
             /*if(tmp->mainWeapon && tmp->mainWeapon->name == "Blaster Weapon")
-            playerState.setMainWeapon(which, WEAPON_MAIN_BLASTER);
+            playerState.set_main_weapon(which, WEAPON_MAIN_BLASTER);
             if(tmp->extraWeapon && tmp->extraWeapon->name == "Rocket Weapon")
-            playerState.setExtraWeapon(which, WEAPON_EXTRA_ROCKET);
+            playerState.set_extra_weapon(which, WEAPON_EXTRA_ROCKET);
             */
             //cout << tmp->mainWeapon->name;
             //cout << "\t" << tmp->extraWeapon->name << endl;
-            //playerState.setMainWeaponLevel();
-            //playerState.setExtraWeapon();
+            //playerState.set_main_weapon_level();
+            //playerState.set_extra_weapon();
 
-            if (obj->getEnergy() == 0)
-                playerState.setEnergyMax(which, 0);
+            if (obj->energy() == 0)
+                playerState.set_energy_max(which, 0);
         }
     }
 }
@@ -424,7 +424,7 @@ void ObjectManager::flushList()
     while (i != list.end()) {
         Object* current = *i;
         i++;
-        if (current->getEnergy() <= 0) {
+        if (current->energy() <= 0) {
             delete current;
             list.remove(current);
             //break;
@@ -445,14 +445,14 @@ void ObjectManager::addFromQueue()
             current->active(true);
             current->activate(*this);
 
-            if (list.empty() || current->getType() == OBJ_SHOT)
+            if (list.empty() || current->type() == OBJ_SHOT)
                 list.push_back(current);
             else {
                 unsigned j;
                 ObjectList::iterator iterator = list.begin();
                 for (j = 0; j < list.size(); j++) {
                     Object* currentList = *iterator;
-                    if (current->getType() < currentList->getType()) {
+                    if (current->type() < currentList->type()) {
                         list.insert(iterator, current);
                         j = list.size(); // break;
                     }
@@ -477,7 +477,7 @@ void ObjectManager::updateEnemyCount()
     ObjectList::iterator iterator;
     for (iterator = list.begin(); iterator != list.end(); iterator++) {
         Object* current = *iterator;
-        ObjType t = current->getType();
+        ObjType t = current->type();
         if (t == OBJ_ENEMY || t == OBJ_BONUS)
             amountOfEnemiesInList++;
         else if (t == OBJ_PLAYER)
@@ -485,7 +485,7 @@ void ObjectManager::updateEnemyCount()
     }
     for (iterator = queue.begin(); iterator != queue.end(); iterator++) {
         Object* current = *iterator;
-        ObjType t = current->getType();
+        ObjType t = current->type();
         if (t == OBJ_ENEMY || t == OBJ_BONUS)
             amountOfEnemiesInList++;
         else if (t == OBJ_PLAYER)

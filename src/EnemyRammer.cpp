@@ -18,23 +18,17 @@
 
 #include "EnemyRammer.h"
 #include "ObjectManager.h"
-#include <vector>
 #include "FxManager.h"
-using namespace std;
+#include <vector>
 
 // -----------------------------------------------------------------------------
 // Construction/Destruction
 // -----------------------------------------------------------------------------
 
-EnemyRammer::EnemyRammer(std::string name_, int energy, int score, Surface& s)
+EnemyRammer::EnemyRammer(std::string name, int energy, int score, Surface& s)
+    : Object(name, energy, s, OBJ_ENEMY)
 {
-    setType(OBJ_ENEMY);
-
-    name = name_;
-    setEnergy(setEnergyMax(energy));
-    setScore(score);
-    link(s.data);
-    calculateHitImg();
+    set_score(score);
 }
 
 EnemyRammer::~EnemyRammer()
@@ -45,21 +39,21 @@ EnemyRammer::~EnemyRammer()
 // Member Functions
 // -----------------------------------------------------------------------------
 
-void EnemyRammer::activate(ObjectManager& objectManager)
+void EnemyRammer::activate(ObjectManager& object_manager)
 {
-    vector<Object*> playerVector;
+    std::vector<Object*> player_vector;
 
-    ObjectList::iterator i = objectManager.list.begin();
-    for (; i != objectManager.list.end(); i++) {
+    ObjectList::iterator i = object_manager.list.begin();
+    for (; i != object_manager.list.end(); i++) {
         Object* current = *i;
-        if (current->getType() == OBJ_PLAYER && current->getEnergy() > 0)
-            playerVector.push_back(current);
+        if (current->type() == OBJ_PLAYER && current->energy() > 0)
+            player_vector.push_back(current);
     }
 
-    if (!playerVector.empty()) {
-        int pos = rand() % playerVector.size();
-        int px = (int)playerVector[pos]->getX();
-        int py = (int)playerVector[pos]->getY();
+    if (!player_vector.empty()) {
+        int pos = rand() % player_vector.size();
+        int px = (int)player_vector[pos]->getX();
+        int py = (int)player_vector[pos]->getY();
 
         float dX = px - getX();
         float dY = py - getY();

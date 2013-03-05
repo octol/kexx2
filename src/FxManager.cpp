@@ -18,10 +18,7 @@
 
 #include "FxManager.h"
 #include "Defines.h"
-#include "SDLc/Sprite.h"
-#include "SDLc/Screen.h"
 #include "ParticleManager.h"
-#include "SDLc/Timer.h"
 #include <cmath>
 #include <iostream>
 using namespace std;
@@ -38,9 +35,9 @@ FxManager::FxManager()
 FxManager::~FxManager()
 {
     // free explosionList
-    list<Sprite*>::iterator i = explosionList.begin();
+    list<sdlc::Sprite*>::iterator i = explosionList.begin();
     for (; i != explosionList.end(); i++) {
-        Sprite* s = *i;
+        sdlc::Sprite* s = *i;
         delete s;
     }
 }
@@ -81,11 +78,11 @@ void FxManager::load(ParticleManager& pManager, std::string dataPath)
     }
 }
 
-void FxManager::update(Timer& timer)
+void FxManager::update(sdlc::Timer& timer)
 {
-    list<Sprite*>::iterator i = explosionList.begin();
+    list<sdlc::Sprite*>::iterator i = explosionList.begin();
     while (i != explosionList.end()) {
-        Sprite* current = *i;
+        sdlc::Sprite* current = *i;
         i++;
 
         current->update(timer);
@@ -96,11 +93,11 @@ void FxManager::update(Timer& timer)
     }
 }
 
-void FxManager::draw(Screen& screen)
+void FxManager::draw(sdlc::Screen& screen)
 {
-    list<Sprite*>::iterator i = explosionList.begin();
+    list<sdlc::Sprite*>::iterator i = explosionList.begin();
     for (; i != explosionList.end(); i++) {
-        Sprite* current = *i;
+        sdlc::Sprite* current = *i;
         screen.blit(*current);
     }
 }
@@ -109,7 +106,7 @@ void FxManager::explodeNormal(int x, int y)
 {
     explSndBig.play(0);
 
-    Sprite* sprite = new Sprite;
+    sdlc::Sprite* sprite = new sdlc::Sprite;
     sprite->link(explImg.data);
     sprite->initAnimation(5, 11, 1);
     sprite->setX(x - sprite->getWidth() / 2);
@@ -161,7 +158,7 @@ void FxManager::explodeTiny(int x, int y, float vel, float angle)
 void FxManager::smokepuff(int x, int y)
 {
     int i;
-    extern Timer* timer;
+    extern sdlc::Timer* timer;
     int amount = (int)((float)timer->frame_time() / 0.004f/*4.0f*/);
     for (i = 0; i < amount; i++) {
         float xVel = ((rand() % 50) - 25)/**0.001*/;

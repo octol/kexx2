@@ -60,7 +60,7 @@ Starfield::~Starfield()
 // Member Functions
 // -----------------------------------------------------------------------------
 
-void Starfield::update(Timer& timer)
+void Starfield::update(sdlc::Timer& timer)
 {
     int i;
     for (i = 0; i < NUM_OF_STARS; i++) {
@@ -70,7 +70,7 @@ void Starfield::update(Timer& timer)
     }
 }
 
-void Starfield::draw(Screen& screen)
+void Starfield::draw(sdlc::Screen& screen)
 {
     screen.lock();
     int i;

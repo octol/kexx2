@@ -19,13 +19,10 @@
 #ifndef _KEXX2_FXMANAGER_H_
 #define _KEXX2_FXMANAGER_H_
 
-#include "SDLc/Sound.h"
-#include "SDLc/Surface.h"
+#include "SDLc.h"
 #include <list>
+
 class ParticleManager;
-class Sprite;
-class Screen;
-class Timer;
 
 class FxManager {
 public:
@@ -33,8 +30,8 @@ public:
     virtual ~FxManager();
 
     void load(ParticleManager& pManager, std::string dataPath);
-    void update(Timer& timer);
-    void draw(Screen& screen);
+    void update(sdlc::Timer& timer);
+    void draw(sdlc::Screen& screen);
 
     void explodeNormal(int x, int y);
     void explodeTiny(int x, int y);
@@ -45,13 +42,14 @@ public:
     void playPlayerHitSnd();
 
 private:
+    // TODO: change to smart pointer
     ParticleManager* particleManager;
-    Sound explSndSmall;
-    Sound explSndBig;
-    Sound explSndPlayer;
-    Sound alarmSnd;
-    Surface explImg;
-    std::list<Sprite*> explosionList;
+    sdlc::Sound explSndSmall;
+    sdlc::Sound explSndBig;
+    sdlc::Sound explSndPlayer;
+    sdlc::Sound alarmSnd;
+    sdlc::Surface explImg;
+    std::list<sdlc::Sprite*> explosionList;
 
     struct prealculatedData {
         int intensity;

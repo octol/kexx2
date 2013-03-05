@@ -1,6 +1,10 @@
 Change Log
 ==========
 
+Kexx2 1.0.3 released on 05-mar-2013
+    * Moved to using sdlc namespace.
+    * Further cleanup.
+
 Kexx2 1.0.2 released on 17-feb-2013
     * Modernized the Autotools build system.
     * Very minor cleanup and reorganization for re-release.

@@ -16,20 +16,17 @@
 //    You should have received a copy of the GNU General Public License
 //    along with Kexx2.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef _KEXX2_MENU_H_
-#define _KEXX2_MENU_H_
+#ifndef KEXX2_MENU_H
+#define KEXX2_MENU_H
 
 #include "IGameState.h"
-#include "SDLc/Surface.h"
-#include "SDLc/Music.h"
+#include "SDLc.h"
+#include <array>
 
-class Timer;
-class Screen;
-class Font;
 class PlayerState;
 class Options;
 
-enum MENU_WHICH {
+enum MenuWhich {
     MENU_ROOT,
     MENU_OPTIONS,
     MENU_EXIT
@@ -37,29 +34,35 @@ enum MENU_WHICH {
 
 class Menu : public IGameState {
 public:
-    Menu(Options& options_);
+    Menu(Options& options);
     virtual ~Menu() {};
 
-    void runLogic(Timer& timer, PlayerState& playerState);
-    void draw(Screen& screen, Font& mainFont);
-private:
-    void precalcbgsurface(Surface& surface);
-    void drawgroup(int x, int y, Surface& surface);
+    void load_data();
 
-    Surface logo;
-    Surface sdllogo;
-    Surface bgdata[10];
-    Music bgmusic;
-    MENU_WHICH whichMenu;
+    void run_logic(sdlc::Input& input, sdlc::Timer& timer, sdlc::Mixer& mixer, 
+                   PlayerState& player_state) override;
+    void draw(sdlc::Screen& screen, sdlc::Font& font) override;
+
+private:
+    void precalcbgsurface(sdlc::Surface& surface);
+    void drawgroup(int x, int y, sdlc::Surface& surface);
+
+    sdlc::Surface logo_;
+    sdlc::Surface sdl_logo_;
+    std::array<sdlc::Surface,10> bg_data_;
+    sdlc::Music bg_music_;
+    MenuWhich which_menu_ = MENU_ROOT;
 
     struct Selector {
-        Surface gfx;
-        int pos;
-    } selector;
+        sdlc::Surface gfx;
+        int pos = 0;
+    } selector_;
 
-    Options* options;
-    std::string players, display, fps;
-    int exittimer;
+    Options& options_;
+    std::string players_;
+    std::string display_;
+    std::string fps_;
+    int exit_timer_ = 0;
 };
 
-#endif
+#endif // KEXX2_MENU_H

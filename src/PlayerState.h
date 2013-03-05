@@ -16,64 +16,60 @@
 //    You should have received a copy of the GNU General Public License
 //    along with Kexx2.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef _KEXX2_PLAYERSTATE_H_
-#define _KEXX2_PLAYERSTATE_H_
+#ifndef KEXX2_PLAYERSTATE_H
+#define KEXX2_PLAYERSTATE_H
 
 #include "Weapon.h"
 #include "Defines.h"
 
 struct KeySet {
-    KeySet();
-    int left;
-    int right;
-    int up;
-    int down;
-    int fireMain;
-    int fireExtra;
+    int left = 0;
+    int right = 0;
+    int up = 0;
+    int down = 0;
+    int fire_main = 0;
+    int fire_extra = 0;
 };
 
 class PlayerState {
 public:
-    PlayerState();
-    virtual ~PlayerState();
+    int energy(int player);
+    int set_energy(int player, int value);
 
-    int getEnergy(int player);
-    int setEnergy(int player, int value);
+    int energy_max(int player);
+    int set_energy_max(int player, int value);
 
-    int getEnergyMax(int player);
-    int setEnergyMax(int player, int value);
+    int score(int player);
+    int set_score(int player, int score);
 
-    int getScore(int player);
-    int setScore(int player, int score);
+    int main_weapon_level(int player);
+    int set_main_weapon_level(int player, int level);
 
-    int getMainWeaponLevel(int player);
-    int setMainWeaponLevel(int player, int level);
+    int extra_weapon_count(int player);
+    int set_extra_weapon_count(int player, int count);
 
-    int getExtraWeaponCount(int player);
-    int setExtraWeaponCount(int player, int count);
+    std::string main_weapon(int player);
+    std::string set_main_weapon(int player, std::string s);
+    std::string extra_weapon(int player);
+    std::string set_extra_weapon(int player, std::string s);
 
-    std::string getMainWeapon(int player);
-    std::string setMainWeapon(int player, std::string s);
-    std::string getExtraWeapon(int player);
-    std::string setExtraWeapon(int player, std::string s);
+    KeySet keyset(int player);
+    KeySet set_keyset(int player, KeySet keyset_);
 
-    KeySet getKeySet(int player);
-    KeySet setKeySet(int player, KeySet keySet_);
-
-    bool anyoneAlive();
+    bool anyone_alive();
     void killall();
 
 private:
-    struct Player_ {
-        int energy;
-        int energyMax;
-        int score;
-        int mainWeaponLevel;
-        int extraWeaponCount;
-        std::string mainWeapon;
-        std::string extraWeapon;
-        KeySet keySet;
+    struct player_ {
+        int energy = 0;
+        int energy_max = 0;
+        int score = 0;
+        int main_weapon_level = 1;
+        int extra_weapon_count = 0;
+        std::string main_weapon = "Blaster Weapon";
+        std::string extra_weapon = "none";
+        KeySet keyset;
     } player_[NUM_OF_POSSIBLE_PLAYERS];
 };
 
-#endif
+#endif // KEXX2_PLAYERSTATE_H

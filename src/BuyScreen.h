@@ -16,10 +16,10 @@
 //    You should have received a copy of the GNU General Public License
 //    along with Kexx2.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef _KEXX_BUYSCREEN_H_
-#define _KEXX_BUYSCREEN_H_
+#ifndef KEXX_BUYSCREEN_H
+#define KEXX_BUYSCREEN_H
 
-#include "SDLc/Surface.h"
+#include "SDLc.h"
 #include "IGameState.h"
 
 class Options;
@@ -29,11 +29,12 @@ const int ROCKET_COST = 1000;
 
 class BuyScreen : public IGameState {
 public:
-    BuyScreen(Options& options, PlayerState& playerState, int currentLevel);
+    BuyScreen(Options& options, int current_level);
     virtual ~BuyScreen() {};
 
-    void runLogic(Timer& Timer, PlayerState& playerState);
-    void draw(Screen& Screen, Font& mainFont);
+    void run_logic(sdlc::Input& input, sdlc::Timer& timer, sdlc::Mixer& mixer,
+                   PlayerState& player_state) override;
+    void draw(sdlc::Screen& screen, sdlc::Font& font);
 
 private:
     int currentLevel_;
@@ -41,11 +42,11 @@ private:
     PlayerState* playerState_;
 
     struct Selector {
-        Surface gfx;
+        sdlc::Surface gfx;
         int pos[2];
     } selectors_;
 
     bool playerdone_[2];
 };
 
-#endif
+#endif // KEXX2_BUYSCREEN_H

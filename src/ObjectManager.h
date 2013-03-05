@@ -20,13 +20,10 @@
 #define _KEXX2_OBJECTMANAGER_H_
 
 #include <list>
-#include "SDLc/Surface.h"
-#include "SDLc/Sound.h"
+#include "SDLc.h"
 #include "Defines.h"
 
 class Object;
-class Screen;
-class Timer;
 class FxManager;
 class PlayerState;
 
@@ -40,8 +37,8 @@ public:
 
     void loadData(std::string dataPath);
 
-    void update(Timer& timer, FxManager& fxManager, float worldYPos_, PlayerState& playerState);
-    void draw(Screen& screen);
+    void update(sdlc::Timer& timer, FxManager& fxManager, float worldYPos_, PlayerState& playerState);
+    void draw(sdlc::Screen& screen);
 
     Object* createObject(int x, int y, float xVel, float yVel, ObjIndex object, Owner owner);
     Object* createObject(int x, int y, ObjIndex object, float vel, float angle, Owner owner);
@@ -50,8 +47,8 @@ public:
     int getHowManyPlayersAlive();
 
     ObjectList list;                // object list
-    Surface obj[ENEMYSTD_V_FORMATION];          // object graphics
-    Sound snd[SND_SHOTROCKET + 1];          // object sound
+    sdlc::Surface obj[ENEMYSTD_V_FORMATION];          // object graphics
+    sdlc::Sound snd[SND_SHOTROCKET + 1];          // object sound
 
 private:
     void createFormation(int x, int y, float xVel, float yVel, enum ObjIndex object);

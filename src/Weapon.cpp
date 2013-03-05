@@ -18,7 +18,6 @@
 
 #include "Weapon.h"
 #include <iostream>
-using namespace std;
 
 // -----------------------------------------------------------------------------
 // Construction/Destruction
@@ -46,8 +45,7 @@ int Weapon::upgrade()
     if (level > 4)
         level = 4;
     return level;
-};
-
+}
 
 // -----------------------------------------------------------------------------
 // Private Functions
@@ -56,13 +54,15 @@ int Weapon::upgrade()
 int Weapon::setCount(int value)
 {
     if (value < 0)
-        cerr << "warning: Weapon::setCount() negative parameter" << endl;
-    return (count = value);
+        std::cerr << "warning: Weapon::setCount() negative parameter" 
+                  << std::endl;
+    return count = value;
 }
 
 int Weapon::setLevel(int value)
 {
     if (value < 0)
-        cerr << "warning: Weapon::setLevel() negative parameter" << endl;
-    return (level = value);
+        std::cerr << "warning: Weapon::setLevel() negative parameter" 
+                  << std::endl;
+    return level = value;
 }

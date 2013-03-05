@@ -31,124 +31,133 @@
 // Construction/Destruction
 // -----------------------------------------------------------------------------
 
-World::World(Options& options, PlayerState& playerState, int level)
-    : numOfPlayers(options.getHowManyPlayers()), currentLevel(level)
-
+World::World(sdlc::Timer& timer, Options& options, PlayerState& player_state, 
+             int level)
+    : IGameState(ENV_WORLD),
+      num_of_players_(options.num_of_players()), 
+      current_level_(level),
+      time_when_entering_level_(timer.ticks()),
+      flashing_text_timer_(timer.ticks())
 {
-    env_type_ = ENV_WORLD;
-
     // setup data
-    objectManager.loadData(options.dataPath);
+    object_manager_.loadData(options.data_path);
 
     // ship(s)
-    objectManager.createShips(playerState);
+    object_manager_.createShips(player_state);
 
     // level
-    levelManager.loadLevel(options.dataPath, level, objectManager);
+    level_manager_.loadLevel(options.data_path, level, object_manager_);
 
     // effects
-    fxManager.load(particleManager, options.dataPath);
+    fx_manager_.load(particle_manager_, options.data_path);
 
-    // bgmusic
-    bgmusic.load(options.dataPath + "music/bgmusic1.xm");
-    bgmusic.play(-1);
+    // bg_music_
+    bg_music_.load(options.data_path + "music/bgmusic1.xm");
+    bg_music_.play(-1);
 
     // sounds
-    levelcompleteSnd.load(options.dataPath + "soundfx/levelcomplete.wav");
-    gameoverSnd.load(options.dataPath + "soundfx/die.wav");
-    enteringlevelSnd.load(options.dataPath + "soundfx/newlevel.wav");
-    enteringlevelSnd.play(0);
-
-    timeWhenEnteringLevel = SDL_GetTicks();
-    flashingtextTimer = SDL_GetTicks();
+    level_complete_snd_.load(options.data_path + "soundfx/levelcomplete.wav");
+    game_over_snd_.load(options.data_path + "soundfx/die.wav");
+    entering_level_snd_.load(options.data_path + "soundfx/newlevel.wav");
+    entering_level_snd_.play(0);
 }
 
 // -----------------------------------------------------------------------------
 // Member Functions
 // -----------------------------------------------------------------------------
 
-void World::runLogic(Timer& timer, PlayerState& playerState)
+void World::run_logic(sdlc::Input& input, sdlc::Timer& timer, sdlc::Mixer& mixer,
+                      PlayerState& player_state)
 {
+    UNUSED(input);
+    UNUSED(mixer);
+
     // update scrolling position
-    worldYPos = worldYPos - SCROLLING_SPEED * timer.frame_time();
+    world_y_pos_ += - SCROLLING_SPEED * timer.frame_time();
 
     // rest
-    starfield.update(timer);
-    objectManager.update(timer, fxManager, worldYPos, playerState);
-    particleManager.update(timer);
-    fxManager.update(timer);
-    interface.update(numOfPlayers, playerState);
+    starfield_.update(timer);
+    object_manager_.update(timer, fx_manager_, world_y_pos_, player_state);
+    particle_manager_.update(timer);
+    fx_manager_.update(timer);
+    interface_.update(num_of_players_, player_state);
 
     // when entering level
-    if (timeWhenEnteringLevel) {
-        if (SDL_GetTicks() - timeWhenEnteringLevel > 3000) {
-            timeWhenEnteringLevel = 0;
-            flashingtextTimer = 0;
-        } else if (SDL_GetTicks() - flashingtextTimer > 400)
-            flashingtextTimer = SDL_GetTicks();
+    if (time_when_entering_level_) {
+        if (timer.ticks() - time_when_entering_level_ > 3000) {
+            time_when_entering_level_ = 0;
+            flashing_text_timer_ = 0;
+        } else if (timer.ticks() - flashing_text_timer_ > 400)
+            flashing_text_timer_ = timer.ticks();
     }
 
     // when level complete
-    else if (objectManager.getHowManyEnemies() == 0 && !allplayersdead) {
-        if (timeWhenAllEnemiesDead == 0) {
-            levelcompleteSnd.play(0);
+    else if (object_manager_.getHowManyEnemies() == 0 && !all_players_dead_) {
+        if (time_when_all_enemies_dead_ == 0) {
+            level_complete_snd_.play(0);
 
-            timeWhenAllEnemiesDead = SDL_GetTicks();
-            flashingtextTimer = SDL_GetTicks();
+            time_when_all_enemies_dead_ = timer.ticks();
+            flashing_text_timer_ = timer.ticks();
         }
-        if (SDL_GetTicks() - timeWhenAllEnemiesDead > 3500)
+        if (timer.ticks() - time_when_all_enemies_dead_ > 3500)
             done_ = true;
 
         // flashing text
-        if (flashingtextTimer == 0)
-            flashingtextTimer = SDL_GetTicks();
-        else if (SDL_GetTicks() - flashingtextTimer > 400)
-            flashingtextTimer = 0;
+        if (flashing_text_timer_ == 0)
+            flashing_text_timer_ = timer.ticks();
+        else if (timer.ticks() - flashing_text_timer_ > 400)
+            flashing_text_timer_ = 0;
         // stop flashing
-        if (SDL_GetTicks() - timeWhenAllEnemiesDead > 2000)
-            flashingtextTimer = 0;
+        if (timer.ticks() - time_when_all_enemies_dead_ > 2000)
+            flashing_text_timer_ = 0;
     }
 
     // when all players are dead
-    else if (objectManager.getHowManyPlayersAlive() == 0) {
-        allplayersdead = true;
-        if (timeWhenAllEnemiesDead == 0) {
-            gameoverSnd.play(0);
-            timeWhenAllEnemiesDead = SDL_GetTicks();
-            flashingtextTimer = SDL_GetTicks();
+    else if (object_manager_.getHowManyPlayersAlive() == 0) {
+        all_players_dead_ = true;
+        if (time_when_all_enemies_dead_ == 0) {
+            game_over_snd_.play(0);
+            time_when_all_enemies_dead_ = timer.ticks();
+            flashing_text_timer_ = timer.ticks();
         }
-        if (SDL_GetTicks() - timeWhenAllEnemiesDead > 4000)
+        if (timer.ticks() - time_when_all_enemies_dead_ > 4000)
             done_ = true;
 
         // flashing text
-        if (flashingtextTimer == 0)
-            flashingtextTimer = SDL_GetTicks();
-        else if (SDL_GetTicks() - flashingtextTimer > 400)
-            flashingtextTimer = 0;
+        if (flashing_text_timer_ == 0)
+            flashing_text_timer_ = timer.ticks();
+        else if (timer.ticks() - flashing_text_timer_ > 400)
+            flashing_text_timer_ = 0;
     }
 }
 
-void World::draw(Screen& screen, Font& mainFont)
+void World::draw(sdlc::Screen& screen, sdlc::Font& font)
 {
-    starfield.draw(screen);
-    objectManager.draw(screen);
-    particleManager.draw(screen);
-    fxManager.draw(screen);
-    interface.draw(mainFont, screen);
+    starfield_.draw(screen);
+    object_manager_.draw(screen);
+    particle_manager_.draw(screen);
+    fx_manager_.draw(screen);
+    interface_.draw(font, screen);
 
-    if (timeWhenEnteringLevel)
-        if (SDL_GetTicks() - timeWhenEnteringLevel < 1000 || SDL_GetTicks() - flashingtextTimer < 200) {
-            screen.print(200, 200, "entering level " + std::to_string(currentLevel), mainFont);
-            screen.print(200, 235, "ctrl for blaster", mainFont);
-            screen.print(200, 255, "shift for rockets", mainFont);
+    // TODO: move ticks logic to run_logic()
+    if (time_when_entering_level_) {
+        if (SDL_GetTicks() - time_when_entering_level_ < 1000 
+                || SDL_GetTicks() - flashing_text_timer_ < 200) {
+            screen.print(200, 200, "entering level " + std::to_string(current_level_), font);
+            screen.print(200, 235, "ctrl for blaster", font);
+            screen.print(200, 255, "shift for rockets", font);
         }
+    }
 
-    if (objectManager.getHowManyEnemies() == 0 && !allplayersdead)
-        if (SDL_GetTicks() - flashingtextTimer < 200 || flashingtextTimer == 0)
-            screen.print(200, 200, "level complete!", mainFont);
+    if (object_manager_.getHowManyEnemies() == 0 && !all_players_dead_) {
+        if (SDL_GetTicks() - flashing_text_timer_ < 200 
+                || flashing_text_timer_ == 0) {
+            screen.print(250, 200, "level complete!", font);
+        }
+    }
 
-    if (allplayersdead && SDL_GetTicks() - flashingtextTimer < 200)
-        screen.print(200, 200, "inte stabilt!", mainFont);
+    if (all_players_dead_ && SDL_GetTicks() - flashing_text_timer_ < 200)
+        screen.print(250, 200, "terminated!", font);
 }
 
 // -----------------------------------------------------------------------------

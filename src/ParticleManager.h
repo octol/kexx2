@@ -19,8 +19,7 @@
 #ifndef _KEXX2_PARTICLEMANAGER_H_
 #define _KEXX2_PARTICLEMANAGER_H_
 
-#include "SDLc/Particle.h"
-class Screen;
+#include "SDLc.h"
 
 const int NUM_OF_PARTICLES = 4096;
 
@@ -30,12 +29,12 @@ public:
     virtual ~ParticleManager();
 
     void create(float x, float y, float xVel, float yVel, int r, int g, int b, int a, float fadeSpeed);
-    virtual void update(Timer& timer);
-    void draw(Screen& screen);
+    virtual void update(sdlc::Timer& timer);
+    void draw(sdlc::Screen& screen);
     int numOfParticlesActive();
 
 protected:
-    Particle particle[NUM_OF_PARTICLES];
+    sdlc::Particle particle[NUM_OF_PARTICLES];
     int nextAvailableSlot();
 };
 

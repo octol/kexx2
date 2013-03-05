@@ -16,22 +16,22 @@
 //    You should have received a copy of the GNU General Public License
 //    along with Kexx2.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef _KEXX2_ENEMYSIDEWAYS_H_
-#define _KEXX2_ENEMYSIDEWAYS_H_
+#ifndef KEXX2_ENEMYSIDEWAYS_H
+#define KEXX2_ENEMYSIDEWAYS_H
 
 #include "Object.h"
 
 class EnemySideways : public Object {
 public:
-    EnemySideways(std::string name_, int energy, int score, Surface& s);
+    EnemySideways(std::string name, int energy, int score, sdlc::Surface& s);
     virtual ~EnemySideways();
 
-    void activate(ObjectManager& objectManager);
-    void think(ObjectManager& objectManager, FxManager& fxManager);
+    void activate(ObjectManager& object_manager);
+    void think(ObjectManager& object_manager, FxManager& fx_manager);
 
 private:
-    bool left;
-    int timeWhenLastShot;
+    bool left_;
+    int time_when_last_shot_;
 };
 
-#endif
+#endif // KEXX2_ENEMYSIDEWAYS_H

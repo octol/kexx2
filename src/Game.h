@@ -16,37 +16,26 @@
 //    You should have received a copy of the GNU General Public License
 //    along with Kexx2.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef _KEXX2_GAME_H_
-#define _KEXX2_GAME_H_
+#ifndef KEXX2_GAME_H
+#define KEXX2_GAME_H
 
-#include "SDLc/Font.h"
+#include "SDLc.h"
 #include "Options.h"
 #include "PlayerState.h"
+#include "IGameState.h"
+#include <memory>
 
-class Screen;
-class Mixer;
-class Timer;
-class Input;
-class IGameState;
-
-class Game {
+class Game final {
 public:
-    Game() = default;
-    Game(const Game& game) = delete;
-    Game(Game&& game) = delete;
-    Game& operator=(const Game& game) = delete;
-    Game& operator=(Game&& game) = delete;
-    virtual ~Game();
-
     // Initialisation functions.
     void load_options();
     void write_options();
-    void setup_environment(Screen& screen, Timer& timer, Mixer& mixer);
+    void setup_environment(sdlc::Screen& screen, sdlc::Timer& timer, sdlc::Mixer& mixer);
     void start();
 
     // Functions called in the game loop.
-    void run_logic(Input& input, Timer& timer);
-    void draw(Screen& screen);
+    void run_logic(sdlc::Input& input, sdlc::Timer& timer, sdlc::Mixer& mixer);
+    void draw(sdlc::Screen& screen);
 
     bool done() const;
     bool set_done(bool value);
@@ -55,11 +44,11 @@ public:
     PlayerState player_state;
 
 private:
-    IGameState* game_state = nullptr;
-    Font main_font;
+    std::unique_ptr<IGameState> game_state_;
+    sdlc::Font main_font_;
 
     int current_level_ = 0;
     bool done_ = false;
 };
 
-#endif
+#endif // KEXX2_GAME_H

@@ -17,9 +17,10 @@
 //    along with Kexx2.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "ParticleManager.h"
-#include "SDLc/Screen.h"
 #include <iostream>
 using namespace std;
+
+// TODO: clean up this file
 
 // -----------------------------------------------------------------------------
 // Construction/Destruction
@@ -37,7 +38,7 @@ ParticleManager::~ParticleManager()
 // Member Functions
 // -----------------------------------------------------------------------------
 
-void ParticleManager::create(float x, float y, float xVel, float yVel, \
+void ParticleManager::create(float x, float y, float xVel, float yVel, 
                              int r, int g, int b, int a, float fadeSpeed)
 {
     int slot = nextAvailableSlot();
@@ -54,7 +55,7 @@ void ParticleManager::create(float x, float y, float xVel, float yVel, \
     particle[slot].active(true);
 }
 
-void ParticleManager::update(Timer& timer)
+void ParticleManager::update(sdlc::Timer& timer)
 {
     //cout << "before: " << numOfParticlesActive();
     int i;
@@ -73,7 +74,7 @@ void ParticleManager::update(Timer& timer)
     //cout << "\tafter: " << numOfParticlesActive() << endl;
 }
 
-void ParticleManager::draw(Screen& screen)
+void ParticleManager::draw(sdlc::Screen& screen)
 {
     screen.lock();
     int i;

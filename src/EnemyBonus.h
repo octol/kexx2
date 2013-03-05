@@ -16,18 +16,18 @@
 //    You should have received a copy of the GNU General Public License
 //    along with Kexx2.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef _KEXX2_ENEMYBONUS_H_
-#define _KEXX2_ENEMYBONUS_H_
+#ifndef KEXX2_ENEMYBONUS_H
+#define KEXX2_ENEMYBONUS_H
 
 #include "Object.h"
 
 class EnemyBonus : public Object {
 public:
-    EnemyBonus(std::string name_, int energy, int score, Surface& s);
+    EnemyBonus(std::string name, int energy, int score, sdlc::Surface& s);
     virtual ~EnemyBonus();
 
-    void activate(ObjectManager& objectManager);
-    void kill(ObjectManager& objectManager, FxManager& fxManager);
+    void activate(ObjectManager& object_manager);
+    void kill(ObjectManager& object_manager, FxManager& fx_manager);
 };
 
-#endif
+#endif // KEXX2_ENEMYBONUS_H

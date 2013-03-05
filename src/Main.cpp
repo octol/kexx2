@@ -22,11 +22,14 @@
 #include "SDLc/Mixer.h"
 #include "SDLc/Misc.h"
 #include "Game.h"
+#include "Defines.h"
 
-Screen* screen;
-Timer* timer;
-Input* input;
-Mixer* mixer;
+sdlc::Screen* screen;
+sdlc::Timer* timer;
+sdlc::Input* input;
+sdlc::Mixer* mixer;
+
+void print_fps_counter(sdlc::Screen&, sdlc::Timer&);
 
 void print_fps_counter(Screen&, Timer&);
 
@@ -36,39 +39,39 @@ int main(int argc, char* argv[])
     UNUSED(argv);
 
     // System subsystems
-    screen = new Screen;
-    timer = new Timer;
-    input = new Input;
-    mixer = new Mixer;
+    screen = new sdlc::Screen;
+    timer = new sdlc::Timer;
+    input = new sdlc::Input;
+    mixer = new sdlc::Mixer;
     
-    // Main game scope. We want the destructor of kexx2 be called before we
-    // shutdown the system subsystems.
-    {
-        Game kexx2;
-        kexx2.load_options();
-        kexx2.setup_environment(*screen, *timer, *mixer);
-        kexx2.start();
-
-        while (!kexx2.done()) {
-            input->update();
+    auto kexx2 = std::unique_ptr<Game>(new Game);
+    kexx2->load_options();
+    kexx2->setup_environment(*screen, *timer, *mixer);
+    kexx2->start();
 
             // Developer mode escape key.
             if (input->keyPressed(SDLK_F1, NO_AUTOFIRE)) 
                 kexx2.set_done(true);
 
-            kexx2.run_logic(*input, *timer);
-            kexx2.draw(*screen);
+#ifdef TESTING
+        // Developer mode escape key.
+        if (input->keyPressed(SDLK_F1, sdlc::NO_AUTOFIRE)) 
+            kexx2->set_done(true);
+#endif
 
-            if (kexx2.options.fpsCounter()) 
-                print_fps_counter(*screen, *timer);
+        kexx2->run_logic(*input, *timer, *mixer);
+        kexx2->draw(*screen);
 
-            screen->flipAll();
-            screen->fillRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0, 0);
-            timer->update();
-        }
+        if (kexx2->options.fps_counter()) 
+            print_fps_counter(*screen, *timer);
 
-        kexx2.write_options();
+        screen->flipAll();
+        screen->fillRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0, 0);
+        timer->update();
     }
+
+    kexx2->write_options();
+    kexx2.reset();
 
     delete mixer;
     delete input;
@@ -77,7 +80,7 @@ int main(int argc, char* argv[])
     return 0;
 }
 
-void print_fps_counter(Screen& screen_, Timer& timer_)
+void print_fps_counter(sdlc::Screen& screen_, sdlc::Timer& timer_)
 {
     static int FPS = static_cast<int>(timer_.fps() + 0.5f);
     static int ticks = timer_.ticks();

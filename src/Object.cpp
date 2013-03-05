@@ -18,41 +18,39 @@
 
 #include "Object.h"
 #include "FxManager.h"
+#include "SDLc/Timer.h"
 
 // -----------------------------------------------------------------------------
 // Construction/Destruction
 // -----------------------------------------------------------------------------
 
+// TODO: better chaining of the constructors.
+
 Object::Object()
 {
     name = "Generic Object";
-    type = OBJ_UNDEFINED;
-    m_active = false;
-    energy = 0;
-    energyMax = 0;
-
-    activationYVelSet = false;
-    activationYVel = 0;
-
-    score = 0;
-    owner = OWNER_NONE;
-    hitTimer = 0;
 }
 
-Object::Object(std::string n, int energy, int score, Surface& s, ObjType t, float initYVel)
+Object::Object(std::string n, int energy, ObjType t) 
+    : type_(t)
 {
     name = n;
-    setEnergy(setEnergyMax(energy));
-    setScore(score);
+    set_energy(set_energy_max(energy));
+}
+
+Object::Object(std::string n, int energy, Surface& s, ObjType t)
+    : Object(n, energy, t)
+{
     link(s.data);
-    type = t;
-    setActivationYVel(initYVel);
+    calculate_hit_img();
+}
 
-    m_active = false;
-    owner = OWNER_NONE;
-
-    calculateHitImg();
-    hitTimer = 0;
+Object::Object(std::string n, int energy, int score, Surface& s, 
+               ObjType t, float init_y_vel)
+    : Object(n, energy, s, t)
+{
+    set_score(score);
+    set_activation_y_vel(init_y_vel);
 }
 
 Object::~Object()
@@ -63,72 +61,76 @@ Object::~Object()
 // Member Functions
 // -----------------------------------------------------------------------------
 
-void Object::activate(ObjectManager& objectManager)
+void Object::activate(ObjectManager& object_manager)
 {
-    if (activationYVelSet)
-        setYVel(activationYVel);
+    if (activation_y_vel_set_)
+        setYVel(activation_y_vel_);
 }
 
-void Object::think(ObjectManager& objectManager, FxManager& fxManager)
-{
-}
-
-void Object::checkCollisions(ObjectManager& objectManager, FxManager& fxManager)
+void Object::think(ObjectManager& object_manager, FxManager& fx_manager)
 {
 }
 
-void Object::update(Timer& timer)
+void Object::check_collisions(ObjectManager& object_manager, FxManager& fx_manager)
+{
+}
+
+void Object::update(sdlc::Timer& timer)
 {
     Sprite::update(timer);
-    if (hitTimer && SDL_GetTicks() - hitTimer > 20) {
-        hitTimer = 0;
+    //if (hit_timer && SDL_GetTicks() - hit_timer > 20) {
+    if (hit_timer && timer.ticks() - hit_timer > 20) {
+        hit_timer = 0;
         // flip SDL_Surface's
+        // TODO: use basesurface/surface from sdlc instead.
         SDL_Surface* tmp = data;
-        data = hitImg.data;
-        hitImg.data = tmp;
+        data = hit_img.data;
+        hit_img.data = tmp;
     }
 }
 
-void Object::hurt(int value, ObjectManager& objectManager, FxManager& fxManager)
+void Object::hurt(int value, ObjectManager& object_manager, FxManager& fx_manager)
 {
-    if (hitTimer == 0) {
-        hitTimer = SDL_GetTicks();
+    if (hit_timer == 0) {
+        // TODO: replace with Timer object.
+        hit_timer = SDL_GetTicks();
 
         // flip SDL_Surface's
+        // TODO: use basesurface/surface from sdlc instead.
         SDL_Surface* tmp = data;
-        data = hitImg.data;
-        hitImg.data = tmp;
+        data = hit_img.data;
+        hit_img.data = tmp;
     }
 
-    adjustEnergy(-value);
-    if (getEnergy() <= 0)
-        kill(objectManager, fxManager);
+    adjust_energy(-value);
+    if (energy() <= 0)
+        kill(object_manager, fx_manager);
 }
 
-void Object::kill(ObjectManager& objectManager, FxManager& fxManager)
+void Object::kill(ObjectManager& object_manager, FxManager& fx_manager)
 {
-    setEnergy(0);
-    fxManager.explodeNormal((int)(getX() + getWidth() / 2), (int)(getY() + getHeight() / 2));
+    set_energy(0);
+    fx_manager.explodeNormal((int)(getX() + getWidth() / 2), (int)(getY() + getHeight() / 2));
 }
 
-float Object::setActivationYVel(float value)
+float Object::set_activation_y_vel(float value)
 {
-    activationYVelSet = true;
-    return (activationYVel = value);
+    activation_y_vel_set_ = true;
+    return activation_y_vel_ = value;
 }
 
 // -----------------------------------------------------------------------------
 // Private Functions
 // -----------------------------------------------------------------------------
 
-void Object::calculateHitImg()
+void Object::calculate_hit_img()
 {
-    hitImg.data = SDL_DisplayFormat(data);
+    hit_img.data = SDL_DisplayFormat(data);
     //hitImg.alloc(data->w, data->h);
-    hitImg.lock();
+    hit_img.lock();
     int ix, iy;
-    for (iy = 0; iy < hitImg.data->h; iy++) {
-        for (ix = 0; ix < hitImg.data->w; ix++) {
+    for (iy = 0; iy < hit_img.data->h; iy++) {
+        for (ix = 0; ix < hit_img.data->w; ix++) {
 
             bool transparent = false;
             Uint8 r = 0, g = 0, b = 0, a = 255;
@@ -139,8 +141,8 @@ void Object::calculateHitImg()
                 transparent = true;
 
             if (!transparent)
-                hitImg.setPix(ix, iy, 255, 255, 255);
+                hit_img.setPix(ix, iy, 255, 255, 255);
         }
     }
-    hitImg.unlock();
+    hit_img.unlock();
 }

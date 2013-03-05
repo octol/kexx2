@@ -20,30 +20,19 @@
 #include <iostream>
 #include "ObjectManager.h"
 #include "FxManager.h"
-using namespace std;
 
 // -----------------------------------------------------------------------------
 // Construction/Destruction
 // -----------------------------------------------------------------------------
 
-Shot::Shot()
+Shot::Shot() : Object("Generic Shot", 1, OBJ_SHOT)
 {
-    name = "Generic Shot";
-    setEnergy(setEnergyMax(1));
-
-    // inherited data
-    setType(OBJ_SHOT);
 }
 
-Shot::Shot(std::string name_, int energy, Surface& s, Owner owner)
+Shot::Shot(std::string n, int energy, Surface& s, Owner owner)
+   : Object(n, energy, s, OBJ_SHOT)
 {
-    name = name_;
-    setEnergy(setEnergyMax(energy));
-    link(s.data);
-
-    // inherited data
-    setOwner(owner);
-    setType(OBJ_SHOT);
+   set_owner(owner);
 }
 
 Shot::~Shot()
@@ -54,67 +43,68 @@ Shot::~Shot()
 // Member Functions
 // -----------------------------------------------------------------------------
 
-void Shot::checkCollisions(ObjectManager& objectManager, FxManager& fxManager)
+void Shot::check_collisions(ObjectManager& object_manager, FxManager& fx_manager)
 {
-    if (getOwner() >= OWNER_PLAYER1 && getOwner() <= OWNER_PLAYER1 + NUM_OF_POSSIBLE_PLAYERS - 1) {
+    if (owner() >= OWNER_PLAYER1 && owner() <= OWNER_PLAYER1 + NUM_OF_POSSIBLE_PLAYERS - 1) {
         // check collision  friendly fire <-> enemies
         ObjectList::iterator i;
 
         // start by getting pointer to the player
-        Object* owner = 0;
-        for (i = objectManager.list.begin(); i != objectManager.list.end(); i++) {
+        // TODO: better name for this.
+        Object* owner_tmp = 0;
+        for (i = object_manager.list.begin(); i != object_manager.list.end(); i++) {
             Object* current = *i;
-            if (getOwner() == OWNER_PLAYER1 && current->name == "Player 1")
-                owner = current;
-            else if (getOwner() == OWNER_PLAYER2 && current->name == "Player 2")
-                owner = current;
+            if (owner() == OWNER_PLAYER1 && current->name == "Player 1")
+                owner_tmp = current;
+            else if (owner() == OWNER_PLAYER2 && current->name == "Player 2")
+                owner_tmp = current;
         }
 
-        for (i = objectManager.list.begin(); i != objectManager.list.end(); i++) {
+        for (i = object_manager.list.begin(); i != object_manager.list.end(); i++) {
             Object* current = *i;
 
             SDL_Rect tmp1 = getReducedRect();
             SDL_Rect tmp2 = current->getRect();
-            if (current->getType() == OBJ_ENEMY && current->getEnergy() && \
+            if (current->type() == OBJ_ENEMY && current->energy() && \
                     overlap(tmp1, tmp2)) {
-                current->hurt(getEnergy(), objectManager, fxManager);
-                if (!current->getEnergy() && owner)
-                    owner->adjustScore(current->getScore());
+                current->hurt(energy(), object_manager, fx_manager);
+                if (!current->energy() && owner_tmp)
+                    owner_tmp->adjust_score(current->score());
 
                 // kill itself
-                kill(objectManager, fxManager);
-            } else if (current->getType() == OBJ_SHOT) // optimization
+                kill(object_manager, fx_manager);
+            } else if (current->type() == OBJ_SHOT) // optimization
                 break;
         }
     } else {
         // check collision  player <-> enemy fire
-        ObjectList::iterator i = objectManager.list.begin();
-        for (; i != objectManager.list.end(); i++) {
+        ObjectList::iterator i = object_manager.list.begin();
+        for (; i != object_manager.list.end(); i++) {
             Object* current = *i;
 
             SDL_Rect tmp1 = getReducedRect();
             SDL_Rect tmp2 = current->getRect();
-            if (current->getType() == OBJ_PLAYER && current->getEnergy() && \
+            if (current->type() == OBJ_PLAYER && current->energy() && \
                     overlap(tmp1, tmp2)) {
-                current->hurt(getEnergy(), objectManager, fxManager);
+                current->hurt(energy(), object_manager, fx_manager);
 
                 // kill itself
-                kill(objectManager, fxManager);
-            } else if (current->getType() == OBJ_SHOT) // optimization
+                kill(object_manager, fx_manager);
+            } else if (current->type() == OBJ_SHOT) // optimization
                 break;
         }
     }
 }
 
-void Shot::kill(ObjectManager& objectManager, FxManager& fxManager)
+void Shot::kill(ObjectManager& object_manager, FxManager& fx_manager)
 {
-    setEnergy(0);
-    fxManager.playhitSnd();
+    set_energy(0);
+    fx_manager.playhitSnd();
 
     float angle = 270;
     //if(getYVel() > 0)
     //angle = 90.0f;
-    //fxManager.explodeTiny(getX()+getWidth()/2, getY()+getHeight()/2, 0.1f, angle);
+    //fx_manager.explodeTiny(getX()+getWidth()/2, getY()+getHeight()/2, 0.1f, angle);
 }
 
 // -----------------------------------------------------------------------------
