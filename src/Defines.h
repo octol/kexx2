@@ -19,7 +19,7 @@
 #ifndef KEXX2_DEFINES_H
 #define KEXX2_DEFINES_H
 
-#define VERSION "1.0.2"
+#define VERSION "1.0.3"
 #define UNUSED(x) ((void)x)
 #define TESTING
 

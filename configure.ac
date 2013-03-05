@@ -3,7 +3,7 @@ m4_include(m4/acx_pthread.m4)
 
 AC_PREREQ([2.69])
 AC_INIT([Kexx2],
-        [1.0.2],
+        [1.0.3],
         [jon@haeggblad.com],
         [kexx2],
         [http://github.com/octol/kexx2])
@@ -14,7 +14,7 @@ AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE
 LT_INIT
 
-AC_SUBST([KEXX2_VERSION],[1.0.2])
+AC_SUBST([KEXX2_VERSION],[1.0.3])
 
 #-------------------------------------------------------------------------------
 # Checks for programs.
