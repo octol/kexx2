@@ -20,13 +20,9 @@
 #define KEXX2_MENU_H
 
 #include "IGameState.h"
-#include "SDLc/Surface.h"
-#include "SDLc/Music.h"
+#include "SDLc.h"
 #include <array>
 
-class Timer;
-class Screen;
-class Font;
 class PlayerState;
 class Options;
 
@@ -43,22 +39,22 @@ public:
 
     void load_data();
 
-    void run_logic(Input& input, Timer& timer, Mixer& mixer, 
+    void run_logic(sdlc::Input& input, sdlc::Timer& timer, sdlc::Mixer& mixer, 
                    PlayerState& player_state) override;
-    void draw(Screen& screen, Font& font) override;
+    void draw(sdlc::Screen& screen, sdlc::Font& font) override;
 
 private:
-    void precalcbgsurface(Surface& surface);
-    void drawgroup(int x, int y, Surface& surface);
+    void precalcbgsurface(sdlc::Surface& surface);
+    void drawgroup(int x, int y, sdlc::Surface& surface);
 
-    Surface logo_;
-    Surface sdl_logo_;
-    std::array<Surface,10> bg_data_;
-    Music bg_music_;
+    sdlc::Surface logo_;
+    sdlc::Surface sdl_logo_;
+    std::array<sdlc::Surface,10> bg_data_;
+    sdlc::Music bg_music_;
     MenuWhich which_menu_ = MENU_ROOT;
 
     struct Selector {
-        Surface gfx;
+        sdlc::Surface gfx;
         int pos = 0;
     } selector_;
 

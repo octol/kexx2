@@ -17,11 +17,6 @@
 //    along with Kexx2.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Finished.h"
-
-#include "SDLc/Screen.h"
-#include "SDLc/Font.h"
-#include "SDLc/Misc.h"
-#include "SDLc/Input.h"
 #include "Options.h"
 #include "PlayerState.h"
 
@@ -40,14 +35,14 @@ Finished::Finished(Options& options, PlayerState& player_state)
 // Member Functions
 // -----------------------------------------------------------------------------
 
-void Finished::run_logic(Input& input, Timer& timer, Mixer& mixer, 
+void Finished::run_logic(sdlc::Input& input, sdlc::Timer& timer, sdlc::Mixer& mixer, 
                          PlayerState& player_state)
 {
-    if (input.keyPressed(SDLK_RETURN, NO_AUTOFIRE))
+    if (input.keyPressed(SDLK_RETURN, sdlc::NO_AUTOFIRE))
         done_ = true;
 }
 
-void Finished::draw(Screen& screen, Font& font)
+void Finished::draw(sdlc::Screen& screen, sdlc::Font& font)
 {
     screen.print(100, 100, "game complete!", font);
 }

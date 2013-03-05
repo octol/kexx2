@@ -31,7 +31,7 @@
 // Construction/Destruction
 // -----------------------------------------------------------------------------
 
-World::World(Timer& timer, Options& options, PlayerState& player_state, 
+World::World(sdlc::Timer& timer, Options& options, PlayerState& player_state, 
              int level)
     : IGameState(ENV_WORLD),
       num_of_players_(options.num_of_players()), 
@@ -66,9 +66,12 @@ World::World(Timer& timer, Options& options, PlayerState& player_state,
 // Member Functions
 // -----------------------------------------------------------------------------
 
-void World::run_logic(Input& input, Timer& timer, Mixer& mixer,
+void World::run_logic(sdlc::Input& input, sdlc::Timer& timer, sdlc::Mixer& mixer,
                       PlayerState& player_state)
 {
+    UNUSED(input);
+    UNUSED(mixer);
+
     // update scrolling position
     world_y_pos_ += - SCROLLING_SPEED * timer.frame_time();
 
@@ -128,7 +131,7 @@ void World::run_logic(Input& input, Timer& timer, Mixer& mixer,
     }
 }
 
-void World::draw(Screen& screen, Font& font)
+void World::draw(sdlc::Screen& screen, sdlc::Font& font)
 {
     starfield_.draw(screen);
     object_manager_.draw(screen);

@@ -17,9 +17,7 @@
 //    along with Kexx2.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Interface.h"
-#include "SDLc/Font.h"
-#include "SDLc/Screen.h"
-#include "SDLc/Misc.h"
+#include "SDLc.h"
 #include "Object.h"
 #include "PlayerState.h"
 
@@ -37,7 +35,7 @@ void Interface::update(int num_of_players, const PlayerState& player_state)
     player_state_ = player_state;
 }
 
-void Interface::draw(Font& font, Screen& screen)
+void Interface::draw(sdlc::Font& font, sdlc::Screen& screen)
 {
     // player 1
     int e = player_state_.energy(1);
@@ -71,7 +69,7 @@ void Interface::draw(Font& font, Screen& screen)
 // Private Functions
 // -----------------------------------------------------------------------------
 
-void Interface::draw_energy(int x, int y, int value, int max_value, Font& font, Screen& screen)
+void Interface::draw_energy(int x, int y, int value, int max_value, sdlc::Font& font, sdlc::Screen& screen)
 {
     int w = 20 * max_value;
     int h = 20;
@@ -84,12 +82,12 @@ void Interface::draw_energy(int x, int y, int value, int max_value, Font& font, 
                         h - 1, 100, 100, 100);
 }
 
-void Interface::draw_score(int x, int y, int value, Font& font, Screen& screen)
+void Interface::draw_score(int x, int y, int value, sdlc::Font& font, sdlc::Screen& screen)
 {
     screen.print(x, y, "score: " + std::to_string(value), font);
 }
 
-void Interface::draw_weapons(int x, int y, PlayerState& ps, int player, Font& font, Screen& screen)
+void Interface::draw_weapons(int x, int y, PlayerState& ps, int player, sdlc::Font& font, sdlc::Screen& screen)
 {
     int length1 = (ps.main_weapon(player)).length();
     std::string text1 = (ps.main_weapon(player)).substr(0, length1 - 7);

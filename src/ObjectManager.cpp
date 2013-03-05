@@ -90,7 +90,7 @@ void ObjectManager::loadData(std::string dataPath)
     obj[SMOKETRAIL].load(dataPath + "gfx/Flame.png");
 }
 
-void ObjectManager::update(Timer& timer, FxManager& fxManager, float worldYPos_, PlayerState& playerState)
+void ObjectManager::update(sdlc::Timer& timer, FxManager& fxManager, float worldYPos_, PlayerState& playerState)
 {
     worldYPos = worldYPos_;
 
@@ -134,7 +134,7 @@ void ObjectManager::update(Timer& timer, FxManager& fxManager, float worldYPos_,
     updateEnemyCount(); // update/count how many enemies
 }
 
-void ObjectManager::draw(Screen& screen)
+void ObjectManager::draw(sdlc::Screen& screen)
 {
     ObjectList::iterator i = list.begin();
     for (; i != list.end(); i++) {

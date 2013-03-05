@@ -26,37 +26,50 @@
 
 class ObjectManager;
 
-class Weapon
-{
-	friend class ObjectManager;
+class Weapon {
+    friend class ObjectManager;
 
- public:
-	Weapon();
-	virtual ~Weapon();
-	
-	virtual void shoot(int x, int y, ObjectManager &objectManager) = 0;
-	
-	std::string name;
-	int upgrade();
-	int reset()			{ return (level = 1); };
-	int getCount()			{ return count; };
-	int getLevel()			{ return level; };
+public:
+    Weapon();
+    virtual ~Weapon();
 
- protected: 
-	int setCount(int value);
-	int setLevel(int value);
-	unsigned getTimeWhenLastShot()	{ return timeWhenLastShot; };
-	unsigned setTimeWhenLastShot()	{ return (timeWhenLastShot = SDL_GetTicks()); };
-	Owner getOwner() 		{ return owner; };
-	Owner setOwner(Owner value)	{ return (owner = value); };
+    virtual void shoot(int x, int y, ObjectManager& objectManager) = 0;
 
-	Sound shotSnd;
+    std::string name;
+    int upgrade();
+    int reset()         {
+        return (level = 1);
+    };
+    int getCount()          {
+        return count;
+    };
+    int getLevel()          {
+        return level;
+    };
 
- private:
-	int count;
-	int level;
-	unsigned timeWhenLastShot;
-	Owner owner;
+protected:
+    int setCount(int value);
+    int setLevel(int value);
+    unsigned getTimeWhenLastShot()  {
+        return timeWhenLastShot;
+    };
+    unsigned setTimeWhenLastShot()  {
+        return (timeWhenLastShot = SDL_GetTicks());
+    };
+    Owner getOwner()        {
+        return owner;
+    };
+    Owner setOwner(Owner value) {
+        return (owner = value);
+    };
+
+    sdlc::Sound shotSnd;
+
+private:
+    int count;
+    int level;
+    unsigned timeWhenLastShot;
+    Owner owner;
 };
 
 #endif

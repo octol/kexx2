@@ -25,7 +25,7 @@
 // Construction/Destruction
 // -----------------------------------------------------------------------------
 
-WeaponRocket::WeaponRocket(Sound& sound, Owner owner)
+WeaponRocket::WeaponRocket(sdlc::Sound& sound, Owner owner)
 {
     shotSnd.link(&sound);
     shotSnd.setChannel((int)SND_W_ROCKET);

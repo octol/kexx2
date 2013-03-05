@@ -16,10 +16,9 @@
 //    You should have received a copy of the GNU General Public License
 //    along with Kexx2.  If not, see <http://www.gnu.org/licenses/>.
 
+#include "SDLc.h"
 #include "Ship.h"
 #include "ObjectManager.h"
-#include "SDLc/Input.h"
-#include "SDLc/Timer.h"
 #include "WeaponBlaster.h"
 #include "WeaponRocket.h"
 #include "FxManager.h"
@@ -59,7 +58,7 @@ Ship::~Ship()
 
 void Ship::think(ObjectManager& object_manager, FxManager& fx_manager)
 {
-    extern Input* input;
+    extern sdlc::Input* input;
 
     // reset movement velocity (if not input locked)
     if (invincible_ != INPUT_LOCKED) {
@@ -67,27 +66,27 @@ void Ship::think(ObjectManager& object_manager, FxManager& fx_manager)
         setYVel(0);
 
         // check keyboard
-        if (input->keyPressed(keyset_.left, AUTOFIRE))
+        if (input->keyPressed(keyset_.left, sdlc::AUTOFIRE))
             setXVel(-100.0f/*-0.1f*/);
-        else if (input->keyPressed(keyset_.right, AUTOFIRE))
+        else if (input->keyPressed(keyset_.right, sdlc::AUTOFIRE))
             setXVel(100.0f);
-        if (input->keyPressed(keyset_.up, AUTOFIRE))
+        if (input->keyPressed(keyset_.up, sdlc::AUTOFIRE))
             setYVel(-100.0f);
-        else if (input->keyPressed(keyset_.down, AUTOFIRE))
+        else if (input->keyPressed(keyset_.down, sdlc::AUTOFIRE))
             setYVel(100.0f);
 
-        if (input->keyPressed(keyset_.fire_main, AUTOFIRE) && main_weapon_) {
+        if (input->keyPressed(keyset_.fire_main, sdlc::AUTOFIRE) && main_weapon_) {
             main_weapon_->shoot((int)(getX() + (getWidth() / 2)), 
                                (int)(getY() + 10), object_manager);
         }
-        if (input->keyPressed(keyset_.fire_extra, NO_AUTOFIRE) && extra_weapon_) {
+        if (input->keyPressed(keyset_.fire_extra, sdlc::NO_AUTOFIRE) && extra_weapon_) {
             extra_weapon_->shoot((int)(getX() + (getWidth() / 2)), 
                                 (int)(getY() + 10), object_manager);
         }
     } else {
         // do some scripted movement when entering/leaving a level
         if (!level_complete_) {
-            extern Timer* timer;
+            extern sdlc::Timer* timer;
             setYVel(getYVel() + (130.0f * timer->frame_time()));
 
             if (getYVel() > -10.0f /*-0.0100f*/) {
@@ -102,7 +101,7 @@ void Ship::think(ObjectManager& object_manager, FxManager& fx_manager)
                 lockedToScreen(false);
             }
 
-            extern Timer* timer;
+            extern sdlc::Timer* timer;
             setYVel(getYVel() - (130.0f * timer->frame_time()));
         }
     }
@@ -162,7 +161,7 @@ void Ship::check_collisions(ObjectManager& object_manager, FxManager& fx_manager
     }
 }
 
-void Ship::update(Timer& timer)
+void Ship::update(sdlc::Timer& timer)
 {
     Sprite::update(timer);
     if (hit_timer > 0 && times_blinked_ > 100) {
@@ -238,7 +237,7 @@ void Ship::update_smoketrail(ObjectManager& object_manager)
                 obj->setPos(getX() + 13, getY() + getHeight() - 2);
                 obj->setVel(getXVel(), getYVel());
 
-                extern Timer* timer;
+                extern sdlc::Timer* timer;
                 obj->update(*timer);
                 obj->setVel(0, 0);
                 current++;
@@ -246,7 +245,7 @@ void Ship::update_smoketrail(ObjectManager& object_manager)
                 obj->setPos(getX() + 24, getY() + getHeight() - 2);
                 obj->setVel(getXVel(), getYVel());
 
-                extern Timer* timer;
+                extern sdlc::Timer* timer;
                 obj->update(*timer);
                 obj->setVel(0, 0);
                 break;

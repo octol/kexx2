@@ -23,7 +23,7 @@
 
 class EnemySideways : public Object {
 public:
-    EnemySideways(std::string name, int energy, int score, Surface& s);
+    EnemySideways(std::string name, int energy, int score, sdlc::Surface& s);
     virtual ~EnemySideways();
 
     void activate(ObjectManager& object_manager);

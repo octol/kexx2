@@ -26,9 +26,9 @@
 // -----------------------------------------------------------------------------
 
 EnemyRammer::EnemyRammer(std::string name, int energy, int score, Surface& s)
-    : Object(name, energy, score, s, OBJ_ENEMY, 0)
-    //Object(std::string n, int energy, int score, Surface& s, ObjType t, float init_y_vel);
+    : Object(name, energy, s, OBJ_ENEMY)
 {
+    set_score(score);
 }
 
 EnemyRammer::~EnemyRammer()

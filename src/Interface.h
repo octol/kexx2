@@ -21,19 +21,17 @@
 
 #include "Defines.h"
 #include "PlayerState.h"
-
-class Font;
-class Screen;
+#include "SDLc.h"
 
 class Interface {
 public:
     void update(int num_of_players, const PlayerState& player_state);
-    void draw(Font& font, Screen& screen);
+    void draw(sdlc::Font& font, sdlc::Screen& screen);
 
 private:
-    void draw_energy(int x, int y, int value, int max_value, Font& font, Screen& screen);
-    void draw_score(int x, int y, int value, Font& font, Screen& screen);
-    void draw_weapons(int x, int y, PlayerState& ps, int player, Font& font, Screen& screen);
+    void draw_energy(int x, int y, int value, int max_value, sdlc::Font& font, sdlc::Screen& screen);
+    void draw_score(int x, int y, int value, sdlc::Font& font, sdlc::Screen& screen);
+    void draw_weapons(int x, int y, PlayerState& ps, int player, sdlc::Font& font, sdlc::Screen& screen);
 
     // TODO: switch to reference?
     PlayerState player_state_;

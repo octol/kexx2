@@ -26,18 +26,18 @@
 class ObjectManager;
 class FxManager;
 
-class Object : public Sprite {
+class Object : public sdlc::Sprite {
 public:
     Object();
     Object(std::string n, int energy, ObjType t);
-    Object(std::string n, int energy, Surface& s, ObjType t);
-    Object(std::string n, int energy, int score, Surface& s, ObjType t, float init_y_vel);
+    Object(std::string n, int energy, sdlc::Surface& s, ObjType t);
+    Object(std::string n, int energy, int score, sdlc::Surface& s, ObjType t, float init_y_vel);
     virtual ~Object();
 
     virtual void activate(ObjectManager& object_manager);
     virtual void think(ObjectManager& object_manager, FxManager& fx_manager);
     virtual void check_collisions(ObjectManager& object_manager, FxManager& fx_manager);
-    virtual void update(Timer& timer);
+    virtual void update(sdlc::Timer& timer);
     virtual void hurt(int value, ObjectManager& object_manager, FxManager& fx_manager);
     virtual void kill(ObjectManager& object_manager, FxManager& fx_manager);
 

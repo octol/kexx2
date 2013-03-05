@@ -29,7 +29,6 @@ const int BLINKING = 1;
 const int INPUT_LOCKED = 2;
 
 class Ship : public Object {
-    //friend class Interface;
     friend class ObjectManager;
 public:
     Ship(std::string n, int energy, int score, Surface& s, 
@@ -38,7 +37,7 @@ public:
 
     void think(ObjectManager& object_manager, FxManager& fx_manager);
     void check_collisions(ObjectManager& object_manager, FxManager& fx_manager);
-    void update(Timer& timer);
+    void update(sdlc::Timer& timer);
     void hurt(int value, ObjectManager& object_manager, FxManager& fx_manager);
     void kill(ObjectManager& object_manager, FxManager& fx_manager);
 
@@ -61,7 +60,7 @@ private:
     int blinking_timer_ = 0;
     int times_blinked_ = 0;
 
-    Sound hit_snd;
+    sdlc::Sound hit_snd;
 };
 
 #endif // KEXX2_SHIP_H

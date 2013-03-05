@@ -25,7 +25,7 @@ class Shot;
 class WeaponRocket : public Weapon
 {
 public:
-	WeaponRocket(Sound &sound, Owner owner);
+	WeaponRocket(sdlc::Sound &sound, Owner owner);
 	virtual ~WeaponRocket();
 	
 	void shoot(int x, int y, ObjectManager &objectManager);

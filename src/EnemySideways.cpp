@@ -16,8 +16,8 @@
 //    You should have received a copy of the GNU General Public License
 //    along with Kexx2.  If not, see <http://www.gnu.org/licenses/>.
 
+#include "SDLc.h"
 #include "EnemySideways.h"
-#include "SDLc/Timer.h"
 #include "ObjectManager.h"
 #include "FxManager.h"
 
@@ -25,10 +25,11 @@
 // Construction/Destruction
 // -----------------------------------------------------------------------------
 
-EnemySideways::EnemySideways(std::string name, int energy, int score, Surface& s)
-    : Object(name, energy, score, s, OBJ_ENEMY, 0),
+EnemySideways::EnemySideways(std::string name, int energy, int score, sdlc::Surface& s)
+    : Object(name, energy, s, OBJ_ENEMY),
       left_(false), time_when_last_shot_(0)
 {
+    set_score(score);
 }
 
 EnemySideways::~EnemySideways()
@@ -44,14 +45,14 @@ void EnemySideways::activate(ObjectManager& object_manager)
     setXVel(-100.0f/*-0.1f*/);
     setYVel(80.0f/*0.08f*/);
     // TODO: user Timer object passed down.
-    extern Timer* timer;
+    extern sdlc::Timer* timer;
     time_when_last_shot_ = timer->ticks() - (rand() % 2000);
 }
 
 void EnemySideways::think(ObjectManager& object_manager, FxManager& fx_manager)
 {
     // TODO: remove extern
-    extern Timer* timer;
+    extern sdlc::Timer* timer;
     if (active()) {
         if (left_) {
             setXVel(getXVel() - (100.0f /*0.0001f*/ * timer->frame_time()));

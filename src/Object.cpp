@@ -32,14 +32,14 @@ Object::Object()
 }
 
 Object::Object(std::string n, int energy, ObjType t) 
-    : Object(), type_(t)
+    : type_(t)
 {
     name = n;
     set_energy(set_energy_max(energy));
 }
 
 Object::Object(std::string n, int energy, Surface& s, ObjType t)
-    : Object(n, energy, t),
+    : Object(n, energy, t)
 {
     link(s.data);
     calculate_hit_img();
@@ -50,8 +50,6 @@ Object::Object(std::string n, int energy, int score, Surface& s,
     : Object(n, energy, s, t)
 {
     set_score(score);
-
-    // note that this also sets: activation_y_vel_set_ = true
     set_activation_y_vel(init_y_vel);
 }
 
@@ -77,7 +75,7 @@ void Object::check_collisions(ObjectManager& object_manager, FxManager& fx_manag
 {
 }
 
-void Object::update(Timer& timer)
+void Object::update(sdlc::Timer& timer)
 {
     Sprite::update(timer);
     //if (hit_timer && SDL_GetTicks() - hit_timer > 20) {

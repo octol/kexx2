@@ -26,6 +26,8 @@
 #include "Options.h"
 #include "PlayerState.h"
 
+using namespace sdlc;
+
 // -----------------------------------------------------------------------------
 // Construction/Destruction
 // -----------------------------------------------------------------------------
@@ -46,7 +48,7 @@ BuyScreen::BuyScreen(Options& options, int current_level)
 // Member Functions
 // -----------------------------------------------------------------------------
 
-void BuyScreen::run_logic(Input& input, Timer& timer, Mixer& mixer, 
+void BuyScreen::run_logic(sdlc::Input& input, sdlc::Timer& timer, sdlc::Mixer& mixer, 
                           PlayerState& player_state)
 {
     KeySet keys[2];
@@ -90,7 +92,7 @@ void BuyScreen::run_logic(Input& input, Timer& timer, Mixer& mixer,
         done_ = true;
 }
 
-void BuyScreen::draw(Screen& screen, Font& font)
+void BuyScreen::draw(sdlc::Screen& screen, sdlc::Font& font)
 {
     screen.print(200, 50, "level " + std::to_string(currentLevel_ - 1) + " complete!", font);
     screen.print(30, 100, "player 1", font);

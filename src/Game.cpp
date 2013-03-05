@@ -68,7 +68,7 @@ void Game::write_options()
     options.write(options.data_path + "kexx2.cfg");
 }
 
-void Game::setup_environment(Screen& screen, Timer& timer, Mixer& mixer)
+void Game::setup_environment(sdlc::Screen& screen, sdlc::Timer& timer, sdlc::Mixer& mixer)
 {
     srand(timer.ticks());
     screen.set_caption(("Kexx 2 " + std::string(VERSION)).c_str());
@@ -97,7 +97,7 @@ void Game::start()
     game_state_ = std::unique_ptr<Menu>(new Menu(options));
 }
 
-void Game::run_logic(Input& input, Timer& timer, Mixer& mixer)
+void Game::run_logic(sdlc::Input& input, sdlc::Timer& timer, sdlc::Mixer& mixer)
 {
     // here we decide which Game state that should be used
     if (game_state_ && game_state_->done()) {
@@ -145,7 +145,7 @@ void Game::run_logic(Input& input, Timer& timer, Mixer& mixer)
 
     // abort in world
     if (game_state_ && game_state_->type() == ENV_WORLD) {
-        if (input.keyPressed(SDLK_ESCAPE, NO_AUTOFIRE)) {
+        if (input.keyPressed(SDLK_ESCAPE, sdlc::NO_AUTOFIRE)) {
             player_state.killall();
             game_state_ = std::unique_ptr<Menu>(new Menu(options));
         }
@@ -153,13 +153,13 @@ void Game::run_logic(Input& input, Timer& timer, Mixer& mixer)
 
 #ifdef TESTING
     // used for testing
-    if (input.keyPressed(SDLK_F2, NO_AUTOFIRE)) {
+    if (input.keyPressed(SDLK_F2, sdlc::NO_AUTOFIRE)) {
     }
-    if (input.keyPressed(SDLK_F3, NO_AUTOFIRE)) {
+    if (input.keyPressed(SDLK_F3, sdlc::NO_AUTOFIRE)) {
         game_state_ = std::unique_ptr<World>
             (new World(timer, options, player_state, current_level_ = 1));
     }
-    if (input.keyPressed(SDLK_F4, NO_AUTOFIRE)) {
+    if (input.keyPressed(SDLK_F4, sdlc::NO_AUTOFIRE)) {
         game_state_ = std::unique_ptr<BuyScreen>
             (new BuyScreen(options, current_level_));
     }
@@ -169,7 +169,7 @@ void Game::run_logic(Input& input, Timer& timer, Mixer& mixer)
         game_state_->run_logic(input, timer, mixer, player_state);
 }
 
-void Game::draw(Screen& screen)
+void Game::draw(sdlc::Screen& screen)
 {
     if (game_state_) {
         game_state_->draw(screen, main_font_);

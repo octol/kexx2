@@ -24,12 +24,12 @@
 #include "Game.h"
 #include "Defines.h"
 
-Screen* screen;
-Timer* timer;
-Input* input;
-Mixer* mixer;
+sdlc::Screen* screen;
+sdlc::Timer* timer;
+sdlc::Input* input;
+sdlc::Mixer* mixer;
 
-void print_fps_counter(Screen&, Timer&);
+void print_fps_counter(sdlc::Screen&, sdlc::Timer&);
 
 int main(int argc, char* argv[])
 {
@@ -37,10 +37,10 @@ int main(int argc, char* argv[])
     UNUSED(argv);
 
     // System subsystems
-    screen = new Screen;
-    timer = new Timer;
-    input = new Input;
-    mixer = new Mixer;
+    screen = new sdlc::Screen;
+    timer = new sdlc::Timer;
+    input = new sdlc::Input;
+    mixer = new sdlc::Mixer;
     
     auto kexx2 = std::unique_ptr<Game>(new Game);
     kexx2->load_options();
@@ -52,7 +52,7 @@ int main(int argc, char* argv[])
 
 #ifdef TESTING
         // Developer mode escape key.
-        if (input->keyPressed(SDLK_F1, NO_AUTOFIRE)) 
+        if (input->keyPressed(SDLK_F1, sdlc::NO_AUTOFIRE)) 
             kexx2->set_done(true);
 #endif
 
@@ -77,7 +77,7 @@ int main(int argc, char* argv[])
     return 0;
 }
 
-void print_fps_counter(Screen& screen_, Timer& timer_)
+void print_fps_counter(sdlc::Screen& screen_, sdlc::Timer& timer_)
 {
     static int FPS = static_cast<int>(timer_.fps() + 0.5f);
     static int ticks = timer_.ticks();

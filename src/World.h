@@ -26,7 +26,7 @@
 #include "FxManager.h"
 #include "Starfield.h"
 #include "Interface.h"
-#include "SDLc/Music.h"
+#include "SDLc.h"
 
 class Options;
 class PlayerState;
@@ -37,13 +37,13 @@ struct WorldData {
 
 class World : public IGameState {
 public:
-    World(Timer& timer, Options& options,
+    World(sdlc::Timer& timer, Options& options,
           PlayerState& player_state, int level);
     virtual ~World() {};
 
-    void run_logic(Input& input, Timer& timer, Mixer& mixer,
+    void run_logic(sdlc::Input& input, sdlc::Timer& timer, sdlc::Mixer& mixer,
                    PlayerState& player_state) override;
-    void draw(Screen& screen, Font& font);
+    void draw(sdlc::Screen& screen, sdlc::Font& font);
 
 private:
     ObjectManager object_manager_;
@@ -57,10 +57,10 @@ private:
     float world_y_pos_ = 0; // how much the screen has scrolled
     int num_of_players_ = 1;
     int current_level_ = 0;
-    Music bg_music_;
-    Sound level_complete_snd_;
-    Sound entering_level_snd_;
-    Sound game_over_snd_;
+    sdlc::Music bg_music_;
+    sdlc::Sound level_complete_snd_;
+    sdlc::Sound entering_level_snd_;
+    sdlc::Sound game_over_snd_;
 
     // minor stuff
     int time_when_entering_level_ = 0;

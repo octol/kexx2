@@ -19,7 +19,7 @@
 #ifndef KEXX_BUYSCREEN_H
 #define KEXX_BUYSCREEN_H
 
-#include "SDLc/Surface.h"
+#include "SDLc.h"
 #include "IGameState.h"
 
 class Options;
@@ -32,9 +32,9 @@ public:
     BuyScreen(Options& options, int current_level);
     virtual ~BuyScreen() {};
 
-    void run_logic(Input& input, Timer& Timer, Mixer& mixer,
+    void run_logic(sdlc::Input& input, sdlc::Timer& timer, sdlc::Mixer& mixer,
                    PlayerState& player_state) override;
-    void draw(Screen& Screen, Font& font);
+    void draw(sdlc::Screen& screen, sdlc::Font& font);
 
 private:
     int currentLevel_;
@@ -42,7 +42,7 @@ private:
     PlayerState* playerState_;
 
     struct Selector {
-        Surface gfx;
+        sdlc::Surface gfx;
         int pos[2];
     } selectors_;
 

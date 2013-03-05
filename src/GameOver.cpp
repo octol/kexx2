@@ -36,17 +36,17 @@ GameOver::GameOver() : IGameState(ENV_GAMEOVER)
 // Member Functions
 // -----------------------------------------------------------------------------
 
-void GameOver::run_logic(Input& input, Timer& timer, Mixer& mixer, 
+void GameOver::run_logic(sdlc::Input& input, sdlc::Timer& timer, sdlc::Mixer& mixer, 
                          PlayerState& player_state)
 {
     UNUSED(timer);
     UNUSED(player_state);
 
-    if (input.keyPressed(SDLK_RETURN, NO_AUTOFIRE))
+    if (input.keyPressed(SDLK_RETURN, sdlc::NO_AUTOFIRE))
         done_ = true;
 }
 
-void GameOver::draw(Screen& screen, Font& font)
+void GameOver::draw(sdlc::Screen& screen, sdlc::Font& font)
 {
     screen.print(250, 180, "game over", font);
     screen.print(250, 200, "press enter...", font);

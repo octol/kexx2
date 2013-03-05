@@ -53,12 +53,12 @@ void Menu::load_data()
     }
 }
 
-void Menu::run_logic(Input& input, Timer& timer, Mixer& mixer, PlayerState& player_state)
+void Menu::run_logic(sdlc::Input& input, sdlc::Timer& timer, sdlc::Mixer& mixer, PlayerState& player_state)
 {
     // up/down
-    if (input.keyPressed(SDLK_UP, NO_AUTOFIRE))
+    if (input.keyPressed(SDLK_UP, sdlc::NO_AUTOFIRE))
         selector_.pos--;
-    else if (input.keyPressed(SDLK_DOWN, NO_AUTOFIRE))
+    else if (input.keyPressed(SDLK_DOWN, sdlc::NO_AUTOFIRE))
         selector_.pos++;
 
     // limits
@@ -70,7 +70,7 @@ void Menu::run_logic(Input& input, Timer& timer, Mixer& mixer, PlayerState& play
         selector_.pos = 3;
 
     // when return is pressed
-    if (input.keyPressed(SDLK_RETURN, NO_AUTOFIRE)) {
+    if (input.keyPressed(SDLK_RETURN, sdlc::NO_AUTOFIRE)) {
         if (which_menu_ == MENU_ROOT) {
             if (selector_.pos == 0) {
                 player_state.killall();
@@ -113,7 +113,7 @@ void Menu::run_logic(Input& input, Timer& timer, Mixer& mixer, PlayerState& play
                 if (options_.fullscreen())
                     screen_type |= SDL_FULLSCREEN;
 
-                extern Screen* screen;
+                extern sdlc::Screen* screen;
                 screen->init(640, 480, 16, screen_type);
 #endif
             } else if (selector_.pos == 2)
@@ -145,7 +145,7 @@ void Menu::run_logic(Input& input, Timer& timer, Mixer& mixer, PlayerState& play
     }
 }
 
-void Menu::draw(Screen& screen, Font& font)
+void Menu::draw(sdlc::Screen& screen, sdlc::Font& font)
 {
     screen.blit(0, 0, bg_data_[rand() % 10]);
 
@@ -200,7 +200,7 @@ void Menu::draw(Screen& screen, Font& font)
 // Private Functions
 // -----------------------------------------------------------------------------
 
-void Menu::precalcbgsurface(Surface& surface)
+void Menu::precalcbgsurface(sdlc::Surface& surface)
 {
     int iy, ix;
     for (iy = 0; iy < 40; iy++)
@@ -208,7 +208,7 @@ void Menu::precalcbgsurface(Surface& surface)
             drawgroup(ix * 80 + 5, iy * 12 + 2, surface);
 }
 
-void Menu::drawgroup(int x, int y, Surface& surface)
+void Menu::drawgroup(int x, int y, sdlc::Surface& surface)
 {
     int i;
     for (i = 0; i < 9; i++) {

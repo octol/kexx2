@@ -19,28 +19,23 @@
 #ifndef KEXX2_GAME_H
 #define KEXX2_GAME_H
 
-#include "SDLc/Font.h"
+#include "SDLc.h"
 #include "Options.h"
 #include "PlayerState.h"
 #include "IGameState.h"
 #include <memory>
-
-class Screen;
-class Mixer;
-class Timer;
-class Input;
 
 class Game final {
 public:
     // Initialisation functions.
     void load_options();
     void write_options();
-    void setup_environment(Screen& screen, Timer& timer, Mixer& mixer);
+    void setup_environment(sdlc::Screen& screen, sdlc::Timer& timer, sdlc::Mixer& mixer);
     void start();
 
     // Functions called in the game loop.
-    void run_logic(Input& input, Timer& timer, Mixer& mixer);
-    void draw(Screen& screen);
+    void run_logic(sdlc::Input& input, sdlc::Timer& timer, sdlc::Mixer& mixer);
+    void draw(sdlc::Screen& screen);
 
     bool done() const;
     bool set_done(bool value);
@@ -50,7 +45,7 @@ public:
 
 private:
     std::unique_ptr<IGameState> game_state_;
-    Font main_font_;
+    sdlc::Font main_font_;
 
     int current_level_ = 0;
     bool done_ = false;

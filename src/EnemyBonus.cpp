@@ -24,9 +24,10 @@
 // Construction/Destruction
 // -----------------------------------------------------------------------------
 
-EnemyBonus::EnemyBonus(std::string name, int energy, int score, Surface& s)
-    : Object(name, energy, score, s, OBJ_ENEMY, 0)
+EnemyBonus::EnemyBonus(std::string name, int energy, int score, sdlc::Surface& s)
+    : Object(name, energy, s, OBJ_ENEMY)
 {
+    set_score(0);
 }
 
 EnemyBonus::~EnemyBonus()

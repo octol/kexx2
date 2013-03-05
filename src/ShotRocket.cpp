@@ -25,7 +25,7 @@
 // Construction/Destruction
 // -----------------------------------------------------------------------------
 
-ShotRocket::ShotRocket(std::string name, int energy, Surface& s, Owner owner)
+ShotRocket::ShotRocket(std::string name, int energy, sdlc::Surface& s, Owner owner)
     : Shot(name, energy, s, owner),
       time_when_shot_(SDL_GetTicks())
 {
@@ -42,7 +42,7 @@ ShotRocket::~ShotRocket()
 
 void ShotRocket::think(ObjectManager& object_manager, FxManager& fx_manager)
 {
-    extern Timer* timer;
+    extern sdlc::Timer* timer;
     //setXVel( getXVel() * 0.007f * Timer->getFrametime());
     setYVel(getYVel() - 500.0f /*0.0005*/*timer->frame_time());
 
