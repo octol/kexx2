@@ -19,3 +19,8 @@ Specific:
 BuyScreen::runLogic(), playerState argument shadows a class member.
 World:World(), seems to do too much in constructor.
 
+libsdlc:
+--------
+- introduce namespace.
+- single header at top level.
+

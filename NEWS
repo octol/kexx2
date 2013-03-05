@@ -1,16 +1,23 @@
 NEWS
 ====
 
+2013-03-05  Jon Haggblad  <jon@haeggblad.com>
+
+    Further updates. Moved to using sdlc namespace for all SDLc stuff now. Not yet migrated to using the 
+    meta header file SDLc.h
+
 2013-02-28  Jon Haggblad  <jon@haeggblad.com>
 
     Refactoring is coming along nicely. So far it is mainly stylistic
     changes, such as setting default values in the class declarations,
     correct initialisation in constructors etc. Lots of variable
     renaming too, to make the code follow modern best practices.
+
     Hopefully when the first sweep is done, I can deal with more
     architectural issues, including removing the global system classes.
     Right now I'm down to 11 instances of the 'extern' keyword in the
-    cpp files.
+    cpp files. Another goal is to move all raw SDL_ calls to the system
+    classes.
 
 2013-02-16  Jon Haggblad  <jon@haeggblad.com>
 
