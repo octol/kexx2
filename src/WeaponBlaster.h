@@ -16,21 +16,19 @@
 //    You should have received a copy of the GNU General Public License
 //    along with Kexx2.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef _KEXX2_WEAPONBLASTER_H_
-#define _KEXX2_WEAPONBLASTER_H_
+#ifndef KEXX2_WEAPONBLASTER_H
+#define KEXX2_WEAPONBLASTER_H
 
 #include "SDLc.h"
 #include "Weapon.h"
 #include "Defines.h"
-class Shot;
 
-class WeaponBlaster : public Weapon
-{
- public:
-	WeaponBlaster(sdlc::Sound &sound, Owner owner);
-	virtual ~WeaponBlaster();
-	
-	void shoot(int x, int y, ObjectManager &objectManager);
+class WeaponBlaster : public Weapon {
+public:
+    WeaponBlaster(sdlc::Sound& sound, Owner owner);
+    virtual ~WeaponBlaster();
+
+    void shoot(int x, int y, ObjectManager& object_manager);
 };
 
 #endif

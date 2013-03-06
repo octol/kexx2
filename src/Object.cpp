@@ -110,7 +110,7 @@ void Object::hurt(int value, ObjectManager& object_manager, FxManager& fx_manage
 void Object::kill(ObjectManager& object_manager, FxManager& fx_manager)
 {
     set_energy(0);
-    fx_manager.explodeNormal((int)(getX() + getWidth() / 2), (int)(getY() + getHeight() / 2));
+    fx_manager.explode_normal((int)(getX() + getWidth() / 2), (int)(getY() + getHeight() / 2));
 }
 
 float Object::set_activation_y_vel(float value)

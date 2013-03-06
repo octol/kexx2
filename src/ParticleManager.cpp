@@ -18,21 +18,6 @@
 
 #include "ParticleManager.h"
 #include <iostream>
-using namespace std;
-
-// TODO: clean up this file
-
-// -----------------------------------------------------------------------------
-// Construction/Destruction
-// -----------------------------------------------------------------------------
-
-ParticleManager::ParticleManager()
-{
-}
-
-ParticleManager::~ParticleManager()
-{
-}
 
 // -----------------------------------------------------------------------------
 // Member Functions
@@ -41,67 +26,66 @@ ParticleManager::~ParticleManager()
 void ParticleManager::create(float x, float y, float xVel, float yVel, 
                              int r, int g, int b, int a, float fadeSpeed)
 {
-    int slot = nextAvailableSlot();
+    int slot = next_available_slot();
 
-    particle[slot].setX(x);
-    particle[slot].setY(y);
-    particle[slot].setXVel(xVel);
-    particle[slot].setYVel(yVel);
-    particle[slot].setR(r);
-    particle[slot].setG(g);
-    particle[slot].setB(b);
-    particle[slot].setAlpha(a);
-    particle[slot].setFadeSpeed(fadeSpeed);
-    particle[slot].active(true);
+    particle_[slot].setX(x);
+    particle_[slot].setY(y);
+    particle_[slot].setXVel(xVel);
+    particle_[slot].setYVel(yVel);
+    particle_[slot].setR(r);
+    particle_[slot].setG(g);
+    particle_[slot].setB(b);
+    particle_[slot].setAlpha(a);
+    particle_[slot].setFadeSpeed(fadeSpeed);
+    particle_[slot].active(true);
 }
 
 void ParticleManager::update(sdlc::Timer& timer)
 {
-    //cout << "before: " << numOfParticlesActive();
-    int i;
-    for (i = 0; i < NUM_OF_PARTICLES; i++) {
-        if (particle[i].active()) {
-            particle[i].update(timer);
-            //cout << "x: " << particle[i].getX();
-            //cout << "\ty: " << particle[i].getY() << endl;
-            if (particle[i].getAlpha() <= 50 || \
-                    particle[i].getY() < 1 || particle[i].getY() > 478 || \
-                    particle[i].getX() < 1 || particle[i].getX() > 638) {
-                particle[i].active(false);
+    // TODO: range based for loop
+    for (int i = 0; i < NUM_OF_PARTICLES; i++) {
+        if (particle_[i].active()) {
+            particle_[i].update(timer);
+            //cout << "x: " << particle_[i].getX();
+            //cout << "\ty: " << particle_[i].getY() << endl;
+            if (particle_[i].getAlpha() <= 50 || 
+                    particle_[i].getY() < 1 || particle_[i].getY() > 478 || 
+                    particle_[i].getX() < 1 || particle_[i].getX() > 638) {
+                particle_[i].active(false);
             }
         }
     }
-    //cout << "\tafter: " << numOfParticlesActive() << endl;
 }
 
 void ParticleManager::draw(sdlc::Screen& screen)
 {
     screen.lock();
-    int i;
-    for (i = 0; i < NUM_OF_PARTICLES; i++) {
-        if (particle[i].active()) {
-            screen.fastBlendPix((int)particle[i].getX(), (int)particle[i].getY(), \
-                                particle[i].getR(), particle[i].getG(), \
-                                particle[i].getB(), (int)particle[i].getAlpha());
-            screen.fastBlendPix((int)(particle[i].getX() + 1), (int)particle[i].getY(), \
-                                particle[i].getR(), particle[i].getG(), \
-                                particle[i].getB(), (int)particle[i].getAlpha());
-            screen.fastBlendPix((int)particle[i].getX(), (int)(particle[i].getY() + 1), \
-                                particle[i].getR(), particle[i].getG(), \
-                                particle[i].getB(), (int)particle[i].getAlpha());
-            screen.fastBlendPix((int)particle[i].getX() + 1, (int)(particle[i].getY() + 1), \
-                                particle[i].getR(), particle[i].getG(), \
-                                particle[i].getB(), (int)particle[i].getAlpha());
+    // TODO: range based for loop
+    for (int i = 0; i < NUM_OF_PARTICLES; i++) {
+        if (particle_[i].active()) {
+            screen.fastBlendPix((int)particle_[i].getX(), (int)particle_[i].getY(), 
+                                particle_[i].getR(), particle_[i].getG(), 
+                                particle_[i].getB(), (int)particle_[i].getAlpha());
+            screen.fastBlendPix((int)(particle_[i].getX() + 1), (int)particle_[i].getY(), 
+                                particle_[i].getR(), particle_[i].getG(), 
+                                particle_[i].getB(), (int)particle_[i].getAlpha());
+            screen.fastBlendPix((int)particle_[i].getX(), (int)(particle_[i].getY() + 1), 
+                                particle_[i].getR(), particle_[i].getG(), 
+                                particle_[i].getB(), (int)particle_[i].getAlpha());
+            screen.fastBlendPix((int)particle_[i].getX() + 1, (int)(particle_[i].getY() + 1), 
+                                particle_[i].getR(), particle_[i].getG(), 
+                                particle_[i].getB(), (int)particle_[i].getAlpha());
         }
     }
     screen.unlock();
 }
 
-int ParticleManager::numOfParticlesActive()
+int ParticleManager::num_of_particles_active()
 {
-    int counter = 0, i;
-    for (i = 0; i < NUM_OF_PARTICLES; i++) {
-        if (particle[i].active())
+    int counter = 0;
+    // TODO: range based for loop
+    for (int i = 0; i < NUM_OF_PARTICLES; i++) {
+        if (particle_[i].active())
             counter++;
     }
     return counter;
@@ -111,14 +95,14 @@ int ParticleManager::numOfParticlesActive()
 // Private Functions
 // -----------------------------------------------------------------------------
 
-int ParticleManager::nextAvailableSlot()
+int ParticleManager::next_available_slot()
 {
     int i = 0;
-    while (particle[i].active()) {
+    while (particle_[i].active()) {
         i++;
         if (i >= NUM_OF_PARTICLES) {
-            cout << "ParticleManager::nextAvailableSlot() ";
-            cout << "Particleslot overflow!" << endl;
+            std::cout << "ParticleManager::nextAvailableSlot() ";
+            std::cout << "Particleslot overflow!" << std::endl;
             i = 0;
             break;
         }

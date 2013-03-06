@@ -16,8 +16,8 @@
 //    You should have received a copy of the GNU General Public License
 //    along with Kexx2.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef _KEXX2_OBJECTMANAGER_H_
-#define _KEXX2_OBJECTMANAGER_H_
+#ifndef KEXX2_OBJECTMANAGER_H
+#define KEXX2_OBJECTMANAGER_H
 
 #include <list>
 #include "SDLc.h"
@@ -29,40 +29,43 @@ class PlayerState;
 
 typedef std::list<Object*> ObjectList;
 
-// main class
 class ObjectManager {
 public:
-    ObjectManager();
-    virtual ~ObjectManager();
+    ~ObjectManager();
 
-    void loadData(std::string dataPath);
+    void load_data(std::string data_path);
 
-    void update(sdlc::Timer& timer, FxManager& fxManager, float worldYPos_, PlayerState& playerState);
+    void update(sdlc::Timer& timer, FxManager& fx_manager, float world_y_pos, 
+                PlayerState& player_state);
     void draw(sdlc::Screen& screen);
 
-    Object* createObject(int x, int y, float xVel, float yVel, ObjIndex object, Owner owner);
-    Object* createObject(int x, int y, ObjIndex object, float vel, float angle, Owner owner);
-    void createShips(PlayerState& playerState);
-    int getHowManyEnemies();
-    int getHowManyPlayersAlive();
+    Object* create_object(int x, int y, float x_vel, float y_vel, 
+                          ObjIndex object, Owner owner);
+    Object* create_object(int x, int y, ObjIndex object, float vel, 
+                          float angle, Owner owner);
+    void create_ships(PlayerState& player_state);
 
-    ObjectList list;                // object list
-    sdlc::Surface obj[ENEMYSTD_V_FORMATION];          // object graphics
-    sdlc::Sound snd[SND_SHOTROCKET + 1];          // object sound
+    int num_of_enemies();
+    int num_of_players_alive();
+
+    ObjectList list;                                // object list
+    sdlc::Surface obj[ENEMYSTD_V_FORMATION];        // object graphics
+    sdlc::Sound snd[SND_SHOTROCKET + 1];            // object sound
 
 private:
-    void createFormation(int x, int y, float xVel, float yVel, enum ObjIndex object);
+    void create_formation(int x, int y, float x_vel, float y_vel, 
+                          enum ObjIndex object);
 
-    // list maitenence functions
-    void updatePlayerState(PlayerState& playerState);
-    void flushList();
-    void addFromQueue();
-    void updateEnemyCount();
+    // list maintenance functions
+    void update_player_state(PlayerState& player_state);
+    void flush_list();
+    void add_from_queue();
+    void update_enemy_count();
 
     ObjectList queue;
-    int amountOfEnemiesInList;
-    int playersAlive;
-    float worldYPos;
+    int amount_of_enemies_in_list_ = 0;
+    int players_alive_ = 0;
+    float world_y_pos_ = 0;
 };
 
 #endif

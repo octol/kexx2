@@ -99,12 +99,9 @@ void Shot::check_collisions(ObjectManager& object_manager, FxManager& fx_manager
 void Shot::kill(ObjectManager& object_manager, FxManager& fx_manager)
 {
     set_energy(0);
-    fx_manager.playhitSnd();
+    fx_manager.play_hit_snd();
 
     float angle = 270;
-    //if(getYVel() > 0)
-    //angle = 90.0f;
-    //fx_manager.explodeTiny(getX()+getWidth()/2, getY()+getHeight()/2, 0.1f, angle);
 }
 
 // -----------------------------------------------------------------------------

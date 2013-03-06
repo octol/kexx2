@@ -16,12 +16,14 @@
 //    You should have received a copy of the GNU General Public License
 //    along with Kexx2.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef _STARFIELD_H_
-#define _STARFIELD_H_
+#ifndef KEXX2_STARFIELD_H
+#define KEXX2_STARFIELD_H
 
 #include "ParticleManager.h"
 
 const int NUM_OF_STARS = 280;
+
+// TODO: consider switching to composition instead.
 
 class Starfield : public ParticleManager {
 public:

@@ -16,26 +16,21 @@
 //    You should have received a copy of the GNU General Public License
 //    along with Kexx2.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef _KEXX2_LEVELMANAGER_H_
-#define _KEXX2_LEVELMANAGER_H_
+#ifndef KEXX2_LEVELMANAGER_H
+#define KEXX2_LEVELMANAGER_H
 
 #include <string>
-#include <vector>
 
 class ObjectManager;
-class State;
 
 class LevelManager {
 public:
-    LevelManager();
-    virtual ~LevelManager();
-
-    void loadLevel(std::string dataPath, int level, ObjectManager& objectManager);
+    void load_level(std::string data_path, int level, 
+                    ObjectManager& object_manager);
 
 private:
-    bool internalLoadLevel(std::string levelName, ObjectManager& objectManager);
-    //std::vector<std::string> levelFilename;
-    //bool levelIndexRead;
+    bool internal_load_level(std::string level_name, 
+                             ObjectManager& object_manager);
 };
 
 #endif

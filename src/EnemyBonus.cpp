@@ -46,11 +46,11 @@ void EnemyBonus::activate(ObjectManager& object_manager)
 void EnemyBonus::kill(ObjectManager& object_manager, FxManager& fx_manager)
 {
     set_energy(0);
-    fx_manager.explodeNormal((int)(getX() + getWidth() / 2), 
+    fx_manager.explode_normal((int)(getX() + getWidth() / 2), 
             (int)(getY() + getHeight() / 2));
 
     int type = (rand() % 1) + BONUSBLASTER;
-    object_manager.createObject((int)(getX() + getWidth() / 2), 
+    object_manager.create_object((int)(getX() + getWidth() / 2), 
             (int)(getY() + getHeight() / 2), 0, 0/*0.1f*/, 
             (ObjIndex)type, OWNER_NONE);
 }

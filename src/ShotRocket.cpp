@@ -55,7 +55,7 @@ void ShotRocket::think(ObjectManager& object_manager, FxManager& fx_manager)
 void ShotRocket::kill(ObjectManager& object_manager, FxManager& fx_manager)
 {
     set_energy(0);
-    fx_manager.explodeNormal((int)(getX() + getWidth() / 2), (int)(getY() + getHeight() / 2));
+    fx_manager.explode_normal((int)(getX() + getWidth() / 2), (int)(getY() + getHeight() / 2));
 
     // TODO: remove magic number
     for (int i = 0; i < 64; i++) {
@@ -63,7 +63,7 @@ void ShotRocket::kill(ObjectManager& object_manager, FxManager& fx_manager)
         float angle = rand() % 360;
         float x = getX() + getWidth() / 2;
         float y = getY() + getHeight() / 2;
-        object_manager.createObject((int)x, (int)y, SHOTBOMBFRAGMENT, vel, angle, owner());
+        object_manager.create_object((int)x, (int)y, SHOTBOMBFRAGMENT, vel, angle, owner());
     }
 }
 

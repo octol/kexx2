@@ -16,8 +16,8 @@
 //    You should have received a copy of the GNU General Public License
 //    along with Kexx2.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef _KEXX2_FXMANAGER_H_
-#define _KEXX2_FXMANAGER_H_
+#ifndef KEXX2_FXMANAGER_H
+#define KEXX2_FXMANAGER_H
 
 #include "SDLc.h"
 #include <list>
@@ -26,36 +26,36 @@ class ParticleManager;
 
 class FxManager {
 public:
-    FxManager();
-    virtual ~FxManager();
+    ~FxManager();
 
-    void load(ParticleManager& pManager, std::string dataPath);
+    void load(ParticleManager& particle_manager, std::string data_path);
     void update(sdlc::Timer& timer);
     void draw(sdlc::Screen& screen);
 
-    void explodeNormal(int x, int y);
-    void explodeTiny(int x, int y);
-    void explodeTiny(int x, int y, float vel, float angle);
+    void explode_normal(int x, int y);
+    void explode_tiny(int x, int y);
+    void explode_tiny(int x, int y, float vel, float angle);
     void smokepuff(int x, int y);
 
-    void playhitSnd();
-    void playPlayerHitSnd();
+    void play_hit_snd();
+    void play_player_hit_snd();
 
 private:
     // TODO: change to smart pointer
-    ParticleManager* particleManager;
-    sdlc::Sound explSndSmall;
-    sdlc::Sound explSndBig;
-    sdlc::Sound explSndPlayer;
-    sdlc::Sound alarmSnd;
-    sdlc::Surface explImg;
-    std::list<sdlc::Sprite*> explosionList;
+    ParticleManager* particle_manager_ = nullptr;
+    sdlc::Sound expl_snd_small_;
+    sdlc::Sound expl_snd_big_;
+    sdlc::Sound expl_snd_player_;
+    sdlc::Sound alarm_snd_;
+    sdlc::Surface expl_img_;
+    std::list<sdlc::Sprite*> explosion_list_;
 
-    struct prealculatedData {
+    // TODO: replace with list?
+    struct precalculated_data {
         int intensity;
-        float xVel;
-        float yVel;
-    } precalcNormExpl[10][256];
+        float x_vel;
+        float y_vel;
+    } precalc_norm_expl_[10][256];
 };
 
 #endif

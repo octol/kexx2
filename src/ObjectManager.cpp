@@ -17,43 +17,37 @@
 //    along with Kexx2.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "ObjectManager.h"
-#include "SDLc/Screen.h"
+
+#include <cmath>
+#include <list>
+#include <iostream>
+
+#include "SDLc.h"
+
 #include "Ship.h"
 #include "EnemySideways.h"
 #include "EnemyRammer.h"
 #include "EnemyBonus.h"
 #include "ShotRocket.h"
-#include <iostream>
-#include <list>
-#include <cmath>
 #include "WeaponBlaster.h"
 #include "WeaponRocket.h"
 #include "PlayerState.h"
-#include "SDLc/Misc.h"
-using namespace std;
 
 // -----------------------------------------------------------------------------
 // Construction/Destruction
 // -----------------------------------------------------------------------------
 
-ObjectManager::ObjectManager()
-{
-    amountOfEnemiesInList = 0;
-    playersAlive = 0;
-    worldYPos = 0;
-}
-
 ObjectManager::~ObjectManager()
 {
+    // TODO: change to range based loops.
     // clean up objectList
-    ObjectList::iterator i = list.begin();
-    for (; i != list.end(); i++) {
+    //ObjectList::iterator i = list.begin();
+    for (auto i = list.begin(); i != list.end(); ++i) {
         Object* current = *i;
         delete current;
     }
     // clean up queue
-    i = queue.begin();
-    for (; i != queue.end(); i++) {
+    for (auto i = queue.begin(); i != queue.end(); ++i) {
         Object* current = *i;
         delete current;
     }
@@ -63,93 +57,102 @@ ObjectManager::~ObjectManager()
 // Member Functions
 // -----------------------------------------------------------------------------
 
-void ObjectManager::loadData(std::string dataPath)
+void ObjectManager::load_data(std::string data_path)
 {
     // load objects
-    obj[PLAYER1].load(dataPath + "gfx/Ship1.png");
-    obj[PLAYER2].load(dataPath + "gfx/Ship2.png");
-    obj[ENEMYSTD].load(dataPath + "gfx/EnemyStd.png");
-    obj[ENEMYSIDEWAYS].load(dataPath + "gfx/EnemySideways.png");
-    obj[ENEMYRAMMER].load(dataPath + "gfx/EnemyRammer.png");
-    obj[ENEMYBONUS].load(dataPath + "gfx/EnemyBonus.png");
-    obj[OBJECTBIGSHIP].load(dataPath + "gfx/ObjectBigship.png");
-    obj[BONUSBLASTER].load(dataPath + "gfx/BonusBlaster.png");
-    obj[BONUSROCKET].load(dataPath + "gfx/BonusRocket.png");
+    obj[PLAYER1].load(data_path + "gfx/Ship1.png");
+    obj[PLAYER2].load(data_path + "gfx/Ship2.png");
+    obj[ENEMYSTD].load(data_path + "gfx/EnemyStd.png");
+    obj[ENEMYSIDEWAYS].load(data_path + "gfx/EnemySideways.png");
+    obj[ENEMYRAMMER].load(data_path + "gfx/EnemyRammer.png");
+    obj[ENEMYBONUS].load(data_path + "gfx/EnemyBonus.png");
+    obj[OBJECTBIGSHIP].load(data_path + "gfx/ObjectBigship.png");
+    obj[BONUSBLASTER].load(data_path + "gfx/BonusBlaster.png");
+    obj[BONUSROCKET].load(data_path + "gfx/BonusRocket.png");
 
     // shots (for the weapons)
-    obj[SHOTBLASTER].load(dataPath + "gfx/ShotBlaster.png");
-    obj[SHOTBLASTERBIG].load(dataPath + "gfx/ShotBlasterBig.png");
-    obj[SHOTROCKET].load(dataPath + "gfx/ShotRocket.png");
+    obj[SHOTBLASTER].load(data_path + "gfx/ShotBlaster.png");
+    obj[SHOTBLASTERBIG].load(data_path + "gfx/ShotBlasterBig.png");
+    obj[SHOTROCKET].load(data_path + "gfx/ShotRocket.png");
     obj[SHOTBOMBFRAGMENT].alloc(2, 2);
     obj[SHOTBOMBFRAGMENT].fillRect(0, 0, 2, 2, 100, 100, 255);
-    obj[SHOTENEMYSTD].load(dataPath + "gfx/ShotStd2.png");
-    snd[SND_SHOTBLASTER].load(dataPath + "soundfx/shoot1.wav");
-    snd[SND_SHOTROCKET].load(dataPath + "soundfx/rocketshot.wav");
+    obj[SHOTENEMYSTD].load(data_path + "gfx/ShotStd2.png");
+    snd[SND_SHOTBLASTER].load(data_path + "soundfx/shoot1.wav");
+    snd[SND_SHOTROCKET].load(data_path + "soundfx/rocketshot.wav");
 
     // misc
-    obj[SMOKETRAIL].load(dataPath + "gfx/Flame.png");
+    obj[SMOKETRAIL].load(data_path + "gfx/Flame.png");
 }
 
-void ObjectManager::update(sdlc::Timer& timer, FxManager& fxManager, float worldYPos_, PlayerState& playerState)
+void ObjectManager::update(sdlc::Timer& timer, FxManager& fx_manager, 
+                           float world_y_pos, PlayerState& player_state)
 {
-    worldYPos = worldYPos_;
+    world_y_pos_ = world_y_pos;
 
+    // TODO: nicer loop
     ObjectList::iterator iterator = list.begin();
     while (iterator != list.end()) {
         Object* current = *iterator;
-        iterator++;
+        ++iterator;
 
         if (current->energy()) {
             // main functions
-            current->think(*this, fxManager);
+            current->think(*this, fx_manager);
             current->update(timer);
-            current->check_collisions(*this, fxManager);
+            current->check_collisions(*this, fx_manager);
 
             // kill objects who move outside their allowed area
             if (current->getY() > 480) {
                 ObjType t = current->type();
-                if (t == OBJ_ENEMY || t == OBJ_PASSIVE || \
-                        t == OBJ_BONUS || t == OBJ_SHOT)
+                if (t == OBJ_ENEMY || t == OBJ_PASSIVE 
+                        || t == OBJ_BONUS || t == OBJ_SHOT) {
                     current->set_energy(0);
+                }
             } else if (current->type() == OBJ_SHOT) {
-                if (current->getY() < 0 - current->getHeight() || \
-                        current->getX() > 640 || \
-                        current->getX() < 0 - current->getWidth())
+                if (current->getY() < 0 - current->getHeight() 
+                        || current->getX() > 640 
+                        || current->getX() < 0 - current->getWidth()) {
                     current->set_energy(0);
+                }
             }
             // debug
-            if (current->type() == OBJ_UNDEFINED)
-                cout << "warning: object with undefined " << \
-                     "type detected!" << endl;
-            if (current->name == "Generic Object")
-                cout << "warning: object with undefined " << \
-                     "name detected!" << endl;
+            if (current->type() == OBJ_UNDEFINED) {
+                std::cout << "warning: object with undefined " 
+                    << "type detected!" << std::endl;
+            }
+            if (current->name == "Generic Object") {
+                std::cout << "warning: object with undefined " 
+                    << "name detected!" << std::endl;
+            }
         }
     }
 
-    // run maitenence functions
-    updatePlayerState(playerState);
-    flushList();        // flush dead objects
-    addFromQueue();     // add the new objects
-    updateEnemyCount(); // update/count how many enemies
+    // run maintenance functions
+    update_player_state(player_state);
+    flush_list();               // flush dead objects
+    add_from_queue();           // add the new objects
+    update_enemy_count();       // update/count how many enemies
 }
 
 void ObjectManager::draw(sdlc::Screen& screen)
 {
-    ObjectList::iterator i = list.begin();
-    for (; i != list.end(); i++) {
+    //ObjectList::iterator i = list.begin();
+    // TODO: range based loop
+    for (auto i = list.begin(); i != list.end(); i++) {
         Object* current = *i;
         screen.blit(*current);
     }
 }
 
-Object* ObjectManager::createObject(int x, int y, float xVel, float yVel, \
-                                    ObjIndex object, Owner owner)
+Object* ObjectManager::create_object(int x, int y, float x_vel, float y_vel, 
+                                     ObjIndex object, Owner owner)
 {
+    // TODO: Redo to use a Factory pattern instead.
+    
     Object* tmp = 0;
 
     if (object >= ENEMYSTD_V_FORMATION)
-        createFormation(x, y, xVel, yVel, object);
+        create_formation(x, y, x_vel, y_vel, object);
 
     else {
         // enemies
@@ -198,51 +201,53 @@ Object* ObjectManager::createObject(int x, int y, float xVel, float yVel, \
             tmp->initAnimation(40, 2, 0);
         }
 
-
-        else cout << "undefined object passed to ObjectManager::createObject()" << endl;
+        else {
+            std::cout << "ObjectManager::create_object(): undefined object." 
+                << std::endl;
+        }
 
         tmp->setX(x - tmp->getWidth() / 2);
-        tmp->setY(y - tmp->getHeight() / 2 + worldYPos);
-        tmp->setXVel(xVel);
-        tmp->setYVel(yVel);
+        tmp->setY(y - tmp->getHeight() / 2 + world_y_pos_);
+        tmp->setXVel(x_vel);
+        tmp->setYVel(y_vel);
         queue.push_back(tmp);
     }
     return tmp;
 }
 
-Object* ObjectManager::createObject(int x, int y, ObjIndex object, \
-                                    float vel, float angle, Owner owner)
+Object* ObjectManager::create_object(int x, int y, ObjIndex object, 
+                                     float vel, float angle, Owner owner)
 {
     angle = angle * (3.1415927f / 180.0f);
 
-    float xVel = cos(angle) * vel;
-    float yVel = -sin(angle) * vel;
-    //if(xVel < 0.0000001) xVel = 0;
-    //if(yVel < 0.0000001) yVel = 0;
-    return (createObject(x, y, xVel, yVel, object, owner));
+    float x_vel = cos(angle) * vel;
+    float y_vel = -sin(angle) * vel;
+    //if(x_vel < 0.0000001) x_vel = 0;
+    //if(y_vel < 0.0000001) y_vel = 0;
+    return (create_object(x, y, x_vel, y_vel, object, owner));
 }
 
-void ObjectManager::createShips(PlayerState& playerState)
+void ObjectManager::create_ships(PlayerState& player_state)
 {
     int i, j;
     for (i = 1; i <= NUM_OF_POSSIBLE_PLAYERS; i++) {
-        if (playerState.energy_max(i)) {
+        if (player_state.energy_max(i)) {
             Weapon* w1 = 0;
             Weapon* w2 = 0;
             int count = 0;
 
             //if(playerState.main_weapon(i) == WEAPON_MAIN_BLASTER)
-            if (playerState.main_weapon(i) == "Blaster Weapon")
+            if (player_state.main_weapon(i) == "Blaster Weapon")
                 w1 = new WeaponBlaster(snd[SND_SHOTBLASTER], (Owner)(OWNER_PLAYER1 + i - 1));
-            for (j = 1; j < playerState.main_weapon_level(i); j++)
+            for (j = 1; j < player_state.main_weapon_level(i); j++)
                 w1->upgrade();
 
             //if(playerState.extra_weapon(i) == WEAPON_EXTRA_ROCKET)
-            if (playerState.extra_weapon(i) == "Rocket Weapon") {
+            if (player_state.extra_weapon(i) == "Rocket Weapon") {
                 w2 = new WeaponRocket(snd[SND_SHOTROCKET], (Owner)(OWNER_PLAYER1 + i - 1));
-                w2->setCount(playerState.extra_weapon_count(i));
+                w2->setCount(player_state.extra_weapon_count(i));
             }
-            string name = "Player " + std::to_string(i);
+            std::string name = "Player " + std::to_string(i);
             KeySet keyset;
             if (i == 1) {
                 keyset.up = SDLK_UP;
@@ -258,13 +263,15 @@ void ObjectManager::createShips(PlayerState& playerState)
                 keyset.right = SDLK_d;
                 keyset.fire_main = SDLK_LSHIFT;
                 keyset.fire_extra = SDLK_GREATER;
-            } else cout << "ObjectManager::createShips() keys not set!" << endl;
+            } else {
+                std::cout << "ObjectManager::createShips() keys not set!" << std::endl;
+            }
 
-            playerState.set_keyset(i, keyset);
+            player_state.set_keyset(i, keyset);
 
-            int e = playerState.energy_max(i);
-            playerState.set_energy(i, e);
-            int s = playerState.score(i);
+            int e = player_state.energy_max(i);
+            player_state.set_energy(i, e);
+            int s = player_state.score(i);
             Object* tmp = new Ship(name, e, s, obj[PLAYER1 + i - 1], w1, w2, keyset);
 
             tmp->lockedToScreen(false);
@@ -277,109 +284,113 @@ void ObjectManager::createShips(PlayerState& playerState)
     }
 }
 
-int ObjectManager::getHowManyEnemies()
+int ObjectManager::num_of_enemies()
 {
-    return amountOfEnemiesInList;
+    return amount_of_enemies_in_list_;
 }
-int ObjectManager::getHowManyPlayersAlive()
+
+int ObjectManager::num_of_players_alive()
 {
-    return playersAlive;
+    return players_alive_;
 }
+
 // -----------------------------------------------------------------------------
 // Private Functions
 // -----------------------------------------------------------------------------
 
-void ObjectManager::createFormation(int x, int y, float xVel, float yVel, enum ObjIndex object)
+void ObjectManager::create_formation(int x, int y, float x_vel, float y_vel, 
+                                     enum ObjIndex object)
 {
     if (object == ENEMYSTD_V_FORMATION) {
-        createObject(x - 80, y - 40, xVel, yVel, ENEMYSTD, OWNER_NONE);
-        createObject(x - 40, y - 20, xVel, yVel, ENEMYSTD, OWNER_NONE);
-        createObject(x   , y   , xVel, yVel, ENEMYSTD, OWNER_NONE);
-        createObject(x + 40, y - 20, xVel, yVel, ENEMYSTD, OWNER_NONE);
-        createObject(x + 80, y - 40, xVel, yVel, ENEMYSTD, OWNER_NONE);
+        create_object(x - 80, y - 40, x_vel, y_vel, ENEMYSTD, OWNER_NONE);
+        create_object(x - 40, y - 20, x_vel, y_vel, ENEMYSTD, OWNER_NONE);
+        create_object(x     , y     , x_vel, y_vel, ENEMYSTD, OWNER_NONE);
+        create_object(x + 40, y - 20, x_vel, y_vel, ENEMYSTD, OWNER_NONE);
+        create_object(x + 80, y - 40, x_vel, y_vel, ENEMYSTD, OWNER_NONE);
     } else if (object == ENEMYSTD_3V_FORMATION) {
-        createObject(300 - 80, y - 40, xVel, yVel, ENEMYSTD, OWNER_NONE);
-        createObject(300 - 40, y - 20, xVel, yVel, ENEMYSTD, OWNER_NONE);
-        createObject(300   , y   , xVel, yVel, ENEMYSTD, OWNER_NONE);
-        createObject(300 + 40, y - 20, xVel, yVel, ENEMYSTD, OWNER_NONE);
-        createObject(300 + 80, y - 40, xVel, yVel, ENEMYSTD, OWNER_NONE);
+        create_object(300 - 80, y - 40, x_vel, y_vel, ENEMYSTD, OWNER_NONE);
+        create_object(300 - 40, y - 20, x_vel, y_vel, ENEMYSTD, OWNER_NONE);
+        create_object(300     , y     , x_vel, y_vel, ENEMYSTD, OWNER_NONE);
+        create_object(300 + 40, y - 20, x_vel, y_vel, ENEMYSTD, OWNER_NONE);
+        create_object(300 + 80, y - 40, x_vel, y_vel, ENEMYSTD, OWNER_NONE);
 
-        createObject(300 - 260, y - 140, xVel, yVel, ENEMYSTD, OWNER_NONE);
-        createObject(300 - 220, y - 120, xVel, yVel, ENEMYSTD, OWNER_NONE);
-        createObject(300 - 180, y - 100, xVel, yVel, ENEMYSTD, OWNER_NONE);
-        createObject(300 - 140, y - 120, xVel, yVel, ENEMYSTD, OWNER_NONE);
-        createObject(300 - 100, y - 140, xVel, yVel, ENEMYSTD, OWNER_NONE);
+        create_object(300 - 260, y - 140, x_vel, y_vel, ENEMYSTD, OWNER_NONE);
+        create_object(300 - 220, y - 120, x_vel, y_vel, ENEMYSTD, OWNER_NONE);
+        create_object(300 - 180, y - 100, x_vel, y_vel, ENEMYSTD, OWNER_NONE);
+        create_object(300 - 140, y - 120, x_vel, y_vel, ENEMYSTD, OWNER_NONE);
+        create_object(300 - 100, y - 140, x_vel, y_vel, ENEMYSTD, OWNER_NONE);
 
-        createObject(300 + 100, y - 140, xVel, yVel, ENEMYSTD, OWNER_NONE);
-        createObject(300 + 140, y - 120, xVel, yVel, ENEMYSTD, OWNER_NONE);
-        createObject(300 + 180, y - 100, xVel, yVel, ENEMYSTD, OWNER_NONE);
-        createObject(300 + 220, y - 120, xVel, yVel, ENEMYSTD, OWNER_NONE);
-        createObject(300 + 260, y - 140, xVel, yVel, ENEMYSTD, OWNER_NONE);
+        create_object(300 + 100, y - 140, x_vel, y_vel, ENEMYSTD, OWNER_NONE);
+        create_object(300 + 140, y - 120, x_vel, y_vel, ENEMYSTD, OWNER_NONE);
+        create_object(300 + 180, y - 100, x_vel, y_vel, ENEMYSTD, OWNER_NONE);
+        create_object(300 + 220, y - 120, x_vel, y_vel, ENEMYSTD, OWNER_NONE);
+        create_object(300 + 260, y - 140, x_vel, y_vel, ENEMYSTD, OWNER_NONE);
     } else if (object == ENEMYSTD_DIAGONAL_FORMATION) {
-        createObject(0  , y    , xVel, yVel, ENEMYSTD, OWNER_NONE);
-        createObject(50 , y - 10 , xVel, yVel, ENEMYSTD, OWNER_NONE);
-        createObject(100, y - 20 , xVel, yVel, ENEMYSTD, OWNER_NONE);
-        createObject(150, y - 30 , xVel, yVel, ENEMYSTD, OWNER_NONE);
-        createObject(200, y - 40 , xVel, yVel, ENEMYSTD, OWNER_NONE);
-        createObject(250, y - 50 , xVel, yVel, ENEMYSTD, OWNER_NONE);
-        createObject(300, y - 60 , xVel, yVel, ENEMYSTD, OWNER_NONE);
-        createObject(350, y - 70 , xVel, yVel, ENEMYSTD, OWNER_NONE);
-        createObject(400, y - 80 , xVel, yVel, ENEMYSTD, OWNER_NONE);
-        createObject(450, y - 90 , xVel, yVel, ENEMYSTD, OWNER_NONE);
-        createObject(500, y - 100, xVel, yVel, ENEMYSTD, OWNER_NONE);
-        createObject(550, y - 110, xVel, yVel, ENEMYSTD, OWNER_NONE);
-        createObject(600, y - 120, xVel, yVel, ENEMYSTD, OWNER_NONE);
+        create_object(0  , y    , x_vel, y_vel, ENEMYSTD, OWNER_NONE);
+        create_object(50 , y - 10 , x_vel, y_vel, ENEMYSTD, OWNER_NONE);
+        create_object(100, y - 20 , x_vel, y_vel, ENEMYSTD, OWNER_NONE);
+        create_object(150, y - 30 , x_vel, y_vel, ENEMYSTD, OWNER_NONE);
+        create_object(200, y - 40 , x_vel, y_vel, ENEMYSTD, OWNER_NONE);
+        create_object(250, y - 50 , x_vel, y_vel, ENEMYSTD, OWNER_NONE);
+        create_object(300, y - 60 , x_vel, y_vel, ENEMYSTD, OWNER_NONE);
+        create_object(350, y - 70 , x_vel, y_vel, ENEMYSTD, OWNER_NONE);
+        create_object(400, y - 80 , x_vel, y_vel, ENEMYSTD, OWNER_NONE);
+        create_object(450, y - 90 , x_vel, y_vel, ENEMYSTD, OWNER_NONE);
+        create_object(500, y - 100, x_vel, y_vel, ENEMYSTD, OWNER_NONE);
+        create_object(550, y - 110, x_vel, y_vel, ENEMYSTD, OWNER_NONE);
+        create_object(600, y - 120, x_vel, y_vel, ENEMYSTD, OWNER_NONE);
     } else if (object == ENEMYSTD_MASSIVE_FORMATION) {
         int i;
         for (i = 0; i < 20; i++)
-            createObject((rand() % 560) + 40 , y - (rand() % 200), xVel, yVel, ENEMYSTD, OWNER_NONE);
+            create_object((rand() % 560) + 40 , y - (rand() % 200), x_vel, y_vel, ENEMYSTD, OWNER_NONE);
     } else if (object == ENEMYSIDEWAYS_VLINE_FORMATION) {
-        createObject(x   , y   , xVel, yVel, ENEMYSIDEWAYS, OWNER_NONE);
-        createObject(x + 5 , y - 20, xVel, yVel, ENEMYSIDEWAYS, OWNER_NONE);
-        createObject(x + 10, y - 40, xVel, yVel, ENEMYSIDEWAYS, OWNER_NONE);
-        createObject(x + 15, y - 60, xVel, yVel, ENEMYSIDEWAYS, OWNER_NONE);
-        createObject(x + 20, y - 80, xVel, yVel, ENEMYSIDEWAYS, OWNER_NONE);
+        create_object(x     , y     , x_vel, y_vel, ENEMYSIDEWAYS, OWNER_NONE);
+        create_object(x + 5 , y - 20, x_vel, y_vel, ENEMYSIDEWAYS, OWNER_NONE);
+        create_object(x + 10, y - 40, x_vel, y_vel, ENEMYSIDEWAYS, OWNER_NONE);
+        create_object(x + 15, y - 60, x_vel, y_vel, ENEMYSIDEWAYS, OWNER_NONE);
+        create_object(x + 20, y - 80, x_vel, y_vel, ENEMYSIDEWAYS, OWNER_NONE);
     } else if (object == ENEMYSIDEWAYS_HLINE_FORMATION) {
-        createObject(x - 160, y, xVel, yVel, ENEMYSIDEWAYS, OWNER_NONE);
-        createObject(x - 80, y, xVel, yVel, ENEMYSIDEWAYS, OWNER_NONE);
-        createObject(x   , y, xVel, yVel, ENEMYSIDEWAYS, OWNER_NONE);
-        createObject(x + 80, y, xVel, yVel, ENEMYSIDEWAYS, OWNER_NONE);
-        createObject(x + 160, y, xVel, yVel, ENEMYSIDEWAYS, OWNER_NONE);
+        create_object(x - 160, y, x_vel, y_vel, ENEMYSIDEWAYS, OWNER_NONE);
+        create_object(x - 80 , y, x_vel, y_vel, ENEMYSIDEWAYS, OWNER_NONE);
+        create_object(x      , y, x_vel, y_vel, ENEMYSIDEWAYS, OWNER_NONE);
+        create_object(x + 80 , y, x_vel, y_vel, ENEMYSIDEWAYS, OWNER_NONE);
+        create_object(x + 160, y, x_vel, y_vel, ENEMYSIDEWAYS, OWNER_NONE);
     } else if (object == ENEMYSIDEWAYS_V_FORMATION) {
-        createObject(x - 80, y - 40, xVel, yVel, ENEMYSIDEWAYS, OWNER_NONE);
-        createObject(x - 40, y - 20, xVel, yVel, ENEMYSIDEWAYS, OWNER_NONE);
-        createObject(x   , y   , xVel, yVel, ENEMYSIDEWAYS, OWNER_NONE);
-        createObject(x + 40, y - 20, xVel, yVel, ENEMYSIDEWAYS, OWNER_NONE);
-        createObject(x + 80, y - 40, xVel, yVel, ENEMYSIDEWAYS, OWNER_NONE);
+        create_object(x - 80, y - 40, x_vel, y_vel, ENEMYSIDEWAYS, OWNER_NONE);
+        create_object(x - 40, y - 20, x_vel, y_vel, ENEMYSIDEWAYS, OWNER_NONE);
+        create_object(x     , y     , x_vel, y_vel, ENEMYSIDEWAYS, OWNER_NONE);
+        create_object(x + 40, y - 20, x_vel, y_vel, ENEMYSIDEWAYS, OWNER_NONE);
+        create_object(x + 80, y - 40, x_vel, y_vel, ENEMYSIDEWAYS, OWNER_NONE);
     } else if (object == ENEMYSIDEWAYS_MASSIVE_FORMATION) {
         int i;
         for (i = 0; i < 20; i++)
-            createObject((rand() % 560) + 40 , y - (rand() % 200), xVel, yVel, ENEMYSIDEWAYS, OWNER_NONE);
+            create_object((rand() % 560) + 40 , y - (rand() % 200), x_vel, y_vel, ENEMYSIDEWAYS, OWNER_NONE);
     } else if (object == ENEMYRAMMER_VLINE_FORMATION) {
-        createObject(x, y   , xVel, yVel, ENEMYRAMMER, OWNER_NONE);
-        createObject(x, y - 20, xVel, yVel, ENEMYRAMMER, OWNER_NONE);
-        createObject(x, y - 40, xVel, yVel, ENEMYRAMMER, OWNER_NONE);
-        createObject(x, y - 60, xVel, yVel, ENEMYRAMMER, OWNER_NONE);
-        createObject(x, y - 80, xVel, yVel, ENEMYRAMMER, OWNER_NONE);
+        create_object(x, y     , x_vel, y_vel, ENEMYRAMMER, OWNER_NONE);
+        create_object(x, y - 20, x_vel, y_vel, ENEMYRAMMER, OWNER_NONE);
+        create_object(x, y - 40, x_vel, y_vel, ENEMYRAMMER, OWNER_NONE);
+        create_object(x, y - 60, x_vel, y_vel, ENEMYRAMMER, OWNER_NONE);
+        create_object(x, y - 80, x_vel, y_vel, ENEMYRAMMER, OWNER_NONE);
     } else if (object == ENEMYRAMMER_DIAGONAL_FORMATION) {
-        createObject(x - 80, y   , xVel, yVel, ENEMYRAMMER, OWNER_NONE);
-        createObject(x - 40, y - 20, xVel, yVel, ENEMYRAMMER, OWNER_NONE);
-        createObject(x   , y - 40, xVel, yVel, ENEMYRAMMER, OWNER_NONE);
-        createObject(x + 40, y - 60, xVel, yVel, ENEMYRAMMER, OWNER_NONE);
-        createObject(x + 80, y - 80, xVel, yVel, ENEMYRAMMER, OWNER_NONE);
+        create_object(x - 80, y   , x_vel, y_vel, ENEMYRAMMER, OWNER_NONE);
+        create_object(x - 40, y - 20, x_vel, y_vel, ENEMYRAMMER, OWNER_NONE);
+        create_object(x     , y - 40, x_vel, y_vel, ENEMYRAMMER, OWNER_NONE);
+        create_object(x + 40, y - 60, x_vel, y_vel, ENEMYRAMMER, OWNER_NONE);
+        create_object(x + 80, y - 80, x_vel, y_vel, ENEMYRAMMER, OWNER_NONE);
     } else if (object == ENEMYRAMMER_FULLDIAGONAL_FORMATION) {
-        createObject(10 , y - 120, xVel, yVel, ENEMYRAMMER, OWNER_NONE);
-        createObject(110, y - 100, xVel, yVel, ENEMYRAMMER, OWNER_NONE);
-        createObject(210, y - 80 , xVel, yVel, ENEMYRAMMER, OWNER_NONE);
-        createObject(310, y - 60 , xVel, yVel, ENEMYRAMMER, OWNER_NONE);
-        createObject(410, y - 40 , xVel, yVel, ENEMYRAMMER, OWNER_NONE);
-        createObject(510, y - 20 , xVel, yVel, ENEMYRAMMER, OWNER_NONE);
-        createObject(610, y    , xVel, yVel, ENEMYRAMMER, OWNER_NONE);
+        create_object(10 , y - 120, x_vel, y_vel, ENEMYRAMMER, OWNER_NONE);
+        create_object(110, y - 100, x_vel, y_vel, ENEMYRAMMER, OWNER_NONE);
+        create_object(210, y - 80 , x_vel, y_vel, ENEMYRAMMER, OWNER_NONE);
+        create_object(310, y - 60 , x_vel, y_vel, ENEMYRAMMER, OWNER_NONE);
+        create_object(410, y - 40 , x_vel, y_vel, ENEMYRAMMER, OWNER_NONE);
+        create_object(510, y - 20 , x_vel, y_vel, ENEMYRAMMER, OWNER_NONE);
+        create_object(610, y      , x_vel, y_vel, ENEMYRAMMER, OWNER_NONE);
     }
 }
 
-void ObjectManager::updatePlayerState(PlayerState& playerState)
+void ObjectManager::update_player_state(PlayerState& player_state)
 {
+    // TODO: range based loop
     ObjectList::iterator i = list.begin();
     for (; i != list.end(); i++) {
         Object* obj = *i;
@@ -387,20 +398,20 @@ void ObjectManager::updatePlayerState(PlayerState& playerState)
         if (obj->type() == OBJ_PLAYER) {
             int which = obj->name[obj->name.length() - 1] - (int)'0';
 
-            playerState.set_energy(which, obj->energy());
-            playerState.set_energy_max(which, obj->energy_max());
-            playerState.set_score(which, obj->score());
+            player_state.set_energy(which, obj->energy());
+            player_state.set_energy_max(which, obj->energy_max());
+            player_state.set_score(which, obj->score());
 
             Ship* tmp;
             tmp = (Ship*)obj;
             if (tmp->main_weapon_) {
-                playerState.set_main_weapon(which, tmp->main_weapon_->name);
-                playerState.set_main_weapon_level(which, tmp->main_weapon_->getLevel());
+                player_state.set_main_weapon(which, tmp->main_weapon_->name);
+                player_state.set_main_weapon_level(which, tmp->main_weapon_->getLevel());
             }
             if (tmp->extra_weapon_) {
-                playerState.set_extra_weapon(which, tmp->extra_weapon_->name);
-                playerState.set_extra_weapon_count(which, tmp->extra_weapon_->getCount());
-            } else playerState.set_extra_weapon(which, "none");
+                player_state.set_extra_weapon(which, tmp->extra_weapon_->name);
+                player_state.set_extra_weapon_count(which, tmp->extra_weapon_->getCount());
+            } else player_state.set_extra_weapon(which, "none");
 
             /*if(tmp->mainWeapon && tmp->mainWeapon->name == "Blaster Weapon")
             playerState.set_main_weapon(which, WEAPON_MAIN_BLASTER);
@@ -413,13 +424,14 @@ void ObjectManager::updatePlayerState(PlayerState& playerState)
             //playerState.set_extra_weapon();
 
             if (obj->energy() == 0)
-                playerState.set_energy_max(which, 0);
+                player_state.set_energy_max(which, 0);
         }
     }
 }
 
-void ObjectManager::flushList()
+void ObjectManager::flush_list()
 {
+    // TODO: range based loop.
     ObjectList::iterator i = list.begin();
     while (i != list.end()) {
         Object* current = *i;
@@ -432,15 +444,16 @@ void ObjectManager::flushList()
     }
 }
 
-void ObjectManager::addFromQueue()
+void ObjectManager::add_from_queue()
 {
+    // TODO: range based loop
     ObjectList::iterator i = queue.begin();
     while (i != queue.end()) {
         Object* current = *i;
         i++;
 
-        if (worldYPos < current->getY() + current->getHeight()) {
-            current->setY(current->getY() - worldYPos);
+        if (world_y_pos_ < current->getY() + current->getHeight()) {
+            current->setY(current->getY() - world_y_pos_);
 
             current->active(true);
             current->activate(*this);
@@ -449,10 +462,11 @@ void ObjectManager::addFromQueue()
                 list.push_back(current);
             else {
                 unsigned j;
+                // TODO: range based loop
                 ObjectList::iterator iterator = list.begin();
                 for (j = 0; j < list.size(); j++) {
-                    Object* currentList = *iterator;
-                    if (current->type() < currentList->type()) {
+                    Object* current_list = *iterator;
+                    if (current->type() < current_list->type()) {
                         list.insert(iterator, current);
                         j = list.size(); // break;
                     }
@@ -470,25 +484,28 @@ void ObjectManager::addFromQueue()
     }
 }
 
-void ObjectManager::updateEnemyCount()
+void ObjectManager::update_enemy_count()
 {
-    amountOfEnemiesInList = 0;
-    playersAlive = 0;
+    amount_of_enemies_in_list_ = 0;
+    players_alive_ = 0;
+
+    // TODO: range based loop
     ObjectList::iterator iterator;
     for (iterator = list.begin(); iterator != list.end(); iterator++) {
         Object* current = *iterator;
         ObjType t = current->type();
         if (t == OBJ_ENEMY || t == OBJ_BONUS)
-            amountOfEnemiesInList++;
+            amount_of_enemies_in_list_++;
         else if (t == OBJ_PLAYER)
-            playersAlive++;
+            players_alive_++;
     }
+    // TODO: range based loop
     for (iterator = queue.begin(); iterator != queue.end(); iterator++) {
         Object* current = *iterator;
         ObjType t = current->type();
         if (t == OBJ_ENEMY || t == OBJ_BONUS)
-            amountOfEnemiesInList++;
+            amount_of_enemies_in_list_++;
         else if (t == OBJ_PLAYER)
-            playersAlive++;
+            players_alive_++;
     }
 }

@@ -27,28 +27,27 @@
 Starfield::Starfield()
 {
     // set intensity of stars
-    int intensityLevels = 140;
-    int starsPerIntensityLevel = (NUM_OF_STARS / intensityLevels);
-    int currentStar = 0;
-    int tmpIntensity = 0;
+    int intensity_levels = 140;
+    int stars_per_intensity_level = (NUM_OF_STARS / intensity_levels);
+    int current_star = 0;
+    int tmp_intensity = 0;
 
-    int i;
-    while (currentStar < NUM_OF_STARS) {
-        for (i = 0; i < starsPerIntensityLevel; i++) {
-            particle[currentStar].setR(tmpIntensity);
-            particle[currentStar].setG(tmpIntensity);
-            particle[currentStar].setB(tmpIntensity);
-            currentStar++;
+    while (current_star < NUM_OF_STARS) {
+        for (int i = 0; i < stars_per_intensity_level; i++) {
+            particle_[current_star].setR(tmp_intensity);
+            particle_[current_star].setG(tmp_intensity);
+            particle_[current_star].setB(tmp_intensity);
+            current_star++;
         }
-        tmpIntensity++;
+        tmp_intensity++;
     }
 
     // rand out positions
-    for (i = 0; i < NUM_OF_STARS; i++) {
-        particle[i].setX((rand() % 638) + 1);
-        particle[i].setY((rand() % 478) + 1);
-        float tmp = particle[i].getR()/**0.1*/;
-        particle[i].setYVel((tmp * tmp * tmp) / 200000.0f);
+    for (int i = 0; i < NUM_OF_STARS; i++) {
+        particle_[i].setX((rand() % 638) + 1);
+        particle_[i].setY((rand() % 478) + 1);
+        float tmp = particle_[i].getR()/**0.1*/;
+        particle_[i].setYVel((tmp * tmp * tmp) / 200000.0f);
     }
 }
 
@@ -62,29 +61,27 @@ Starfield::~Starfield()
 
 void Starfield::update(sdlc::Timer& timer)
 {
-    int i;
-    for (i = 0; i < NUM_OF_STARS; i++) {
-        particle[i].update(timer);
-        if (particle[i].getY() > 478)
-            particle[i].setY(1);
+    for (int i = 0; i < NUM_OF_STARS; i++) {
+        particle_[i].update(timer);
+        if (particle_[i].getY() > 478)
+            particle_[i].setY(1);
     }
 }
 
 void Starfield::draw(sdlc::Screen& screen)
 {
     screen.lock();
-    int i;
-    for (i = 0; i < NUM_OF_STARS; i++) {
-        screen.fastSetPix((int)(particle[i].getX()), (int)(particle[i].getY()), \
-                          particle[i].getR(), particle[i].getG(), particle[i].getB());
-//      if(particle[i].r > 100)
+    for (int i = 0; i < NUM_OF_STARS; i++) {
+        screen.fastSetPix((int)(particle_[i].getX()), (int)(particle_[i].getY()), 
+                          particle_[i].getR(), particle_[i].getG(), particle_[i].getB());
+//      if(particle_[i].r > 100)
 //      {
-        screen.fastSetPix((int)(particle[i].getX() + 1), (int)(particle[i].getY()), \
-                          particle[i].getR(), particle[i].getG(), particle[i].getB());
-        screen.fastSetPix((int)(particle[i].getX()), (int)(particle[i].getY() + 1), \
-                          particle[i].getR(), particle[i].getG(), particle[i].getB());
-        screen.fastSetPix((int)(particle[i].getX() + 1), (int)(particle[i].getY() + 1), \
-                          particle[i].getR(), particle[i].getG(), particle[i].getB());
+        screen.fastSetPix((int)(particle_[i].getX() + 1), (int)(particle_[i].getY()),
+                          particle_[i].getR(), particle_[i].getG(), particle_[i].getB());
+        screen.fastSetPix((int)(particle_[i].getX()), (int)(particle_[i].getY() + 1),
+                          particle_[i].getR(), particle_[i].getG(), particle_[i].getB());
+        screen.fastSetPix((int)(particle_[i].getX() + 1), (int)(particle_[i].getY() + 1),
+                          particle_[i].getR(), particle_[i].getG(), particle_[i].getB());
 //      }
     }
     screen.unlock();

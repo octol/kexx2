@@ -13,6 +13,7 @@ General:
   specific classes in ctor and system class to separate check_input(),
   run_logic(), draw() functions?
 * Systematic way of doing dependency injection in e.g Interface.
+* Store pointers or objects in lists? e.g Sprites.
 
 Specific:
 ---------
@@ -23,4 +24,9 @@ libsdlc:
 --------
 - introduce namespace.
 - single header at top level.
+
+Bugs:
+-----
+
+- Blinking of ship when hit seems off, is this due to precalc hit surface?
 

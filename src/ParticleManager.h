@@ -16,8 +16,8 @@
 //    You should have received a copy of the GNU General Public License
 //    along with Kexx2.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef _KEXX2_PARTICLEMANAGER_H_
-#define _KEXX2_PARTICLEMANAGER_H_
+#ifndef KEXX2_PARTICLEMANAGER_H
+#define KEXX2_PARTICLEMANAGER_H
 
 #include "SDLc.h"
 
@@ -25,17 +25,18 @@ const int NUM_OF_PARTICLES = 4096;
 
 class ParticleManager {
 public:
-    ParticleManager();
-    virtual ~ParticleManager();
+    virtual ~ParticleManager() {};
 
-    void create(float x, float y, float xVel, float yVel, int r, int g, int b, int a, float fadeSpeed);
+    void create(float x, float y, float x_vel, float y_vel, 
+                int r, int g, int b, int a, float fadeSpeed);
     virtual void update(sdlc::Timer& timer);
     void draw(sdlc::Screen& screen);
-    int numOfParticlesActive();
+    int num_of_particles_active();
 
 protected:
-    sdlc::Particle particle[NUM_OF_PARTICLES];
-    int nextAvailableSlot();
+    // TODO: replace with STL container
+    sdlc::Particle particle_[NUM_OF_PARTICLES];
+    int next_available_slot();
 };
 
 #endif

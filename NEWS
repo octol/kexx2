@@ -3,8 +3,8 @@ NEWS
 
 2013-03-05  Jon Haggblad  <jon@haeggblad.com>
 
-    Further updates. Moved to using sdlc namespace for all SDLc stuff now. Not yet migrated to using the 
-    meta header file SDLc.h
+    Further updates. Moved to using sdlc namespace for all SDLc stuff now.
+    Not yet migrated to using the meta header file SDLc.h
 
 2013-02-28  Jon Haggblad  <jon@haeggblad.com>
 

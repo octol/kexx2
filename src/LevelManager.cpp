@@ -17,84 +17,82 @@
 //    along with Kexx2.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "LevelManager.h"
+
 #include <fstream>
 #include <iostream>
+#include <vector>
 #include "ObjectManager.h"
 #include "World.h"
-using namespace std;
-
-// -----------------------------------------------------------------------------
-// Construction/Destruction
-// -----------------------------------------------------------------------------
-
-LevelManager::LevelManager()
-{
-}
-
-LevelManager::~LevelManager()
-{
-}
 
 // -----------------------------------------------------------------------------
 // Member Functions
 // -----------------------------------------------------------------------------
 
-void LevelManager::loadLevel(std::string dataPath, int level, ObjectManager& objectManager)
+void LevelManager::load_level(std::string data_path, int level, 
+                              ObjectManager& object_manager)
 {
-    //////////////////////////////////////
+    // TODO: make this more elegant.
+    // -------------------------
     // get level filenames first
-    std::vector<std::string> levelFilename;
+    std::vector<std::string> level_filename;
     int i = 0;
-    ifstream levelsFile((dataPath + "levels/levels.cfg").c_str());
+    std::ifstream levels_file((data_path + "levels/levels.cfg").c_str());
 
-    string tmpFilename;
-    levelFilename.clear();
+    std::string tmp_filename;
+    level_filename.clear();
 
-    while (!levelsFile.eof()) {
-        levelsFile >> tmpFilename;
-        levelFilename.push_back(tmpFilename);
+    while (!levels_file.eof()) {
+        levels_file >> tmp_filename;
+        level_filename.push_back(tmp_filename);
         i++;
 
-        if (levelsFile.eof())
+        if (levels_file.eof())
             break;
     }
 
-    levelsFile.close();
-    ////////////////////////////////////
+    levels_file.close();
+    // -------------------------
 
-    internalLoadLevel(dataPath + "levels/" + levelFilename[level - 1], objectManager);
+    internal_load_level(data_path + "levels/" + level_filename[level - 1], 
+                        object_manager);
 }
 
 // -----------------------------------------------------------------------------
 // Private Functions
 // -----------------------------------------------------------------------------
 
-bool LevelManager::internalLoadLevel(std::string levelName, ObjectManager& objectManager)
+bool LevelManager::internal_load_level(std::string level_name, 
+                                       ObjectManager& object_manager)
 {
-    string type;
+    std::string type;
     int x, y;
 
     // open file for reading
-    ifstream levelFile(levelName.c_str());
-    if (!levelFile) {
-        cerr << "Error opening " << levelName << "for reading!" << endl;
+    std::ifstream level_file(level_name.c_str());
+    if (!level_file) {
+        std::cerr << "Error opening " << level_name << "for reading!" << std::endl;
         return false;
     } else {
-        while (!levelFile.eof()) {
-            levelFile >> type;
-            if (levelFile.eof())
+        while (!level_file.eof()) {
+            level_file >> type;
+            if (level_file.eof())
                 break;
 
-            levelFile >> x;
-            levelFile >> y;
+            level_file >> x;
+            level_file >> y;
 
             ObjIndex object;
 
-            if (type == "ENEMYSTD")      object = ENEMYSTD;
-            else if (type == "ENEMYSIDEWAYS") object = ENEMYSIDEWAYS;
-            else if (type == "ENEMYRAMMER")   object = ENEMYRAMMER;
-            else if (type == "ENEMYBONUS")    object = ENEMYBONUS;
-            else if (type == "OBJECTBIGSHIP") object = OBJECTBIGSHIP;
+            if (type == "ENEMYSTD")      
+                object = ENEMYSTD;
+            else if (type == "ENEMYSIDEWAYS") 
+                object = ENEMYSIDEWAYS;
+            else if (type == "ENEMYRAMMER")   
+                object = ENEMYRAMMER;
+            else if (type == "ENEMYBONUS")    
+                object = ENEMYBONUS;
+            else if (type == "OBJECTBIGSHIP") 
+                object = OBJECTBIGSHIP;
 
             // formations
             else if (type == "ENEMYSTD_V_FORMATION")
@@ -120,38 +118,15 @@ bool LevelManager::internalLoadLevel(std::string levelName, ObjectManager& objec
             else if (type == "ENEMYRAMMER_FULLDIAGONAL_FORMATION")
                 object = ENEMYRAMMER_FULLDIAGONAL_FORMATION;
 
-            objectManager.createObject(x, -y, 0.0f, 0.0f, \
-                                       object, OWNER_NONE);
+            object_manager.create_object(x, -y, 0.0f, 0.0f, object, OWNER_NONE);
 
-            if (levelFile.eof())
-                break;
+            // TODO: this should not be needed.
+            //if (level_file.eof())
+                //break;
         }
     }
 
-    levelFile.close();
+    level_file.close();
     return true;
 }
-/*
-int LevelManager::checkHowManyLevelsAvailable(string dataPath)
-{
-    int i = 0;
-    ifstream levelsFile( (dataPath + "levels/levels.cfg").c_str() );
 
-    string tmpFilename;
-    levelFilename.clear();
-
-    while(!levelsFile.eof())
-    {
-        levelsFile >> tmpFilename;
-        levelFilename.push_back(tmpFilename);
-//      cout << levelFilename[i] << endl;
-        i++;
-
-        if(levelsFile.eof())
-            break;
-    }
-
-    levelsFile.close();
-    levelIndexRead = true;
-    return levelFilename.size()-1; // number of levels
-}*/

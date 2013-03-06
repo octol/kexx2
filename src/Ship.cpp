@@ -29,7 +29,6 @@
 
 Ship::Ship(std::string n, int energy, int score, Surface& s, 
            Weapon* main, Weapon* extra, KeySet keyset)
-    //: Object(n, energy, score, s, OBJ_PLAYER, 0),
     : Object(n, energy, s, OBJ_PLAYER),
       main_weapon_(main),
       extra_weapon_(extra),
@@ -127,7 +126,7 @@ void Ship::think(ObjectManager& object_manager, FxManager& fx_manager)
     update_smoketrail(object_manager);
 
     // if level complete
-    if (object_manager.getHowManyEnemies() == 0) {
+    if (object_manager.num_of_enemies() == 0) {
         invincible_ = INPUT_LOCKED;
         level_complete_ = true;
     }
@@ -177,9 +176,10 @@ void Ship::hurt(int value, ObjectManager& object_manager, FxManager& fx_manager)
     if (!invincible_ && hit_timer == 0) {
         Object::hurt(value, object_manager, fx_manager);
         if (energy())
-            fx_manager.playPlayerHitSnd();
+            fx_manager.play_player_hit_snd();
 
         invincible_ = BLINKING;
+        // TODO: replace with call to Timer class.
         blinking_timer_ = SDL_GetTicks();
     }
 }
@@ -223,8 +223,8 @@ void Ship::update_smoketrail(ObjectManager& object_manager)
     if (!smoke_found) {
         float x = getX() + 60;
         float y = getY() + 60;
-        object_manager.createObject((int)x, (int)y, 0, 0, SMOKETRAIL, owner());
-        object_manager.createObject((int)(x + 40), (int)y, 0, 0, SMOKETRAIL, owner());
+        object_manager.create_object((int)x, (int)y, 0, 0, SMOKETRAIL, owner());
+        object_manager.create_object((int)(x + 40), (int)y, 0, 0, SMOKETRAIL, owner());
     }
 
     int current = 1;

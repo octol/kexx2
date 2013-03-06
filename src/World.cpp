@@ -40,13 +40,13 @@ World::World(sdlc::Timer& timer, Options& options, PlayerState& player_state,
       flashing_text_timer_(timer.ticks())
 {
     // setup data
-    object_manager_.loadData(options.data_path);
+    object_manager_.load_data(options.data_path);
 
     // ship(s)
-    object_manager_.createShips(player_state);
+    object_manager_.create_ships(player_state);
 
     // level
-    level_manager_.loadLevel(options.data_path, level, object_manager_);
+    level_manager_.load_level(options.data_path, level, object_manager_);
 
     // effects
     fx_manager_.load(particle_manager_, options.data_path);
@@ -92,7 +92,7 @@ void World::run_logic(sdlc::Input& input, sdlc::Timer& timer, sdlc::Mixer& mixer
     }
 
     // when level complete
-    else if (object_manager_.getHowManyEnemies() == 0 && !all_players_dead_) {
+    else if (object_manager_.num_of_enemies() == 0 && !all_players_dead_) {
         if (time_when_all_enemies_dead_ == 0) {
             level_complete_snd_.play(0);
 
@@ -113,7 +113,7 @@ void World::run_logic(sdlc::Input& input, sdlc::Timer& timer, sdlc::Mixer& mixer
     }
 
     // when all players are dead
-    else if (object_manager_.getHowManyPlayersAlive() == 0) {
+    else if (object_manager_.num_of_players_alive() == 0) {
         all_players_dead_ = true;
         if (time_when_all_enemies_dead_ == 0) {
             game_over_snd_.play(0);
@@ -149,7 +149,7 @@ void World::draw(sdlc::Screen& screen, sdlc::Font& font)
         }
     }
 
-    if (object_manager_.getHowManyEnemies() == 0 && !all_players_dead_) {
+    if (object_manager_.num_of_enemies() == 0 && !all_players_dead_) {
         if (SDL_GetTicks() - flashing_text_timer_ < 200 
                 || flashing_text_timer_ == 0) {
             screen.print(250, 200, "level complete!", font);
