@@ -22,7 +22,7 @@
 #include <string>
 #include "Defines.h"
 
-class Options {
+class Options final {
 public:
     void load(std::string path);
     void write(std::string path);

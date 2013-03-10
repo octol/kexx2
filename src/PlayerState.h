@@ -31,7 +31,7 @@ struct KeySet {
     int fire_extra = 0;
 };
 
-class PlayerState {
+class PlayerState final {
 public:
     int energy(int player);
     int set_energy(int player, int value);

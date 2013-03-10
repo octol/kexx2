@@ -39,12 +39,10 @@ void EnemyRammer::activate(ObjectManager& object_manager)
 {
     std::vector<Object*> player_vector;
 
-    // TODO: range based for loop
-    ObjectList::iterator i = object_manager.list.begin();
-    for (; i != object_manager.list.end(); i++) {
-        Object* current = *i;
-        if (current->type() == OBJ_PLAYER && current->energy() > 0)
-            player_vector.push_back(current);
+    // Fetch the player ship objects
+    for (auto obj : object_manager.list) {
+        if (obj->type() == OBJ_PLAYER && obj->energy() > 0)
+            player_vector.push_back(obj);
     }
 
     if (!player_vector.empty()) {

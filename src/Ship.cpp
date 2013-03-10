@@ -243,6 +243,7 @@ void Ship::update_smoketrail(ObjectManager& object_manager)
                 obj->setPos(getX() + 13, getY() + getHeight() - 2);
                 obj->setVel(getXVel(), getYVel());
 
+                // TODO: remove extern timer class.
                 extern sdlc::Timer* timer;
                 obj->update(*timer);
                 obj->setVel(0, 0);
@@ -251,6 +252,7 @@ void Ship::update_smoketrail(ObjectManager& object_manager)
                 obj->setPos(getX() + 24, getY() + getHeight() - 2);
                 obj->setVel(getXVel(), getYVel());
 
+                // TODO: remove extern timer class.
                 extern sdlc::Timer* timer;
                 obj->update(*timer);
                 obj->setVel(0, 0);
