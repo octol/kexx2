@@ -12,26 +12,59 @@ Local issues:
 -------------
 - Variable naming conventions.
 - Go over all TODO in code.
-- grep for classes not final.
-- grep for extern
 - grep for "for" loops.
-- remove all empty destructs for leaf node classes.
+- Remove all empty destructors for leaf node classes.
+- Fix compiler warnings.
 
 Architectural issues:
 ---------------------
+- Store pointers or objects in lists? e.g Sprites, Objects.
+- Systematic way of doing dependency injection in e.g Interface.
+
+Organisation of system classes:
+-------------------------------
 - Make the timer a local object.
+- We should consider passing a struct of subsystems instead.
 - Pass SDLc classes in constructors only? Or Maybe pass references to game
   specific classes in ctor and system class to separate check_input(),
   run_logic(), draw() functions?
-- Systematic way of doing dependency injection in e.g Interface.
-- Store pointers or objects in lists? e.g Sprites.
-- We should consider passing a struct of subsystems instead.
+- An issue is that the Mixer class is used as extern inside SDLc.
+
+Subsystems overview:
+--------------------
+
+### Parts not yet done
+
+IGameState: 
+    Menu, World, BuyScreen, Finished, GameOver.
+Weapon: 
+    WeaponBlaster, WeaponRocket.
+Object
+    Shot: 
+        ShotRocket.
+    Enemy:
+        EnemyBonus, EnemyRammer, EnemySideways
+    Ship
+ParticleManager: 
+    Starfield
+FxManager
+LevelManager
+ObjectManager
+
+### Parts done
+
 
 Feature changes:
 ----------------
 - Automatic detection of game data path.
     This requires that we set configuration stuff in .kexx2rc instead of
     kexx2.cfg, due to write permission.
+- Implement Factory pattern for object creation.
+
+Media:
+------
+Change game over sound to something more serious. Consider having no sound for
+now.
 
 Specific issues:
 ----------------

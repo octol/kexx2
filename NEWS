@@ -1,6 +1,11 @@
 NEWS
 ====
 
+2013-03-10  Jon Haggblad  <jon@haeggblad.com>
+
+    As of today we are down to 10 extern system classes and 72 TODO
+    items.
+
 2013-03-05  Jon Haggblad  <jon@haeggblad.com>
 
     Further updates. Moved to using sdlc namespace for all SDLc stuff now.
