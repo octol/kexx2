@@ -23,12 +23,11 @@
 #include "Weapon.h"
 #include "Defines.h"
 
-class WeaponBlaster : public Weapon {
+class WeaponBlaster final : public Weapon {
 public:
     WeaponBlaster(sdlc::Sound& sound, Owner owner);
-    virtual ~WeaponBlaster();
 
-    void shoot(int x, int y, ObjectManager& object_manager);
+    void shoot(int x, int y, ObjectManager& object_manager) override;
 };
 
 #endif

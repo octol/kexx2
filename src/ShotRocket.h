@@ -21,7 +21,7 @@
 
 #include "Shot.h"
 
-class ShotRocket : public Shot {
+class ShotRocket final : public Shot {
 public:
     ShotRocket(std::string name, int energy, Surface& s, Owner owner);
     virtual ~ShotRocket();

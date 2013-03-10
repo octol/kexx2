@@ -27,26 +27,28 @@ class PlayerState;
 
 const int ROCKET_COST = 1000;
 
-class BuyScreen : public IGameState {
+class BuyScreen final : public IGameState {
 public:
     BuyScreen(Options& options, int current_level);
     virtual ~BuyScreen() {};
 
     void run_logic(sdlc::Input& input, sdlc::Timer& timer, sdlc::Mixer& mixer,
                    PlayerState& player_state) override;
-    void draw(sdlc::Screen& screen, sdlc::Font& font);
+    void draw(sdlc::Screen& screen, sdlc::Font& font) override;
 
 private:
-    int currentLevel_;
-    int howManyPlayers_;
-    PlayerState* playerState_;
+    int current_level_;
+    int how_many_players_;
+
+    // TODO: move to smart pointer.
+    PlayerState* player_state_;
 
     struct Selector {
         sdlc::Surface gfx;
-        int pos[2];
+        int pos[2] = { 0, 0 };
     } selectors_;
 
-    bool playerdone_[2];
+    bool player_done_[2] = { false, false };
 };
 
 #endif // KEXX2_BUYSCREEN_H

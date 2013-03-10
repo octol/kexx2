@@ -24,14 +24,11 @@
 // Construction/Destruction
 // -----------------------------------------------------------------------------
 
-EnemyBonus::EnemyBonus(std::string name, int energy, int score, sdlc::Surface& s)
+EnemyBonus::EnemyBonus(std::string name, int energy, int score, 
+        sdlc::Surface& s)
     : Object(name, energy, s, OBJ_ENEMY)
 {
     set_score(0);
-}
-
-EnemyBonus::~EnemyBonus()
-{
 }
 
 // -----------------------------------------------------------------------------
@@ -40,7 +37,7 @@ EnemyBonus::~EnemyBonus()
 
 void EnemyBonus::activate(ObjectManager& object_manager)
 {
-    setYVel(120.0f/*0.12f*/);
+    setYVel(120.0f);
 }
 
 void EnemyBonus::kill(ObjectManager& object_manager, FxManager& fx_manager)
@@ -51,7 +48,7 @@ void EnemyBonus::kill(ObjectManager& object_manager, FxManager& fx_manager)
 
     int type = (rand() % 1) + BONUSBLASTER;
     object_manager.create_object((int)(getX() + getWidth() / 2), 
-            (int)(getY() + getHeight() / 2), 0, 0/*0.1f*/, 
+            (int)(getY() + getHeight() / 2), 0, 0, 
             (ObjIndex)type, OWNER_NONE);
 }
 

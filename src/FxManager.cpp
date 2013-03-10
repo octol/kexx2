@@ -17,10 +17,13 @@
 //    along with Kexx2.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "FxManager.h"
+
 #include <cmath>
 #include <iostream>
+
 #include "Defines.h"
 #include "ParticleManager.h"
+#include "Object.h"
 
 // -----------------------------------------------------------------------------
 // Construction/Destruction
@@ -28,13 +31,8 @@
 
 FxManager::~FxManager()
 {
-    // TODO: range based for loop
-    // free explosionList
-    std::list<sdlc::Sprite*>::iterator i = explosion_list_.begin();
-    for (; i != explosion_list_.end(); i++) {
-        sdlc::Sprite* s = *i;
-        delete s;
-    }
+    for (sdlc::Sprite* i : explosion_list_)
+        delete i;
 }
 
 // -----------------------------------------------------------------------------
@@ -90,6 +88,7 @@ void FxManager::update(sdlc::Timer& timer)
 
 void FxManager::draw(sdlc::Screen& screen)
 {
+    // TODO: range based for loop
     std::list<sdlc::Sprite*>::iterator i = explosion_list_.begin();
     for (; i != explosion_list_.end(); i++) {
         sdlc::Sprite* current = *i;
@@ -140,7 +139,7 @@ void FxManager::explode_tiny(int x, int y, float vel, float angle)
         float y_vel = (sin((double)degree) * speed) + y_vel_mod;
 
         if (intensity > 255) {
-            std::cout << "ExplodeTiny() intensity out of bounds! = " << intensity;
+            std::cout << "explode_tiny() intensity > 255 = " << intensity;
             std::cout << "\tx=" << x;
             std::cout << "  y=" << y;
             std::cout << "  xVel=" << x_vel;

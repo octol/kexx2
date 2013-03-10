@@ -49,11 +49,12 @@ void Menu::load_data()
 
     for (auto &b : bg_data_) {
         b.alloc(640, 480);
-        precalcbgsurface(b);
+        precalc_bg_surface(b);
     }
 }
 
-void Menu::run_logic(sdlc::Input& input, sdlc::Timer& timer, sdlc::Mixer& mixer, PlayerState& player_state)
+void Menu::run_logic(sdlc::Input& input, sdlc::Timer& timer, sdlc::Mixer& mixer, 
+        PlayerState& player_state)
 {
     // up/down
     if (input.keyPressed(SDLK_UP, sdlc::NO_AUTOFIRE))
@@ -73,7 +74,7 @@ void Menu::run_logic(sdlc::Input& input, sdlc::Timer& timer, sdlc::Mixer& mixer,
     if (input.keyPressed(SDLK_RETURN, sdlc::NO_AUTOFIRE)) {
         if (which_menu_ == MENU_ROOT) {
             if (selector_.pos == 0) {
-                player_state.killall();
+                player_state.kill_all();
 
                 player_state.set_energy_max(1, 3);
                 player_state.set_extra_weapon(1, "Rocket Weapon");
@@ -87,7 +88,7 @@ void Menu::run_logic(sdlc::Input& input, sdlc::Timer& timer, sdlc::Mixer& mixer,
                 which_menu_ = MENU_OPTIONS;
                 selector_.pos = 0;
             } else if (selector_.pos == 2) {
-                player_state.killall();
+                player_state.kill_all();
                 which_menu_ = MENU_EXIT;
                 exit_timer_ = timer.ticks();
                 mixer.fade_out_music(3000);
@@ -106,13 +107,15 @@ void Menu::run_logic(sdlc::Input& input, sdlc::Timer& timer, sdlc::Mixer& mixer,
                     screen_type = SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_FULLSCREEN;
                 else screen_type = SDL_SWSURFACE;
 
-                // no reinit of screen here for win32, they need to restart the game for that
+                // no reinit of screen here for win32, they need to restart
+                // the game for that
 #endif
 #ifndef WIN32
                 int screen_type = SDL_SWSURFACE;
                 if (options_.fullscreen())
                     screen_type |= SDL_FULLSCREEN;
 
+                // TODO: Remove extern Screen class.
                 extern sdlc::Screen* screen;
                 screen->init(640, 480, 16, screen_type);
 #endif
@@ -200,15 +203,15 @@ void Menu::draw(sdlc::Screen& screen, sdlc::Font& font)
 // Private Functions
 // -----------------------------------------------------------------------------
 
-void Menu::precalcbgsurface(sdlc::Surface& surface)
+void Menu::precalc_bg_surface(sdlc::Surface& surface)
 {
     int iy, ix;
     for (iy = 0; iy < 40; iy++)
         for (ix = 0; ix < 8; ix++)
-            drawgroup(ix * 80 + 5, iy * 12 + 2, surface);
+            draw_group(ix * 80 + 5, iy * 12 + 2, surface);
 }
 
-void Menu::drawgroup(int x, int y, sdlc::Surface& surface)
+void Menu::draw_group(int x, int y, sdlc::Surface& surface)
 {
     int i;
     for (i = 0; i < 9; i++) {

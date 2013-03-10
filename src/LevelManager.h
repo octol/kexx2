@@ -23,7 +23,7 @@
 
 class ObjectManager;
 
-class LevelManager {
+class LevelManager final {
 public:
     void load_level(std::string data_path, int level, 
                     ObjectManager& object_manager);

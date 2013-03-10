@@ -19,18 +19,20 @@
 #ifndef KEXX2_GAME_H
 #define KEXX2_GAME_H
 
+#include <memory>
+
 #include "SDLc.h"
 #include "Options.h"
 #include "PlayerState.h"
 #include "IGameState.h"
-#include <memory>
 
 class Game final {
 public:
     // Initialisation functions.
     void load_options();
     void write_options();
-    void setup_environment(sdlc::Screen& screen, sdlc::Timer& timer, sdlc::Mixer& mixer);
+    void setup_environment(sdlc::Screen& screen, sdlc::Timer& timer, 
+            sdlc::Mixer& mixer);
     void start();
 
     // Functions called in the game loop.

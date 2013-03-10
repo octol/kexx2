@@ -71,7 +71,8 @@ void Object::think(ObjectManager& object_manager, FxManager& fx_manager)
 {
 }
 
-void Object::check_collisions(ObjectManager& object_manager, FxManager& fx_manager)
+void Object::check_collisions(ObjectManager& object_manager, 
+        FxManager& fx_manager)
 {
 }
 
@@ -89,7 +90,8 @@ void Object::update(sdlc::Timer& timer)
     }
 }
 
-void Object::hurt(int value, ObjectManager& object_manager, FxManager& fx_manager)
+void Object::hurt(int value, ObjectManager& object_manager, 
+        FxManager& fx_manager)
 {
     if (hit_timer == 0) {
         // TODO: replace with Timer object.
@@ -110,7 +112,8 @@ void Object::hurt(int value, ObjectManager& object_manager, FxManager& fx_manage
 void Object::kill(ObjectManager& object_manager, FxManager& fx_manager)
 {
     set_energy(0);
-    fx_manager.explode_normal((int)(getX() + getWidth() / 2), (int)(getY() + getHeight() / 2));
+    fx_manager.explode_normal((int)(getX() + getWidth() / 2), 
+            (int)(getY() + getHeight() / 2));
 }
 
 float Object::set_activation_y_vel(float value)
@@ -125,8 +128,9 @@ float Object::set_activation_y_vel(float value)
 
 void Object::calculate_hit_img()
 {
+    // TODO: replace raw SDL call.
     hit_img.data = SDL_DisplayFormat(data);
-    //hitImg.alloc(data->w, data->h);
+
     hit_img.lock();
     int ix, iy;
     for (iy = 0; iy < hit_img.data->h; iy++) {

@@ -27,8 +27,9 @@
 Finished::Finished(Options& options, PlayerState& player_state)
     : IGameState(ENV_FINISHED)
 {
-    finishedSnd_.load(options.data_path + "soundfx/gamecomplete.wav");
-    finishedSnd_.play(0);
+    UNUSED(player_state);
+    finished_snd_.load(options.data_path + "soundfx/gamecomplete.wav");
+    finished_snd_.play(0);
 }
 
 // -----------------------------------------------------------------------------
@@ -38,6 +39,10 @@ Finished::Finished(Options& options, PlayerState& player_state)
 void Finished::run_logic(sdlc::Input& input, sdlc::Timer& timer, sdlc::Mixer& mixer, 
                          PlayerState& player_state)
 {
+    UNUSED(timer);
+    UNUSED(mixer);
+    UNUSED(player_state);
+
     if (input.keyPressed(SDLK_RETURN, sdlc::NO_AUTOFIRE))
         done_ = true;
 }

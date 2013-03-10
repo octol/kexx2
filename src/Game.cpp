@@ -68,7 +68,8 @@ void Game::write_options()
     options.write(options.data_path + "kexx2.cfg");
 }
 
-void Game::setup_environment(sdlc::Screen& screen, sdlc::Timer& timer, sdlc::Mixer& mixer)
+void Game::setup_environment(sdlc::Screen& screen, sdlc::Timer& timer, 
+        sdlc::Mixer& mixer)
 {
     srand(timer.ticks());
     screen.set_caption(("Kexx 2 " + std::string(VERSION)).c_str());
@@ -137,7 +138,7 @@ void Game::run_logic(sdlc::Input& input, sdlc::Timer& timer, sdlc::Mixer& mixer)
             break;
 
         default:
-            player_state.killall();
+            player_state.kill_all();
             game_state_ = std::unique_ptr<Menu>(new Menu(options));
             break;
         }
@@ -146,7 +147,7 @@ void Game::run_logic(sdlc::Input& input, sdlc::Timer& timer, sdlc::Mixer& mixer)
     // abort in world
     if (game_state_ && game_state_->type() == ENV_WORLD) {
         if (input.keyPressed(SDLK_ESCAPE, sdlc::NO_AUTOFIRE)) {
-            player_state.killall();
+            player_state.kill_all();
             game_state_ = std::unique_ptr<Menu>(new Menu(options));
         }
     }

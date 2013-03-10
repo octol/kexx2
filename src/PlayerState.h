@@ -57,9 +57,10 @@ public:
     KeySet set_keyset(int player, KeySet keyset_);
 
     bool anyone_alive();
-    void killall();
+    void kill_all();
 
 private:
+    // TODO: switch to STL container
     struct player_ {
         int energy = 0;
         int energy_max = 0;

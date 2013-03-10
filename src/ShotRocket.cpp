@@ -25,7 +25,8 @@
 // Construction/Destruction
 // -----------------------------------------------------------------------------
 
-ShotRocket::ShotRocket(std::string name, int energy, sdlc::Surface& s, Owner owner)
+ShotRocket::ShotRocket(std::string name, int energy, sdlc::Surface& s, 
+        Owner owner)
     : Shot(name, energy, s, owner),
       time_when_shot_(SDL_GetTicks())
 {
@@ -42,11 +43,12 @@ ShotRocket::~ShotRocket()
 
 void ShotRocket::think(ObjectManager& object_manager, FxManager& fx_manager)
 {
+    // TODO: remove extern Timer class.
     extern sdlc::Timer* timer;
-    //setXVel( getXVel() * 0.007f * Timer->getFrametime());
     setYVel(getYVel() - 500.0f /*0.0005*/*timer->frame_time());
 
-    fx_manager.smokepuff((int)(getX() + getWidth() / 2), (int)(getY() + getHeight() / 2));
+    fx_manager.smokepuff((int)(getX() + getWidth() / 2), 
+                         (int)(getY() + getHeight() / 2));
 
     if (SDL_GetTicks() - time_when_shot_ > 1000)
         kill(object_manager, fx_manager);
@@ -55,7 +57,8 @@ void ShotRocket::think(ObjectManager& object_manager, FxManager& fx_manager)
 void ShotRocket::kill(ObjectManager& object_manager, FxManager& fx_manager)
 {
     set_energy(0);
-    fx_manager.explode_normal((int)(getX() + getWidth() / 2), (int)(getY() + getHeight() / 2));
+    fx_manager.explode_normal((int)(getX() + getWidth() / 2), 
+                              (int)(getY() + getHeight() / 2));
 
     // TODO: remove magic number
     for (int i = 0; i < 64; i++) {
@@ -63,7 +66,8 @@ void ShotRocket::kill(ObjectManager& object_manager, FxManager& fx_manager)
         float angle = rand() % 360;
         float x = getX() + getWidth() / 2;
         float y = getY() + getHeight() / 2;
-        object_manager.create_object((int)x, (int)y, SHOTBOMBFRAGMENT, vel, angle, owner());
+        object_manager.create_object((int)x, (int)y, SHOTBOMBFRAGMENT, vel, 
+                angle, owner());
     }
 }
 

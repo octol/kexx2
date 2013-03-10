@@ -16,22 +16,22 @@
 //    You should have received a copy of the GNU General Public License
 //    along with Kexx2.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef _KEXX2_GAMEOVER_H_
-#define _KEXX2_GAMEOVER_H_
+#ifndef KEXX2_GAMEOVER_H
+#define KEXX2_GAMEOVER_H
 
 #include "IGameState.h"
 
 class Options;
 class PlayerState;
 
-class GameOver : public IGameState {
+class GameOver final : public IGameState {
 public:
     GameOver();
     virtual ~GameOver() {};
 
     void run_logic(sdlc::Input& input, sdlc::Timer& timer, sdlc::Mixer& mixer,
                    PlayerState& player_state) override;
-    void draw(sdlc::Screen& screen, sdlc::Font& font);
+    void draw(sdlc::Screen& screen, sdlc::Font& font) override;
 };
 
 #endif

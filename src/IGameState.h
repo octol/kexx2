@@ -24,8 +24,8 @@
 #ifndef KEXX2_IGAMESTATE_H
 #define KEXX2_IGAMESTATE_H
 
-#include "Defines.h"
 #include "SDLc.h"
+#include "Defines.h"
 
 class PlayerState;
 

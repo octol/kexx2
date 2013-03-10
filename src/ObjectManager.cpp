@@ -39,13 +39,13 @@
 
 ObjectManager::~ObjectManager()
 {
-    // TODO: change to range based loops.
+    // TODO: range based for loops.
     // clean up objectList
-    //ObjectList::iterator i = list.begin();
     for (auto i = list.begin(); i != list.end(); ++i) {
         Object* current = *i;
         delete current;
     }
+    // TODO: range based for loops.
     // clean up queue
     for (auto i = queue.begin(); i != queue.end(); ++i) {
         Object* current = *i;
@@ -157,9 +157,11 @@ Object* ObjectManager::create_object(int x, int y, float x_vel, float y_vel,
     else {
         // enemies
         if (object == ENEMYSTD)
-            tmp = new Object("Standard Enemy", 5, 52, obj[ENEMYSTD], OBJ_ENEMY, SCROLLING_SPEED);
+            tmp = new Object("Standard Enemy", 5, 52, 
+                    obj[ENEMYSTD], OBJ_ENEMY, SCROLLING_SPEED);
         else if (object == ENEMYSIDEWAYS)
-            tmp = new EnemySideways("Sideways Enemy", 3, 71, obj[ENEMYSIDEWAYS]);
+            tmp = new EnemySideways("Sideways Enemy", 3, 71, 
+                    obj[ENEMYSIDEWAYS]);
         else if (object == ENEMYRAMMER)
             tmp = new EnemyRammer("Rammer Enemy", 2, 43, obj[ENEMYRAMMER]);
         else if (object == ENEMYBONUS) {
@@ -169,16 +171,19 @@ Object* ObjectManager::create_object(int x, int y, float x_vel, float y_vel,
 
         // passive objects
         else if (object == OBJECTBIGSHIP) {
-            tmp = new Object("Object Bigship", 5, 0, obj[OBJECTBIGSHIP], OBJ_PASSIVE,  10.0f);
+            tmp = new Object("Object Bigship", 5, 0, obj[OBJECTBIGSHIP], 
+                    OBJ_PASSIVE,  10.0f);
             tmp->initAnimation(40, 2, 0);
         }
 
         // bonuses
         else if (object == BONUSBLASTER) {
-            tmp = new Object("Blaster Bonus", 1, 0, obj[BONUSBLASTER], OBJ_BONUS,  20.0f);
+            tmp = new Object("Blaster Bonus", 1, 0, obj[BONUSBLASTER], 
+                    OBJ_BONUS,  20.0f);
             tmp->initAnimation(40, 3, 0);
         } else if (object == BONUSROCKET) {
-            tmp = new Object("Rocket Bonus", 1, 0, obj[BONUSROCKET], OBJ_BONUS,  20.0f);
+            tmp = new Object("Rocket Bonus", 1, 0, obj[BONUSROCKET], 
+                    OBJ_BONUS,  20.0f);
             tmp->initAnimation(40, 3, 0);
         }
 
@@ -190,13 +195,16 @@ Object* ObjectManager::create_object(int x, int y, float x_vel, float y_vel,
         else if (object == SHOTROCKET)
             tmp = new ShotRocket("Rocket Shot", 10, obj[SHOTROCKET], owner);
         else if (object == SHOTBOMBFRAGMENT)
-            tmp = new Shot("Bomb Fragment Shot", 4, obj[SHOTBOMBFRAGMENT], owner);
+            tmp = new Shot("Bomb Fragment Shot", 4, obj[SHOTBOMBFRAGMENT], 
+                    owner);
         else if (object == SHOTENEMYSTD)
-            tmp = new Shot("Standard Enemy Shot", 1, obj[SHOTENEMYSTD], owner); // kolla
+            // TODO: check this (why?)
+            tmp = new Shot("Standard Enemy Shot", 1, obj[SHOTENEMYSTD], owner);
 
         // misc
         else if (object == SMOKETRAIL) {
-            tmp = new Object("Smoketrail", 1, 0, obj[SMOKETRAIL], OBJ_PLAYERPASSIVE, 0);
+            tmp = new Object("Smoketrail", 1, 0, obj[SMOKETRAIL], 
+                    OBJ_PLAYERPASSIVE, 0);
             tmp->set_owner(owner);
             tmp->initAnimation(40, 2, 0);
         }
@@ -222,8 +230,6 @@ Object* ObjectManager::create_object(int x, int y, ObjIndex object,
 
     float x_vel = cos(angle) * vel;
     float y_vel = -sin(angle) * vel;
-    //if(x_vel < 0.0000001) x_vel = 0;
-    //if(y_vel < 0.0000001) y_vel = 0;
     return (create_object(x, y, x_vel, y_vel, object, owner));
 }
 
@@ -236,16 +242,18 @@ void ObjectManager::create_ships(PlayerState& player_state)
             Weapon* w2 = 0;
             int count = 0;
 
-            //if(playerState.main_weapon(i) == WEAPON_MAIN_BLASTER)
             if (player_state.main_weapon(i) == "Blaster Weapon")
-                w1 = new WeaponBlaster(snd[SND_SHOTBLASTER], (Owner)(OWNER_PLAYER1 + i - 1));
+                // TODO: remove C style cast.
+                w1 = new WeaponBlaster(snd[SND_SHOTBLASTER], 
+                        (Owner)(OWNER_PLAYER1 + i - 1));
             for (j = 1; j < player_state.main_weapon_level(i); j++)
                 w1->upgrade();
 
-            //if(playerState.extra_weapon(i) == WEAPON_EXTRA_ROCKET)
             if (player_state.extra_weapon(i) == "Rocket Weapon") {
-                w2 = new WeaponRocket(snd[SND_SHOTROCKET], (Owner)(OWNER_PLAYER1 + i - 1));
-                w2->setCount(player_state.extra_weapon_count(i));
+                // TODO: remove C style cast
+                w2 = new WeaponRocket(snd[SND_SHOTROCKET], 
+                        (Owner)(OWNER_PLAYER1 + i - 1));
+                w2->set_count(player_state.extra_weapon_count(i));
             }
             std::string name = "Player " + std::to_string(i);
             KeySet keyset;
@@ -264,7 +272,8 @@ void ObjectManager::create_ships(PlayerState& player_state)
                 keyset.fire_main = SDLK_LSHIFT;
                 keyset.fire_extra = SDLK_GREATER;
             } else {
-                std::cout << "ObjectManager::createShips() keys not set!" << std::endl;
+                std::cout << "ObjectManager::createShips() keys not set!" 
+                    << std::endl;
             }
 
             player_state.set_keyset(i, keyset);
@@ -272,13 +281,13 @@ void ObjectManager::create_ships(PlayerState& player_state)
             int e = player_state.energy_max(i);
             player_state.set_energy(i, e);
             int s = player_state.score(i);
-            Object* tmp = new Ship(name, e, s, obj[PLAYER1 + i - 1], w1, w2, keyset);
+            Object* tmp = new Ship(name, e, s, obj[PLAYER1 + i - 1], w1, w2, 
+                    keyset);
 
             tmp->lockedToScreen(false);
             tmp->setX(213 * i - tmp->getWidth());
-            //tmp->setY(400 - tmp->getHeight());
             tmp->setY(480);
-            tmp->setVel(0, -200.0f/*-0.200f*/);
+            tmp->setVel(0, -200.0f);
             queue.push_back(tmp);
         }
     }
@@ -342,7 +351,8 @@ void ObjectManager::create_formation(int x, int y, float x_vel, float y_vel,
     } else if (object == ENEMYSTD_MASSIVE_FORMATION) {
         int i;
         for (i = 0; i < 20; i++)
-            create_object((rand() % 560) + 40 , y - (rand() % 200), x_vel, y_vel, ENEMYSTD, OWNER_NONE);
+            create_object((rand() % 560) + 40 , y - (rand() % 200), x_vel, 
+                    y_vel, ENEMYSTD, OWNER_NONE);
     } else if (object == ENEMYSIDEWAYS_VLINE_FORMATION) {
         create_object(x     , y     , x_vel, y_vel, ENEMYSIDEWAYS, OWNER_NONE);
         create_object(x + 5 , y - 20, x_vel, y_vel, ENEMYSIDEWAYS, OWNER_NONE);
@@ -364,7 +374,8 @@ void ObjectManager::create_formation(int x, int y, float x_vel, float y_vel,
     } else if (object == ENEMYSIDEWAYS_MASSIVE_FORMATION) {
         int i;
         for (i = 0; i < 20; i++)
-            create_object((rand() % 560) + 40 , y - (rand() % 200), x_vel, y_vel, ENEMYSIDEWAYS, OWNER_NONE);
+            create_object((rand() % 560) + 40 , y - (rand() % 200), x_vel, 
+                    y_vel, ENEMYSIDEWAYS, OWNER_NONE);
     } else if (object == ENEMYRAMMER_VLINE_FORMATION) {
         create_object(x, y     , x_vel, y_vel, ENEMYRAMMER, OWNER_NONE);
         create_object(x, y - 20, x_vel, y_vel, ENEMYRAMMER, OWNER_NONE);
@@ -406,22 +417,14 @@ void ObjectManager::update_player_state(PlayerState& player_state)
             tmp = (Ship*)obj;
             if (tmp->main_weapon_) {
                 player_state.set_main_weapon(which, tmp->main_weapon_->name);
-                player_state.set_main_weapon_level(which, tmp->main_weapon_->getLevel());
+                player_state.set_main_weapon_level(which, 
+                        tmp->main_weapon_->level());
             }
             if (tmp->extra_weapon_) {
                 player_state.set_extra_weapon(which, tmp->extra_weapon_->name);
-                player_state.set_extra_weapon_count(which, tmp->extra_weapon_->getCount());
+                player_state.set_extra_weapon_count(which, 
+                        tmp->extra_weapon_->count());
             } else player_state.set_extra_weapon(which, "none");
-
-            /*if(tmp->mainWeapon && tmp->mainWeapon->name == "Blaster Weapon")
-            playerState.set_main_weapon(which, WEAPON_MAIN_BLASTER);
-            if(tmp->extraWeapon && tmp->extraWeapon->name == "Rocket Weapon")
-            playerState.set_extra_weapon(which, WEAPON_EXTRA_ROCKET);
-            */
-            //cout << tmp->mainWeapon->name;
-            //cout << "\t" << tmp->extraWeapon->name << endl;
-            //playerState.set_main_weapon_level();
-            //playerState.set_extra_weapon();
 
             if (obj->energy() == 0)
                 player_state.set_energy_max(which, 0);

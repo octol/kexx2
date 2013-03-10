@@ -21,12 +21,11 @@
 
 #include "Weapon.h"
 
-class WeaponRocket : public Weapon {
+class WeaponRocket final : public Weapon {
 public:
     WeaponRocket(sdlc::Sound& sound, Owner owner);
-    virtual ~WeaponRocket();
 
-    void shoot(int x, int y, ObjectManager& object_manager);
+    void shoot(int x, int y, ObjectManager& object_manager) override;
 };
 
 #endif

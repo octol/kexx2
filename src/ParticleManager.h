@@ -28,9 +28,9 @@ public:
     virtual ~ParticleManager() {};
 
     void create(float x, float y, float x_vel, float y_vel, 
-                int r, int g, int b, int a, float fadeSpeed);
+                int r, int g, int b, int a, float fade_speed);
     virtual void update(sdlc::Timer& timer);
-    void draw(sdlc::Screen& screen);
+    virtual void draw(sdlc::Screen& screen);
     int num_of_particles_active();
 
 protected:

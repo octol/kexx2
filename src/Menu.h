@@ -32,7 +32,7 @@ enum MenuWhich {
     MENU_EXIT
 };
 
-class Menu : public IGameState {
+class Menu final : public IGameState {
 public:
     Menu(Options& options);
     virtual ~Menu() {};
@@ -44,8 +44,8 @@ public:
     void draw(sdlc::Screen& screen, sdlc::Font& font) override;
 
 private:
-    void precalcbgsurface(sdlc::Surface& surface);
-    void drawgroup(int x, int y, sdlc::Surface& surface);
+    void precalc_bg_surface(sdlc::Surface& surface);
+    void draw_group(int x, int y, sdlc::Surface& surface);
 
     sdlc::Surface logo_;
     sdlc::Surface sdl_logo_;

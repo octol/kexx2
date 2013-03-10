@@ -26,16 +26,12 @@
 
 WeaponBlaster::WeaponBlaster(sdlc::Sound& sound, Owner owner)
 {
-    shotSnd.link(&sound);
-    shotSnd.setChannel((int)SND_W_BLASTER);
-    setOwner(owner);
+    shot_snd_.link(&sound);
+    shot_snd_.setChannel((int)SND_W_BLASTER);
+    set_owner(owner);
 
-    setLevel(1);
+    set_level(1);
     name = "Blaster Weapon";
-}
-
-WeaponBlaster::~WeaponBlaster()
-{
 }
 
 // -----------------------------------------------------------------------------
@@ -44,27 +40,37 @@ WeaponBlaster::~WeaponBlaster()
 
 void WeaponBlaster::shoot(int x, int y, ObjectManager& object_manager)
 {
-    if (SDL_GetTicks() > getTimeWhenLastShot() + 150) {
-        shotSnd.play(0);
-        if (getLevel() == 1) {
-            object_manager.create_object(x, y, 0, -500.0f, SHOTBLASTER, getOwner());
+    if (SDL_GetTicks() > time_when_last_shot() + 150) {
+        shot_snd_.play(0);
+        if (level() == 1) {
+            object_manager.create_object(x, y, 0, -500.0f, 
+                    SHOTBLASTER, owner());
         }
-        if (getLevel() == 2) {
-            object_manager.create_object(x - 7, y + 7, 0, -500.0f, SHOTBLASTER, getOwner());
-            object_manager.create_object(x + 7, y + 7, 0, -500.0f, SHOTBLASTER, getOwner());
+        if (level() == 2) {
+            object_manager.create_object(x - 7, y + 7, 0, -500.0f, 
+                    SHOTBLASTER, owner());
+            object_manager.create_object(x + 7, y + 7, 0, -500.0f, 
+                    SHOTBLASTER, owner());
         }
-        if (getLevel() == 3) {
-            object_manager.create_object(x - 10, y + 7, -10.0f, -500.0f, SHOTBLASTER, getOwner());
-            object_manager.create_object(x, y, 0, -500.0f, SHOTBLASTERBIG, getOwner());
-            object_manager.create_object(x + 10, y + 7,  10.0f, -500.0f, SHOTBLASTER, getOwner());
+        if (level() == 3) {
+            object_manager.create_object(x - 10, y + 7, -10.0f, -500.0f, 
+                    SHOTBLASTER, owner());
+            object_manager.create_object(x, y, 0, -500.0f, 
+                    SHOTBLASTERBIG, owner());
+            object_manager.create_object(x + 10, y + 7,  10.0f, -500.0f, 
+                    SHOTBLASTER, owner());
         }
-        if (getLevel() == 4) {
-            object_manager.create_object(x - 14, y + 7, -50.0f, -500.0f, SHOTBLASTER, getOwner());
-            object_manager.create_object(x + 14, y + 7,  50.0f, -500.0f, SHOTBLASTER, getOwner());
-            object_manager.create_object(x - 10, y, 0, -500.0f, SHOTBLASTERBIG, getOwner());
-            object_manager.create_object(x + 10, y, 0, -500.0f, SHOTBLASTERBIG, getOwner());
+        if (level() == 4) {
+            object_manager.create_object(x - 14, y + 7, -50.0f, -500.0f, 
+                    SHOTBLASTER, owner());
+            object_manager.create_object(x + 14, y + 7,  50.0f, -500.0f, 
+                    SHOTBLASTER, owner());
+            object_manager.create_object(x - 10, y, 0, -500.0f, 
+                    SHOTBLASTERBIG, owner());
+            object_manager.create_object(x + 10, y, 0, -500.0f, 
+                    SHOTBLASTERBIG, owner());
         }
-        setTimeWhenLastShot();
+        set_time_when_last_shot();
     }
 }
 

@@ -35,23 +35,23 @@ Shot::Shot(std::string n, int energy, Surface& s, Owner owner)
    set_owner(owner);
 }
 
-Shot::~Shot()
-{
-}
-
 // -----------------------------------------------------------------------------
 // Member Functions
 // -----------------------------------------------------------------------------
 
-void Shot::check_collisions(ObjectManager& object_manager, FxManager& fx_manager)
+void Shot::check_collisions(ObjectManager& object_manager, 
+        FxManager& fx_manager)
 {
-    if (owner() >= OWNER_PLAYER1 && owner() <= OWNER_PLAYER1 + NUM_OF_POSSIBLE_PLAYERS - 1) {
+    if (owner() >= OWNER_PLAYER1 
+            && owner() <= OWNER_PLAYER1 + NUM_OF_POSSIBLE_PLAYERS - 1) {
         // check collision  friendly fire <-> enemies
         ObjectList::iterator i;
 
         // start by getting pointer to the player
         // TODO: better name for this.
         Object* owner_tmp = 0;
+        
+        // TODO: range based for loop
         for (i = object_manager.list.begin(); i != object_manager.list.end(); i++) {
             Object* current = *i;
             if (owner() == OWNER_PLAYER1 && current->name == "Player 1")
@@ -60,12 +60,13 @@ void Shot::check_collisions(ObjectManager& object_manager, FxManager& fx_manager
                 owner_tmp = current;
         }
 
+        // TODO: range based loop
         for (i = object_manager.list.begin(); i != object_manager.list.end(); i++) {
             Object* current = *i;
 
             SDL_Rect tmp1 = getReducedRect();
             SDL_Rect tmp2 = current->getRect();
-            if (current->type() == OBJ_ENEMY && current->energy() && \
+            if (current->type() == OBJ_ENEMY && current->energy() && 
                     overlap(tmp1, tmp2)) {
                 current->hurt(energy(), object_manager, fx_manager);
                 if (!current->energy() && owner_tmp)
@@ -78,13 +79,14 @@ void Shot::check_collisions(ObjectManager& object_manager, FxManager& fx_manager
         }
     } else {
         // check collision  player <-> enemy fire
+        // TODO: range based for loop
         ObjectList::iterator i = object_manager.list.begin();
         for (; i != object_manager.list.end(); i++) {
             Object* current = *i;
 
             SDL_Rect tmp1 = getReducedRect();
             SDL_Rect tmp2 = current->getRect();
-            if (current->type() == OBJ_PLAYER && current->energy() && \
+            if (current->type() == OBJ_PLAYER && current->energy() && 
                     overlap(tmp1, tmp2)) {
                 current->hurt(energy(), object_manager, fx_manager);
 
@@ -101,6 +103,7 @@ void Shot::kill(ObjectManager& object_manager, FxManager& fx_manager)
     set_energy(0);
     fx_manager.play_hit_snd();
 
+    // TODO: surely this can not be needed?
     float angle = 270;
 }
 

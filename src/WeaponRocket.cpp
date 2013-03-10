@@ -28,16 +28,12 @@
 WeaponRocket::WeaponRocket(sdlc::Sound& sound, Owner owner)
 {
     // TODO: redo how these are set.
-    shotSnd.link(&sound);
-    shotSnd.setChannel((int)SND_W_ROCKET);
-    setOwner(owner);
+    shot_snd_.link(&sound);
+    shot_snd_.setChannel((int)SND_W_ROCKET);
+    set_owner(owner);
 
-    setLevel(1);
+    set_level(1);
     name = "Rocket Weapon";
-}
-
-WeaponRocket::~WeaponRocket()
-{
 }
 
 // -----------------------------------------------------------------------------
@@ -46,14 +42,16 @@ WeaponRocket::~WeaponRocket()
 
 void WeaponRocket::shoot(int x, int y, ObjectManager& object_manager)
 {
-    if (SDL_GetTicks() > getTimeWhenLastShot() + 750) {
-        shotSnd.play(0);
-        object_manager.create_object(x, y, 0, 0, SHOTROCKET, getOwner());
-        setCount(getCount() - 1);
-        setTimeWhenLastShot();
+    // TODO: use Timer class instead of raw SDL call.
+    if (SDL_GetTicks() > time_when_last_shot() + 750) {
+        shot_snd_.play(0);
+        object_manager.create_object(x, y, 0, 0, SHOTROCKET, owner());
+        set_count(count() - 1);
+        set_time_when_last_shot();
     }
 }
 
 // -----------------------------------------------------------------------------
 // Private Functions
 // -----------------------------------------------------------------------------
+

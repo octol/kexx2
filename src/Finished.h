@@ -25,17 +25,17 @@
 class Options;
 class PlayerState;
 
-class Finished : public IGameState {
+class Finished final : public IGameState {
 public:
     Finished(Options& options, PlayerState& player_state);
     virtual ~Finished() {};
 
     void run_logic(sdlc::Input& input, sdlc::Timer& timer, sdlc::Mixer& mixer,
                    PlayerState& player_state) override;
-    void draw(sdlc::Screen& screen, sdlc::Font& font);
+    void draw(sdlc::Screen& screen, sdlc::Font& font) override;
 
 private:
-    sdlc::Sound finishedSnd_;
+    sdlc::Sound finished_snd_;
 };
 
 #endif // KEXX2_FINISHED_H

@@ -25,10 +25,11 @@ class Shot : public Object {
 public:
     Shot();
     Shot(std::string name, int energy, Surface& s, Owner owner);
-    virtual ~Shot();
+    virtual ~Shot() {};
 
-    void check_collisions(ObjectManager& object_manager, FxManager& fx_manager);
-    void kill(ObjectManager& object_manager, FxManager& fx_manager);
+    void check_collisions(ObjectManager& object_manager, FxManager& fx_manager) 
+        override;
+    void kill(ObjectManager& object_manager, FxManager& fx_manager) override;
 };
 
 #endif // KEXX2_SHOT_H

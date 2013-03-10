@@ -24,7 +24,7 @@
 // -----------------------------------------------------------------------------
 
 void ParticleManager::create(float x, float y, float xVel, float yVel, 
-                             int r, int g, int b, int a, float fadeSpeed)
+                             int r, int g, int b, int a, float fade_speed)
 {
     int slot = next_available_slot();
 
@@ -36,7 +36,7 @@ void ParticleManager::create(float x, float y, float xVel, float yVel,
     particle_[slot].setG(g);
     particle_[slot].setB(b);
     particle_[slot].setAlpha(a);
-    particle_[slot].setFadeSpeed(fadeSpeed);
+    particle_[slot].setFadeSpeed(fade_speed);
     particle_[slot].active(true);
 }
 

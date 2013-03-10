@@ -32,35 +32,32 @@ EnemySideways::EnemySideways(std::string name, int energy, int score, sdlc::Surf
     set_score(score);
 }
 
-EnemySideways::~EnemySideways()
-{
-}
-
 // -----------------------------------------------------------------------------
 // Member Functions
 // -----------------------------------------------------------------------------
 
 void EnemySideways::activate(ObjectManager& object_manager)
 {
-    setXVel(-100.0f/*-0.1f*/);
-    setYVel(80.0f/*0.08f*/);
-    // TODO: user Timer object passed down.
+    setXVel(-100.0f);
+    setYVel(80.0f);
+
+    // TODO: Remove extern Timer class.
     extern sdlc::Timer* timer;
     time_when_last_shot_ = timer->ticks() - (rand() % 2000);
 }
 
 void EnemySideways::think(ObjectManager& object_manager, FxManager& fx_manager)
 {
-    // TODO: remove extern
+    // TODO: Remove extern Timer class.
     extern sdlc::Timer* timer;
     if (active()) {
         if (left_) {
-            setXVel(getXVel() - (100.0f /*0.0001f*/ * timer->frame_time()));
-            if (getXVel() < -100.0f/*-0.1f*/)
+            setXVel(getXVel() - (100.0f * timer->frame_time()));
+            if (getXVel() < -100.0f)
                 left_ = false;
         } else {
             setXVel(getXVel() + (100.0f /*0.0001f*/ * timer->frame_time()));
-            if (getXVel() > 100.0f/*0.1f*/)
+            if (getXVel() > 100.0f)
                 left_ = true;
         }
 
@@ -68,7 +65,7 @@ void EnemySideways::think(ObjectManager& object_manager, FxManager& fx_manager)
         if (timer->ticks() - time_when_last_shot_ > 2000) {
             object_manager.create_object((int)(getX() + getWidth() / 2), 
                     (int)(getY() + getHeight()), 
-                    0, /*0.2f*/200.0f, SHOTENEMYSTD, OWNER_ENEMY);
+                    0, 200.0f, SHOTENEMYSTD, OWNER_ENEMY);
             time_when_last_shot_ = timer->ticks();
         }
     }

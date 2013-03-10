@@ -24,7 +24,7 @@
 
 class ParticleManager;
 
-class FxManager {
+class FxManager final {
 public:
     ~FxManager();
 
@@ -48,9 +48,10 @@ private:
     sdlc::Sound expl_snd_player_;
     sdlc::Sound alarm_snd_;
     sdlc::Surface expl_img_;
+    // TODO: change to smart pointer
     std::list<sdlc::Sprite*> explosion_list_;
 
-    // TODO: replace with list?
+    // TODO: replace with std::list?
     struct precalculated_data {
         int intensity;
         float x_vel;

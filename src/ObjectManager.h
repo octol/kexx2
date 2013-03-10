@@ -20,16 +20,17 @@
 #define KEXX2_OBJECTMANAGER_H
 
 #include <list>
+
 #include "SDLc.h"
 #include "Defines.h"
+#include "Object.h"
 
-class Object;
 class FxManager;
 class PlayerState;
 
 typedef std::list<Object*> ObjectList;
 
-class ObjectManager {
+class ObjectManager final {
 public:
     ~ObjectManager();
 
@@ -48,6 +49,7 @@ public:
     int num_of_enemies();
     int num_of_players_alive();
 
+    // TODO: replay C arrays
     ObjectList list;                                // object list
     sdlc::Surface obj[ENEMYSTD_V_FORMATION];        // object graphics
     sdlc::Sound snd[SND_SHOTROCKET + 1];            // object sound

@@ -21,12 +21,12 @@
 
 #include "Object.h"
 
-class EnemyRammer : public Object {
+class EnemyRammer final : public Object {
 public:
     EnemyRammer(std::string name, int energy, int score, Surface& s);
-    virtual ~EnemyRammer();
+    virtual ~EnemyRammer() {};
 
-    void activate(ObjectManager& object_manager);
+    void activate(ObjectManager& object_manager) override;
 };
 
 #endif // KEXX2_ENEMYRAMMER_H

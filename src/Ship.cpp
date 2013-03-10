@@ -16,8 +16,8 @@
 //    You should have received a copy of the GNU General Public License
 //    along with Kexx2.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "SDLc.h"
 #include "Ship.h"
+#include "SDLc.h"
 #include "ObjectManager.h"
 #include "WeaponBlaster.h"
 #include "WeaponRocket.h"
@@ -57,6 +57,7 @@ Ship::~Ship()
 
 void Ship::think(ObjectManager& object_manager, FxManager& fx_manager)
 {
+    // TODO: remove extern Input class.
     extern sdlc::Input* input;
 
     // reset movement velocity (if not input locked)
@@ -74,17 +75,20 @@ void Ship::think(ObjectManager& object_manager, FxManager& fx_manager)
         else if (input->keyPressed(keyset_.down, sdlc::AUTOFIRE))
             setYVel(100.0f);
 
-        if (input->keyPressed(keyset_.fire_main, sdlc::AUTOFIRE) && main_weapon_) {
+        if (input->keyPressed(keyset_.fire_main, sdlc::AUTOFIRE) 
+                && main_weapon_) {
             main_weapon_->shoot((int)(getX() + (getWidth() / 2)), 
                                (int)(getY() + 10), object_manager);
         }
-        if (input->keyPressed(keyset_.fire_extra, sdlc::NO_AUTOFIRE) && extra_weapon_) {
+        if (input->keyPressed(keyset_.fire_extra, sdlc::NO_AUTOFIRE) 
+                && extra_weapon_) {
             extra_weapon_->shoot((int)(getX() + (getWidth() / 2)), 
                                 (int)(getY() + 10), object_manager);
         }
     } else {
         // do some scripted movement when entering/leaving a level
         if (!level_complete_) {
+            // TODO: remove extern Timer class
             extern sdlc::Timer* timer;
             setYVel(getYVel() + (130.0f * timer->frame_time()));
 
@@ -100,6 +104,7 @@ void Ship::think(ObjectManager& object_manager, FxManager& fx_manager)
                 lockedToScreen(false);
             }
 
+            // TODO: remove extern Timer class
             extern sdlc::Timer* timer;
             setYVel(getYVel() - (130.0f * timer->frame_time()));
         }
@@ -117,7 +122,7 @@ void Ship::think(ObjectManager& object_manager, FxManager& fx_manager)
     }
 
     // check if empty clip
-    if (extra_weapon_ && extra_weapon_->getCount() < 1) {
+    if (extra_weapon_ && extra_weapon_->count() < 1) {
         delete extra_weapon_;
         extra_weapon_ = 0;
     }
@@ -153,7 +158,8 @@ void Ship::check_collisions(ObjectManager& object_manager, FxManager& fx_manager
                     main_weapon_->name == "Blaster Weapon")
                 main_weapon_->upgrade();
             else if (current->name == "Blaster Bonus")
-                set_main_weapon(new WeaponBlaster(object_manager.snd[SND_SHOTBLASTER], owner()));
+                set_main_weapon(new WeaponBlaster(
+                            object_manager.snd[SND_SHOTBLASTER], owner()));
 
             current->set_energy(0); // want mute removal
         }

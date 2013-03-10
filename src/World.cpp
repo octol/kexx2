@@ -17,11 +17,8 @@
 //    along with Kexx2.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "World.h"
+
 #include "PlayerState.h"
-#include "SDLc/Timer.h"
-#include "SDLc/Screen.h"
-#include "SDLc/Misc.h"
-#include "SDLc/Input.h"
 #include "Ship.h"
 #include "WeaponBlaster.h"
 #include "WeaponRocket.h"

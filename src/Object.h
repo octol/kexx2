@@ -26,12 +26,82 @@
 class ObjectManager;
 class FxManager;
 
+enum Owner { 
+    OWNER_NONE,
+    OWNER_PLAYER1,
+    OWNER_PLAYER2,
+    OWNER_ENEMY 
+};
+
+enum ObjType { 
+    OBJ_UNDEFINED, 
+    OBJ_PASSIVE,
+    OBJ_ENEMY,
+    OBJ_BONUS,
+    OBJ_PLAYER,
+    OBJ_PLAYERPASSIVE,
+    OBJ_SHOT 
+};
+
+enum ObjIndex {
+    PLAYER1,
+    PLAYER2,
+    ENEMYSTD,
+    ENEMYSIDEWAYS,
+    ENEMYRAMMER,
+    ENEMYBONUS,
+    OBJECTBIGSHIP,
+    BONUSBLASTER,
+    BONUSROCKET,
+
+    // shots
+    SHOTBLASTER,
+    SHOTBLASTERBIG,
+    SHOTROCKET,
+    SHOTBOMBFRAGMENT,
+    SHOTENEMYSTD,
+
+    // misc
+    SMOKETRAIL,
+
+    // formations
+    ENEMYSTD_V_FORMATION,
+    ENEMYSTD_3V_FORMATION,
+    ENEMYSTD_DIAGONAL_FORMATION,
+    ENEMYSTD_MASSIVE_FORMATION,
+
+    ENEMYSIDEWAYS_VLINE_FORMATION,
+    ENEMYSIDEWAYS_HLINE_FORMATION,
+    ENEMYSIDEWAYS_V_FORMATION,
+    ENEMYSIDEWAYS_MASSIVE_FORMATION,
+
+    ENEMYRAMMER_VLINE_FORMATION,
+    ENEMYRAMMER_DIAGONAL_FORMATION,
+    ENEMYRAMMER_FULLDIAGONAL_FORMATION
+};
+
+enum ObjSnd {
+    SND_SHOTBLASTER,
+    SND_SHOTROCKET
+};
+
+enum SoundChannel { 
+    SND_DIV,
+    SND_W_BLASTER,
+    SND_W_ROCKET,
+    SND_EXPL_SMALL,
+    SND_EXPL_BIG,
+    SND_EXPL_PLAYER,
+    SND_ALARM 
+};
+
 class Object : public sdlc::Sprite {
 public:
     Object();
     Object(std::string n, int energy, ObjType t);
     Object(std::string n, int energy, sdlc::Surface& s, ObjType t);
-    Object(std::string n, int energy, int score, sdlc::Surface& s, ObjType t, float init_y_vel);
+    Object(std::string n, int energy, int score, sdlc::Surface& s, ObjType t, 
+            float init_y_vel);
     virtual ~Object();
 
     virtual void activate(ObjectManager& object_manager);
@@ -58,7 +128,7 @@ public:
     int set_score(int value);
     int adjust_score(int value);
 
-    // TODO:
+    // TODO: Why is this marked protected?
     // protected:
     Owner owner();
     Owner set_owner(Owner value);

@@ -19,6 +19,7 @@
 #ifndef KEXX2_WORLD_H
 #define KEXX2_WORLD_H
 
+#include "SDLc.h"
 #include "IGameState.h"
 #include "ObjectManager.h"
 #include "LevelManager.h"
@@ -26,7 +27,6 @@
 #include "FxManager.h"
 #include "Starfield.h"
 #include "Interface.h"
-#include "SDLc.h"
 
 class Options;
 class PlayerState;
@@ -35,15 +35,14 @@ class PlayerState;
 struct WorldData {
 };
 
-class World : public IGameState {
+class World final : public IGameState {
 public:
     World(sdlc::Timer& timer, Options& options,
           PlayerState& player_state, int level);
-    virtual ~World() {};
 
     void run_logic(sdlc::Input& input, sdlc::Timer& timer, sdlc::Mixer& mixer,
                    PlayerState& player_state) override;
-    void draw(sdlc::Screen& screen, sdlc::Font& font);
+    void draw(sdlc::Screen& screen, sdlc::Font& font) override;
 
 private:
     ObjectManager object_manager_;

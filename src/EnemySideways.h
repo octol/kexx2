@@ -21,13 +21,13 @@
 
 #include "Object.h"
 
-class EnemySideways : public Object {
+class EnemySideways final : public Object {
 public:
     EnemySideways(std::string name, int energy, int score, sdlc::Surface& s);
-    virtual ~EnemySideways();
+    virtual ~EnemySideways() {};
 
-    void activate(ObjectManager& object_manager);
-    void think(ObjectManager& object_manager, FxManager& fx_manager);
+    void activate(ObjectManager& object_manager) override;
+    void think(ObjectManager& object_manager, FxManager& fx_manager) override;
 
 private:
     bool left_;

@@ -117,7 +117,7 @@ bool PlayerState::anyone_alive()
     return a;
 }
 
-void PlayerState::killall()
+void PlayerState::kill_all()
 {
     int i;
     for (i = 0; i < NUM_OF_POSSIBLE_PLAYERS; i++) {

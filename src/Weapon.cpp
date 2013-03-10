@@ -23,46 +23,36 @@
 // Construction/Destruction
 // -----------------------------------------------------------------------------
 
-Weapon::Weapon()
-{
-    count = 0;
-    level = 0;
-    timeWhenLastShot = 0;
-    name = "Generic Weapon";
-}
-
-Weapon::~Weapon()
-{
-}
-
 // -----------------------------------------------------------------------------
 // Member Functions
 // -----------------------------------------------------------------------------
 
 int Weapon::upgrade()
 {
-    level += 1;
-    if (level > 4)
-        level = 4;
-    return level;
+    level_ += 1;
+    if (level_ > 4)
+        level_ = 4;
+    return level_;
 }
 
 // -----------------------------------------------------------------------------
 // Private Functions
 // -----------------------------------------------------------------------------
 
-int Weapon::setCount(int value)
+int Weapon::set_count(int value)
 {
-    if (value < 0)
+    if (value < 0) {
         std::cerr << "warning: Weapon::setCount() negative parameter" 
-                  << std::endl;
-    return count = value;
+            << std::endl;
+    }
+    return count_ = value;
 }
 
-int Weapon::setLevel(int value)
+int Weapon::set_level(int value)
 {
-    if (value < 0)
+    if (value < 0) {
         std::cerr << "warning: Weapon::setLevel() negative parameter" 
-                  << std::endl;
-    return level = value;
+           << std::endl;
+    }
+    return level_ = value;
 }

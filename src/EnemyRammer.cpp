@@ -31,10 +31,6 @@ EnemyRammer::EnemyRammer(std::string name, int energy, int score, Surface& s)
     set_score(score);
 }
 
-EnemyRammer::~EnemyRammer()
-{
-}
-
 // -----------------------------------------------------------------------------
 // Member Functions
 // -----------------------------------------------------------------------------
@@ -43,6 +39,7 @@ void EnemyRammer::activate(ObjectManager& object_manager)
 {
     std::vector<Object*> player_vector;
 
+    // TODO: range based for loop
     ObjectList::iterator i = object_manager.list.begin();
     for (; i != object_manager.list.end(); i++) {
         Object* current = *i;

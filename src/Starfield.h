@@ -25,13 +25,12 @@ const int NUM_OF_STARS = 280;
 
 // TODO: consider switching to composition instead.
 
-class Starfield : public ParticleManager {
+class Starfield final : public ParticleManager {
 public:
     Starfield();
-    virtual ~Starfield();
 
-    void update(sdlc::Timer& timer);
-    void draw(sdlc::Screen& screen);
+    void update(sdlc::Timer& timer) override;
+    void draw(sdlc::Screen& screen) override;
 };
 
 #endif

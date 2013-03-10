@@ -51,16 +51,13 @@ Starfield::Starfield()
     }
 }
 
-Starfield::~Starfield()
-{
-}
-
 // -----------------------------------------------------------------------------
 // Member Functions
 // -----------------------------------------------------------------------------
 
 void Starfield::update(sdlc::Timer& timer)
 {
+    // TODO: range based for loop
     for (int i = 0; i < NUM_OF_STARS; i++) {
         particle_[i].update(timer);
         if (particle_[i].getY() > 478)
@@ -71,6 +68,7 @@ void Starfield::update(sdlc::Timer& timer)
 void Starfield::draw(sdlc::Screen& screen)
 {
     screen.lock();
+    // TODO: range based for loop
     for (int i = 0; i < NUM_OF_STARS; i++) {
         screen.fastSetPix((int)(particle_[i].getX()), (int)(particle_[i].getY()), 
                           particle_[i].getR(), particle_[i].getG(), particle_[i].getB());

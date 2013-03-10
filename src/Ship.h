@@ -19,8 +19,8 @@
 #ifndef KEXX2_SHIP_H
 #define KEXX2_SHIP_H
 
-#include "Object.h"
 #include <list>
+#include "Object.h"
 #include "PlayerState.h"
 
 class Weapon;
@@ -28,7 +28,7 @@ class Weapon;
 const int BLINKING = 1;
 const int INPUT_LOCKED = 2;
 
-class Ship : public Object {
+class Ship final : public Object {
     friend class ObjectManager;
 public:
     Ship(std::string n, int energy, int score, Surface& s, 

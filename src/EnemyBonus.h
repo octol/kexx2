@@ -21,13 +21,13 @@
 
 #include "Object.h"
 
-class EnemyBonus : public Object {
+class EnemyBonus final : public Object {
 public:
     EnemyBonus(std::string name, int energy, int score, sdlc::Surface& s);
-    virtual ~EnemyBonus();
+    virtual ~EnemyBonus() {};
 
-    void activate(ObjectManager& object_manager);
-    void kill(ObjectManager& object_manager, FxManager& fx_manager);
+    void activate(ObjectManager& object_manager) override;
+    void kill(ObjectManager& object_manager, FxManager& fx_manager) override;
 };
 
 #endif // KEXX2_ENEMYBONUS_H
