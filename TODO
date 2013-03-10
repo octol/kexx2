@@ -1,32 +1,44 @@
 TODO
 ====
 
-General:
---------
-* Variable naming conventions.
-* Go over all TODO in code.
-* Automatic detection of game data path.
-    This requires that we set configuration stuff in .kexx2rc instead of
-    kexx2.cfg, due to write permission.
-* Make the timer a local object.
-* Pass SDLc classes in constructors only? Or Maybe pass references to game
+Two approaches:
+1) Bottom up rewriting the basic objects and entities to be modern and
+   self-contained. This includes the managers, which should be switched to used
+   STL containers and smart pointers (or maybe store by value?).
+2) Top-down refactoring of the general layout and design. This includes coming
+   up with a scheme on how to do dependency injection.
+
+Local issues:
+-------------
+- Variable naming conventions.
+- Go over all TODO in code.
+- grep for classes not final.
+- grep for extern
+- grep for "for" loops.
+- remove all empty destructs for leaf node classes.
+
+Architectural issues:
+---------------------
+- Make the timer a local object.
+- Pass SDLc classes in constructors only? Or Maybe pass references to game
   specific classes in ctor and system class to separate check_input(),
   run_logic(), draw() functions?
-* Systematic way of doing dependency injection in e.g Interface.
-* Store pointers or objects in lists? e.g Sprites.
+- Systematic way of doing dependency injection in e.g Interface.
+- Store pointers or objects in lists? e.g Sprites.
+- We should consider passing a struct of subsystems instead.
 
-Specific:
----------
+Feature changes:
+----------------
+- Automatic detection of game data path.
+    This requires that we set configuration stuff in .kexx2rc instead of
+    kexx2.cfg, due to write permission.
+
+Specific issues:
+----------------
 BuyScreen::runLogic(), playerState argument shadows a class member.
 World:World(), seems to do too much in constructor.
 
-libsdlc:
---------
-- introduce namespace.
-- single header at top level.
-
 Bugs:
 -----
-
 - Blinking of ship when hit seems off, is this due to precalc hit surface?
 
