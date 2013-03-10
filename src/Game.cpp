@@ -129,7 +129,7 @@ void Game::run_logic(sdlc::Input& input, sdlc::Timer& timer, sdlc::Mixer& mixer)
             // goto inbetween levels buyscreen
             else if (player_state.anyone_alive()) {
                 game_state_ = std::unique_ptr<BuyScreen>
-                    (new BuyScreen(options, current_level_));
+                    (new BuyScreen(options, player_state, current_level_));
             }
             // game over
             else {
@@ -162,7 +162,7 @@ void Game::run_logic(sdlc::Input& input, sdlc::Timer& timer, sdlc::Mixer& mixer)
     }
     if (input.keyPressed(SDLK_F4, sdlc::NO_AUTOFIRE)) {
         game_state_ = std::unique_ptr<BuyScreen>
-            (new BuyScreen(options, current_level_));
+            (new BuyScreen(options, player_state, current_level_));
     }
 #endif
 

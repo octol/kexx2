@@ -33,16 +33,13 @@
 // Construction/Destruction
 // -----------------------------------------------------------------------------
 
-BuyScreen::BuyScreen(Options& options, int current_level)
+BuyScreen::BuyScreen(Options& options, PlayerState& player_state, int current_level)
     : IGameState(ENV_BUYSCREEN),
+      player_state_(&player_state),
       current_level_(current_level),
       how_many_players_(options.num_of_players())
 {
     selectors_.gfx.load(options.data_path + "gfx/EnemyRammer.png");
-    //selectors_.pos[0] = 0;
-    //selectors_.pos[1] = 0;
-
-    //playerdone_[0] = playerdone_[1] = false;
     
     if (how_many_players_ > 2) {
         std::cout << "BuyScreen::runLogic() >2 players not supported" << std::endl;
@@ -91,12 +88,12 @@ void BuyScreen::run_logic(sdlc::Input& input, sdlc::Timer& timer,
     }
 
     // check if done
-    int tmpcount = 0;
+    int players_done = 0;
     for (int i = 0; i < how_many_players_; i++) {
         if (player_done_[i])
-            tmpcount++;
+            players_done++;
     }
-    if (tmpcount == how_many_players_)
+    if (players_done == how_many_players_)
         done_ = true;
 }
 

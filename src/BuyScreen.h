@@ -29,8 +29,7 @@ const int ROCKET_COST = 1000;
 
 class BuyScreen final : public IGameState {
 public:
-    BuyScreen(Options& options, int current_level);
-    virtual ~BuyScreen() {};
+    BuyScreen(Options& options, PlayerState& player_state, int current_level);
 
     void run_logic(sdlc::Input& input, sdlc::Timer& timer, sdlc::Mixer& mixer,
                    PlayerState& player_state) override;
@@ -41,7 +40,7 @@ private:
     int how_many_players_;
 
     // TODO: move to smart pointer.
-    PlayerState* player_state_;
+    PlayerState* player_state_ = nullptr;
 
     struct Selector {
         sdlc::Surface gfx;
