@@ -54,18 +54,18 @@ void FxManager::load(ParticleManager& particle_manager, std::string data_path)
     expl_snd_player_.setChannel((int)SND_EXPL_PLAYER);
     alarm_snd_.setChannel((int)SND_ALARM);
 
-    // pre-calculate explosions
-    for (int j = 0; j < 10; j++) {
-        for (int i = 0; i < 256; i++) {
+    // pre-calculate explosion data for speed
+    for (auto& expl : precalc_norm_expl_) {
+        for (auto& particle_data : expl) {
             int intensity = (rand() % 256);
             int degree = (rand() % 360);
 
-            float x_vel = (cos((double)degree) * intensity)/* * 0.001*/;
-            float y_vel = (sin((double)degree) * intensity)/* * 0.001*/;
+            float x_vel = (cos((double)degree) * intensity);
+            float y_vel = (sin((double)degree) * intensity);
 
-            precalc_norm_expl_[j][i].intensity = intensity;
-            precalc_norm_expl_[j][i].x_vel = x_vel;
-            precalc_norm_expl_[j][i].y_vel = y_vel;
+            particle_data.intensity = intensity;
+            particle_data.x_vel = x_vel;
+            particle_data.y_vel = y_vel;
         }
     }
 }
@@ -153,7 +153,7 @@ void FxManager::explode_tiny(int x, int y, float vel, float angle)
 void FxManager::smokepuff(int x, int y)
 {
     int i;
-    // TODO: pass timer as argument?
+    // TODO: remove extern timer.
     extern sdlc::Timer* timer;
     int amount = (int)((float)timer->frame_time() / 0.004f/*4.0f*/);
     for (i = 0; i < amount; i++) {

@@ -21,6 +21,7 @@
 
 #include "SDLc.h"
 #include <list>
+#include <array>
 
 class ParticleManager;
 
@@ -51,12 +52,14 @@ private:
     // TODO: change to smart pointer
     std::list<sdlc::Sprite*> explosion_list_;
 
-    // TODO: replace with std::list?
-    struct precalculated_data {
-        int intensity;
-        float x_vel;
-        float y_vel;
-    } precalc_norm_expl_[10][256];
+    // Store explosion data to avoid recomputation.
+    struct ExplParticleData {
+        int intensity = 0;
+        float x_vel = 0;
+        float y_vel = 0;
+    };
+    typedef std::array<ExplParticleData,256> ExplData;
+    std::array<ExplData,10> precalc_norm_expl_;
 };
 
 #endif

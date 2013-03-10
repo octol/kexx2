@@ -29,10 +29,10 @@ Shot::Shot() : Object("Generic Shot", 1, OBJ_SHOT)
 {
 }
 
-Shot::Shot(std::string n, int energy, Surface& s, Owner owner)
-   : Object(n, energy, s, OBJ_SHOT)
+Shot::Shot(std::string n, int _energy, Surface& s, Owner _owner)
+   : Object(n, _energy, s, OBJ_SHOT)
 {
-   set_owner(owner);
+   set_owner(_owner);
 }
 
 // -----------------------------------------------------------------------------
@@ -100,11 +100,9 @@ void Shot::check_collisions(ObjectManager& object_manager,
 
 void Shot::kill(ObjectManager& object_manager, FxManager& fx_manager)
 {
+    UNUSED(object_manager);
     set_energy(0);
     fx_manager.play_hit_snd();
-
-    // TODO: surely this can not be needed?
-    float angle = 270;
 }
 
 // -----------------------------------------------------------------------------

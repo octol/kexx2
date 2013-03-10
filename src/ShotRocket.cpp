@@ -25,9 +25,9 @@
 // Construction/Destruction
 // -----------------------------------------------------------------------------
 
-ShotRocket::ShotRocket(std::string name, int energy, sdlc::Surface& s, 
-        Owner owner)
-    : Shot(name, energy, s, owner),
+ShotRocket::ShotRocket(std::string _name, int _energy, sdlc::Surface& s, 
+        Owner _owner)
+    : Shot(_name, _energy, s, _owner),
       time_when_shot_(SDL_GetTicks())
 {
     initAnimation(50, 2, 0);
