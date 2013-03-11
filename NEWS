@@ -4,7 +4,9 @@ NEWS
 2013-03-10  Jon Haggblad  <jon@haeggblad.com>
 
     As of today we are down to 10 extern system classes and 72 TODO
-    items.
+    items. This upcoming version (1.0.4) also marks a milestone in the
+    sense that the entire source code a (rudimentary) cleanup. With this
+    out of the way focus can now shift to do actual code changes.
 
 2013-03-05  Jon Haggblad  <jon@haeggblad.com>
 
