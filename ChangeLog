@@ -1,6 +1,9 @@
 Change Log
 ==========
 
+Kexx2 1.0.4 released on 11-mar-2013
+    * Code cleanup release.
+
 Kexx2 1.0.3 released on 05-mar-2013
     * Moved to using sdlc namespace.
     * Further cleanup.
