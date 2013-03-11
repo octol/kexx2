@@ -72,34 +72,43 @@ void FxManager::load(ParticleManager& particle_manager, std::string data_path)
 
 void FxManager::update(sdlc::Timer& timer)
 {
-    // TODO: range based for loop
-    std::list<sdlc::Sprite*>::iterator i = explosion_list_.begin();
-    while (i != explosion_list_.end()) {
-        sdlc::Sprite* current = *i;
-        i++;
+    // TODO: What is the idiomatic way of deleting?
+    auto i = begin(explosion_list_);
+    while (i != end(explosion_list_)) {
+       auto sprite = *i;
+       ++i;
 
-        current->update(timer);
-        if (!current->animationActive()) {
-            explosion_list_.remove(current);
-            delete current;
-        }
+       sprite->update(timer);
+       if (!sprite->animationActive()) {
+           explosion_list_.remove(sprite);
+           delete sprite;
+       }
     }
+    
+    //std::list<sdlc::Sprite*>::iterator i = explosion_list_.begin();
+    //while (i != explosion_list_.end()) {
+    //    sdlc::Sprite* current = *i;
+    //    i++;
+
+    //    current->update(timer);
+    //    if (!current->animationActive()) {
+    //        explosion_list_.remove(current);
+    //        delete current;
+    //    }
+    //}
 }
 
 void FxManager::draw(sdlc::Screen& screen)
 {
-    // TODO: range based for loop
-    std::list<sdlc::Sprite*>::iterator i = explosion_list_.begin();
-    for (; i != explosion_list_.end(); i++) {
-        sdlc::Sprite* current = *i;
-        screen.blit(*current);
-    }
+    for (auto sprite : explosion_list_)
+        screen.blit(*sprite);
 }
 
 void FxManager::explode_normal(int x, int y)
 {
     expl_snd_big_.play(0);
 
+    const int PARTICLES = 128;
     sdlc::Sprite* sprite = new sdlc::Sprite;
     sprite->link(expl_img_.data);
     sprite->initAnimation(5, 11, 1);
@@ -107,12 +116,13 @@ void FxManager::explode_normal(int x, int y)
     sprite->setY(y - sprite->getHeight() / 2);
     explosion_list_.push_back(sprite);
 
-    int i, tmp = rand() % 10;
-    for (i = 0; i < 128; i++) {
-        int intensity = precalc_norm_expl_[tmp][i].intensity;
-        float x_vel = precalc_norm_expl_[tmp][i].x_vel;
-        float y_vel = precalc_norm_expl_[tmp][i].y_vel;
-        particle_manager_->create(x, y, x_vel, y_vel, 255, 255, 255, intensity, 100.0f/*0.1f*/);
+    int i_expl = rand() % 10;
+    for (int i = 0; i < PARTICLES; ++i) {
+        int intensity = precalc_norm_expl_[i_expl][i].intensity;
+        float x_vel = precalc_norm_expl_[i_expl][i].x_vel;
+        float y_vel = precalc_norm_expl_[i_expl][i].y_vel;
+        particle_manager_->create(x, y, x_vel, y_vel, 
+                                  255, 255, 255, intensity, 100.0f);
     }
 }
 
@@ -125,12 +135,12 @@ void FxManager::explode_tiny(int x, int y, float vel, float angle)
 {
     play_hit_snd();
 
+    const int PARTICLES = 32;
     angle = angle * (3.1415927f / 180.0f);
     float x_vel_mod = cos(angle) * vel;
     float y_vel_mod = -sin(angle) * vel;
 
-    int i;
-    for (i = 0; i < 32; i++) {
+    for (int i = 0; i < PARTICLES; i++) {
         int intensity = (rand() % 256);
         int degree = (rand() % 360);
         int speed = intensity / 4;
@@ -138,13 +148,6 @@ void FxManager::explode_tiny(int x, int y, float vel, float angle)
         float x_vel = (cos((double)degree) * speed) + x_vel_mod;
         float y_vel = (sin((double)degree) * speed) + y_vel_mod;
 
-        if (intensity > 255) {
-            std::cout << "explode_tiny() intensity > 255 = " << intensity;
-            std::cout << "\tx=" << x;
-            std::cout << "  y=" << y;
-            std::cout << "  xVel=" << x_vel;
-            std::cout << "  yVel=" << y_vel << std::endl;
-        }
         particle_manager_->create(x, y, x_vel, y_vel, 255, 255, 255, 
                                   intensity, 100.0f);
     }

@@ -47,7 +47,7 @@ void Menu::load_data()
     bg_music_.play(-1);
     selector_.gfx.load(options_.data_path + "gfx/EnemySideways.png");
 
-    for (auto &b : bg_data_) {
+    for (auto& b : bg_data_) {
         b.alloc(640, 480);
         precalc_bg_surface(b);
     }
