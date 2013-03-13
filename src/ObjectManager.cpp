@@ -21,6 +21,7 @@
 #include <cmath>
 #include <list>
 #include <iostream>
+#include <algorithm>
 
 #include "SDLc.h"
 
@@ -39,18 +40,8 @@
 
 ObjectManager::~ObjectManager()
 {
-    // TODO: range based for loops.
-    // clean up objectList
-    for (auto i = list.begin(); i != list.end(); ++i) {
-        Object* current = *i;
-        delete current;
-    }
-    // TODO: range based for loops.
-    // clean up queue
-    for (auto i = queue.begin(); i != queue.end(); ++i) {
-        Object* current = *i;
-        delete current;
-    }
+    std::for_each(begin(list), end(list), [](Object* i) { delete i; });
+    std::for_each(begin(queue), end(queue), [](Object* i) { delete i; });
 }
 
 // -----------------------------------------------------------------------------
@@ -90,11 +81,12 @@ void ObjectManager::update(sdlc::Timer& timer, FxManager& fx_manager,
     world_y_pos_ = world_y_pos;
 
     // TODO: nicer loop
-    ObjectList::iterator iterator = list.begin();
-    while (iterator != list.end()) {
-        Object* current = *iterator;
-        ++iterator;
+    //auto iterator = list.begin();
+    //while (iterator != list.end()) {
+        //Object* current = *iterator;
+        //++iterator;
 
+    for (auto current : list) {
         if (current->energy()) {
             // main functions
             current->think(*this, fx_manager);
@@ -240,7 +232,6 @@ void ObjectManager::create_ships(PlayerState& player_state)
         if (player_state.energy_max(i)) {
             Weapon* w1 = 0;
             Weapon* w2 = 0;
-            int count = 0;
 
             if (player_state.main_weapon(i) == "Blaster Weapon")
                 // TODO: remove C style cast.
@@ -401,20 +392,16 @@ void ObjectManager::create_formation(int x, int y, float x_vel, float y_vel,
 
 void ObjectManager::update_player_state(PlayerState& player_state)
 {
-    // TODO: range based loop
-    ObjectList::iterator i = list.begin();
-    for (; i != list.end(); i++) {
-        Object* obj = *i;
+    for (auto object : list) {
+        if (object->type() == OBJ_PLAYER) {
+            int which = object->name[object->name.length() - 1] - (int)'0';
 
-        if (obj->type() == OBJ_PLAYER) {
-            int which = obj->name[obj->name.length() - 1] - (int)'0';
-
-            player_state.set_energy(which, obj->energy());
-            player_state.set_energy_max(which, obj->energy_max());
-            player_state.set_score(which, obj->score());
+            player_state.set_energy(which, object->energy());
+            player_state.set_energy_max(which, object->energy_max());
+            player_state.set_score(which, object->score());
 
             Ship* tmp;
-            tmp = (Ship*)obj;
+            tmp = (Ship*)object;
             if (tmp->main_weapon_) {
                 player_state.set_main_weapon(which, tmp->main_weapon_->name);
                 player_state.set_main_weapon_level(which, 
@@ -426,7 +413,7 @@ void ObjectManager::update_player_state(PlayerState& player_state)
                         tmp->extra_weapon_->count());
             } else player_state.set_extra_weapon(which, "none");
 
-            if (obj->energy() == 0)
+            if (object->energy() == 0)
                 player_state.set_energy_max(which, 0);
         }
     }
@@ -434,17 +421,12 @@ void ObjectManager::update_player_state(PlayerState& player_state)
 
 void ObjectManager::flush_list()
 {
-    // TODO: range based loop.
-    ObjectList::iterator i = list.begin();
-    while (i != list.end()) {
-        Object* current = *i;
-        i++;
-        if (current->energy() <= 0) {
-            delete current;
-            list.remove(current);
-            //break;
-        }
-    }
+    // Delete and remove all objects with energy <= 0.
+    auto last = std::stable_partition(begin(list), end(list), [](Object* o) {
+        return o->energy() > 0;
+    });
+    for_each(last, end(list), [](Object* o) { delete o; });
+    list.erase(last, end(list));
 }
 
 void ObjectManager::add_from_queue()

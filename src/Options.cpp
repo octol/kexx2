@@ -85,8 +85,6 @@ int Options::num_of_levels()
     }
 
     levels_file.close();
-    std::cout << "num_of_levels(): " 
-        << level_filename.size() - 1 << std::endl;
     return level_filename.size() - 1; // number of levels
 }
 

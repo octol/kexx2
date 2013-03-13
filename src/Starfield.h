@@ -30,7 +30,6 @@ public:
     Starfield();
 
     void update(sdlc::Timer& timer) override;
-    void draw(sdlc::Screen& screen) override;
 };
 
 #endif

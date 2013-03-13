@@ -17,95 +17,76 @@
 //    along with Kexx2.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "ParticleManager.h"
+#include <cassert>
 #include <iostream>
+#include <algorithm>
+#include "Defines.h"
 
 // -----------------------------------------------------------------------------
 // Member Functions
 // -----------------------------------------------------------------------------
 
-void ParticleManager::create(float x, float y, float xVel, float yVel, 
+void ParticleManager::create(float x, float y, float xVel, float yVel,
                              int r, int g, int b, int a, float fade_speed)
 {
-    int slot = next_available_slot();
-
-    particle_[slot].setX(x);
-    particle_[slot].setY(y);
-    particle_[slot].setXVel(xVel);
-    particle_[slot].setYVel(yVel);
-    particle_[slot].setR(r);
-    particle_[slot].setG(g);
-    particle_[slot].setB(b);
-    particle_[slot].setAlpha(a);
-    particle_[slot].setFadeSpeed(fade_speed);
-    particle_[slot].active(true);
+    // TODO: create a constructor for sdlc::Particle
+    sdlc::Particle particle;
+    particle.setX(x);
+    particle.setY(y);
+    particle.setXVel(xVel);
+    particle.setYVel(yVel);
+    particle.setR(r);
+    particle.setG(g);
+    particle.setB(b);
+    particle.setAlpha(a);
+    particle.setFadeSpeed(fade_speed);
+    particle.active(true);
+    particles_.push_back(particle);
 }
 
 void ParticleManager::update(sdlc::Timer& timer)
 {
-    // TODO: range based for loop
-    for (int i = 0; i < NUM_OF_PARTICLES; i++) {
-        if (particle_[i].active()) {
-            particle_[i].update(timer);
-            //cout << "x: " << particle_[i].getX();
-            //cout << "\ty: " << particle_[i].getY() << endl;
-            if (particle_[i].getAlpha() <= 50 || 
-                    particle_[i].getY() < 1 || particle_[i].getY() > 478 || 
-                    particle_[i].getX() < 1 || particle_[i].getX() > 638) {
-                particle_[i].active(false);
-            }
+    for (auto & p : particles_) {
+        p.update(timer);
+        if (p.alpha() <= 50 ||
+                p.y() < 1 || p.y() > SCREEN_HEIGHT - 2 ||
+                p.x() < 1 || p.x() > SCREEN_WIDTH - 2) {
+            p.active(false);
         }
     }
+
+    // Purge unused slots.
+    particles_.erase(remove_if(begin(particles_), end(particles_),
+    [](sdlc::Particle p) {
+        return !p.active();
+    }), end(particles_));
 }
 
 void ParticleManager::draw(sdlc::Screen& screen)
 {
+    auto draw_pix = [&screen](sdlc::Particle p) {
+        screen.fastBlendPix(p.x()  , p.y()  , p.r(), p.g(), p.b(), p.alpha());
+        screen.fastBlendPix(p.x() + 1, p.y()  , p.r(), p.g(), p.b(), p.alpha());
+        screen.fastBlendPix(p.x()  , p.y() + 1, p.r(), p.g(), p.b(), p.alpha());
+        screen.fastBlendPix(p.x() + 1, p.y() + 1, p.r(), p.g(), p.b(), p.alpha());
+    };
+
     screen.lock();
-    // TODO: range based for loop
-    for (int i = 0; i < NUM_OF_PARTICLES; i++) {
-        if (particle_[i].active()) {
-            screen.fastBlendPix((int)particle_[i].getX(), (int)particle_[i].getY(), 
-                                particle_[i].getR(), particle_[i].getG(), 
-                                particle_[i].getB(), (int)particle_[i].getAlpha());
-            screen.fastBlendPix((int)(particle_[i].getX() + 1), (int)particle_[i].getY(), 
-                                particle_[i].getR(), particle_[i].getG(), 
-                                particle_[i].getB(), (int)particle_[i].getAlpha());
-            screen.fastBlendPix((int)particle_[i].getX(), (int)(particle_[i].getY() + 1), 
-                                particle_[i].getR(), particle_[i].getG(), 
-                                particle_[i].getB(), (int)particle_[i].getAlpha());
-            screen.fastBlendPix((int)particle_[i].getX() + 1, (int)(particle_[i].getY() + 1), 
-                                particle_[i].getR(), particle_[i].getG(), 
-                                particle_[i].getB(), (int)particle_[i].getAlpha());
-        }
-    }
+    std::for_each(begin(particles_), end(particles_), draw_pix);
     screen.unlock();
 }
 
 int ParticleManager::num_of_particles_active()
 {
-    int counter = 0;
-    // TODO: range based for loop
-    for (int i = 0; i < NUM_OF_PARTICLES; i++) {
-        if (particle_[i].active())
-            counter++;
-    }
-    return counter;
+    auto num = std::accumulate(begin(particles_), end(particles_), (uint64_t)0,
+    [](uint64_t n, sdlc::Particle p) {
+        return p.active() ? n + 1 : n;
+    });
+
+    return num;
 }
 
 // -----------------------------------------------------------------------------
 // Private Functions
 // -----------------------------------------------------------------------------
 
-int ParticleManager::next_available_slot()
-{
-    int i = 0;
-    while (particle_[i].active()) {
-        i++;
-        if (i >= NUM_OF_PARTICLES) {
-            std::cout << "ParticleManager::nextAvailableSlot() ";
-            std::cout << "Particleslot overflow!" << std::endl;
-            i = 0;
-            break;
-        }
-    }
-    return i;
-}

@@ -45,14 +45,14 @@ Object
     Enemy:
         EnemyBonus, EnemyRammer, EnemySideways
     Ship
-ParticleManager: 
-    Starfield
 FxManager
 LevelManager
 ObjectManager
 
 ### Parts done
 
+ParticleManager: 
+    Starfield
 
 Feature changes:
 ----------------

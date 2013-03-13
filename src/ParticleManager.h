@@ -20,8 +20,7 @@
 #define KEXX2_PARTICLEMANAGER_H
 
 #include "SDLc.h"
-
-const int NUM_OF_PARTICLES = 4096;
+#include <vector>
 
 class ParticleManager {
 public:
@@ -34,9 +33,7 @@ public:
     int num_of_particles_active();
 
 protected:
-    // TODO: replace with STL container
-    sdlc::Particle particle_[NUM_OF_PARTICLES];
-    int next_available_slot();
+    std::vector<sdlc::Particle> particles_;
 };
 
 #endif
