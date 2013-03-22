@@ -22,7 +22,7 @@
 // TODO: Consider move the enums to where its associated class is declared.
 
 // TODO: use VERSION defined by build system (autotools)
-#define VERSION "1.0.4"
+#define VERSION "1.0.5"
 #define UNUSED(x) ((void)x)
 #define TESTING
 

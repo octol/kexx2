@@ -3,7 +3,7 @@ m4_include(m4/acx_pthread.m4)
 
 AC_PREREQ([2.69])
 AC_INIT([Kexx2],
-        [1.0.4],
+        [1.0.5],
         [jon@haeggblad.com],
         [kexx2],
         [http://github.com/octol/kexx2])
@@ -14,7 +14,7 @@ AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE
 LT_INIT
 
-AC_SUBST([KEXX2_VERSION],[1.0.4])
+AC_SUBST([KEXX2_VERSION],[1.0.5])
 
 #-------------------------------------------------------------------------------
 # Checks for programs.
@@ -30,8 +30,9 @@ AC_LANG_PUSH([C++])
 AX_CXX_COMPILE_STDCXX_11
 AC_LANG_POP([C++])
 
-CXXFLAGS="$CXXFLAGS -pedantic -Wall -Wextra"
-CXXFLAGS="$CXXFLAGS -W -Wshadow -Wcast-qual -Wwrite-strings"
+CXXFLAGS="$CXXFLAGS -pedantic -Wall -W -Wextra"
+CXXFLAGS="$CXXFLAGS -Wcast-qual -Wwrite-strings"
+#CXXFLAGS="$CXXFLAGS -Wshadow"
 #CXXFLAGS="$CXXFLAGS -Weffc++"
 #CXXFLAGS="$CXXFLAGS -Wconversion" 
 #CXXFLAGS="$CXXFLAGS -Werror"
@@ -95,7 +96,7 @@ LIBS="$LIBS -lSDL_image"
 #-------------------------------------------------------------------------------
 # Check for SDLc
 #-------------------------------------------------------------------------------
-PKG_CHECK_MODULES([LIBSDLC], [libsdlc-0.2 >= 0.1])
+PKG_CHECK_MODULES([LIBSDLC], [libsdlc-0.3 >= 0.3])
 
 #-------------------------------------------------------------------------------
 # Finally create all the generated files
