@@ -29,8 +29,7 @@ public:
                     ObjectManager& object_manager);
 
 private:
-    bool internal_load_level(std::string level_name, 
-                             ObjectManager& object_manager);
+    bool parse_level(std::string level_name, ObjectManager& object_manager);
 };
 
 #endif

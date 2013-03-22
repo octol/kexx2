@@ -26,40 +26,28 @@
 // Member Functions
 // -----------------------------------------------------------------------------
 
-void ParticleManager::create(float x, float y, float xVel, float yVel,
+void ParticleManager::create(float x, float y, float x_vel, float y_vel,
                              int r, int g, int b, int a, float fade_speed)
 {
-    // TODO: create a constructor for sdlc::Particle
-    sdlc::Particle particle;
-    particle.setX(x);
-    particle.setY(y);
-    particle.setXVel(xVel);
-    particle.setYVel(yVel);
-    particle.setR(r);
-    particle.setG(g);
-    particle.setB(b);
-    particle.setAlpha(a);
-    particle.setFadeSpeed(fade_speed);
+    sdlc::Particle particle(x, y, x_vel, y_vel, r, g, b, a);
+    particle.set_fade_speed(fade_speed);
     particle.active(true);
     particles_.push_back(particle);
 }
 
 void ParticleManager::update(sdlc::Timer& timer)
 {
-    for (auto & p : particles_) {
+    for (auto & p : particles_)
         p.update(timer);
-        if (p.alpha() <= 50 ||
-                p.y() < 1 || p.y() > SCREEN_HEIGHT - 2 ||
-                p.x() < 1 || p.x() > SCREEN_WIDTH - 2) {
-            p.active(false);
-        }
-    }
 
-    // Purge unused slots.
     particles_.erase(remove_if(begin(particles_), end(particles_),
-    [](sdlc::Particle p) {
-        return !p.active();
-    }), end(particles_));
+        [](sdlc::Particle p) {
+            if (!p.inside(1, SCREEN_WIDTH - 2, 1, SCREEN_HEIGHT - 2) 
+                || p.alpha() <= 50) {
+                p.active(false);
+            }
+            return !p.active();
+        }), end(particles_));
 }
 
 void ParticleManager::draw(sdlc::Screen& screen)
@@ -79,9 +67,9 @@ void ParticleManager::draw(sdlc::Screen& screen)
 int ParticleManager::num_of_particles_active()
 {
     auto num = std::accumulate(begin(particles_), end(particles_), (uint64_t)0,
-    [](uint64_t n, sdlc::Particle p) {
-        return p.active() ? n + 1 : n;
-    });
+        [](uint64_t n, sdlc::Particle p) {
+            return p.active() ? n + 1 : n;
+        });
 
     return num;
 }

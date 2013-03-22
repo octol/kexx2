@@ -36,11 +36,11 @@ public:
     void draw(sdlc::Screen& screen, sdlc::Font& font) override;
 
 private:
-    int current_level_;
-    int how_many_players_;
-
     // TODO: move to smart pointer.
     PlayerState* player_state_ = nullptr;
+
+    int current_level_ = 0;
+    int how_many_players_ = 0;
 
     struct Selector {
         sdlc::Surface gfx;

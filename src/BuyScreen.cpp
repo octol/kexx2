@@ -41,9 +41,8 @@ BuyScreen::BuyScreen(Options& options, PlayerState& player_state, int current_le
 {
     selectors_.gfx.load(options.data_path + "gfx/EnemyRammer.png");
     
-    if (how_many_players_ > 2) {
-        std::cout << "BuyScreen::runLogic() >2 players not supported" << std::endl;
-    }
+    if (how_many_players_ > 2)
+        std::cout << "Warning: >2 players not supported" << std::endl;
 }
 
 // -----------------------------------------------------------------------------

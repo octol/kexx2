@@ -24,8 +24,7 @@
 // Construction/Destruction
 // -----------------------------------------------------------------------------
 
-EnemyBonus::EnemyBonus(std::string name, int energy, int score, 
-        sdlc::Surface& s)
+EnemyBonus::EnemyBonus(std::string name, int energy, sdlc::Surface& s)
     : Object(name, energy, s, OBJ_ENEMY)
 {
     set_score(0);
@@ -37,21 +36,20 @@ EnemyBonus::EnemyBonus(std::string name, int energy, int score,
 
 void EnemyBonus::activate(ObjectManager& object_manager)
 {
+    UNUSED(object_manager);
+
     setYVel(120.0f);
 }
 
 void EnemyBonus::kill(ObjectManager& object_manager, FxManager& fx_manager)
 {
     set_energy(0);
-    fx_manager.explode_normal((int)(getX() + getWidth() / 2), 
-            (int)(getY() + getHeight() / 2));
+    int cx = x() + width() / 2;
+    int cy = y() + height() / 2;
+
+    fx_manager.explode_normal(cx, cy);
 
     int type = (rand() % 1) + BONUSBLASTER;
-    object_manager.create_object((int)(getX() + getWidth() / 2), 
-            (int)(getY() + getHeight() / 2), 0, 0, 
-            (ObjIndex)type, OWNER_NONE);
+    object_manager.create_object(cx, cy, 0, 0, (ObjIndex)type, OWNER_NONE);
 }
 
-// -----------------------------------------------------------------------------
-// Private Functions
-// -----------------------------------------------------------------------------

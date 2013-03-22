@@ -19,10 +19,32 @@
 #ifndef KEXX2_PLAYERSTATE_H
 #define KEXX2_PLAYERSTATE_H
 
+#include <iostream>
 #include "Weapon.h"
 #include "Defines.h"
 
 struct KeySet {
+    KeySet() = default;
+    KeySet(int player) {
+        if (player == 1) {
+            up = SDLK_UP;
+            left = SDLK_LEFT;
+            down = SDLK_DOWN;
+            right = SDLK_RIGHT;
+            fire_main = SDLK_RCTRL;
+            fire_extra = SDLK_RSHIFT;
+        } else if (player == 2) {
+            up = SDLK_w;
+            left = SDLK_a;
+            down = SDLK_s;
+            right = SDLK_d;
+            fire_main = SDLK_LSHIFT;
+            fire_extra = SDLK_GREATER;
+        } else {
+            std::cout << "Warning: keys not set" << std::endl;
+        }
+    };
+
     int left = 0;
     int right = 0;
     int up = 0;

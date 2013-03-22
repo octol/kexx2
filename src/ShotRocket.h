@@ -21,10 +21,12 @@
 
 #include "Shot.h"
 
+const int EXPLOSION_FRAGMENTS = 64;
+
 class ShotRocket final : public Shot {
 public:
     ShotRocket(std::string name, int energy, Surface& s, Owner owner);
-    virtual ~ShotRocket();
+    virtual ~ShotRocket() {};
 
     void think(ObjectManager& object_manager, FxManager& fx_manager);
     void kill(ObjectManager& object_manager, FxManager& fx_manager);

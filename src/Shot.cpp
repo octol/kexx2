@@ -17,7 +17,10 @@
 //    along with Kexx2.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Shot.h"
+#include <cassert>
 #include <iostream>
+#include <vector>
+#include <algorithm>
 #include "ObjectManager.h"
 #include "FxManager.h"
 
@@ -44,53 +47,45 @@ void Shot::check_collisions(ObjectManager& object_manager,
 {
     if (owner() >= OWNER_PLAYER1 
             && owner() <= OWNER_PLAYER1 + NUM_OF_POSSIBLE_PLAYERS - 1) {
-        // check collision  friendly fire <-> enemies
-        ObjectList::iterator i;
 
-        // start by getting pointer to the player
-        // TODO: better name for this.
-        Object* owner_tmp = 0;
+        // 1) Check collision:  friendly fire <-> enemies 
         
-        // TODO: range based for loop
-        for (i = object_manager.list.begin(); i != object_manager.list.end(); i++) {
-            Object* current = *i;
-            if (owner() == OWNER_PLAYER1 && current->name == "Player 1")
-                owner_tmp = current;
-            else if (owner() == OWNER_PLAYER2 && current->name == "Player 2")
-                owner_tmp = current;
-        }
+        // start by getting pointer to the player
+        Object* owner_player = *std::find_if(
+            begin(object_manager.list), 
+            end(object_manager.list), 
+            [this](Object* o) {
+                return Object::parse_owner(o->name) == this->owner();
+            });
 
-        // TODO: range based loop
-        for (i = object_manager.list.begin(); i != object_manager.list.end(); i++) {
-            Object* current = *i;
+        for (auto& object : object_manager.list) {
+            SDL_Rect shot_rect = getReducedRect();
+            SDL_Rect object_rect = object->getRect();
 
-            SDL_Rect tmp1 = getReducedRect();
-            SDL_Rect tmp2 = current->getRect();
-            if (current->type() == OBJ_ENEMY && current->energy() && 
-                    overlap(tmp1, tmp2)) {
-                current->hurt(energy(), object_manager, fx_manager);
-                if (!current->energy() && owner_tmp)
-                    owner_tmp->adjust_score(current->score());
+            if (object->type() == OBJ_ENEMY && object->energy() && 
+                    overlap(shot_rect, object_rect)) {
+                object->hurt(energy(), object_manager, fx_manager);
+                if (!object->energy() && owner_player)
+                    owner_player->adjust_score(object->score());
 
-                // kill itself
+                // let the shot kill itself
                 kill(object_manager, fx_manager);
-            } else if (current->type() == OBJ_SHOT) // optimization
+            } else if (object->type() == OBJ_SHOT) // optimization
                 break;
         }
     } else {
-        // check collision  player <-> enemy fire
-        // TODO: range based for loop
-        ObjectList::iterator i = object_manager.list.begin();
-        for (; i != object_manager.list.end(); i++) {
-            Object* current = *i;
+        
+        // 2) Check collision  player <-> enemy fire 
+  
+        for (auto& current : object_manager.list) {
+            SDL_Rect shot_rect = getReducedRect();
+            SDL_Rect object_rect = current->getRect();
 
-            SDL_Rect tmp1 = getReducedRect();
-            SDL_Rect tmp2 = current->getRect();
             if (current->type() == OBJ_PLAYER && current->energy() && 
-                    overlap(tmp1, tmp2)) {
+                    overlap(shot_rect, object_rect)) {
                 current->hurt(energy(), object_manager, fx_manager);
 
-                // kill itself
+                // left the shot kill itself
                 kill(object_manager, fx_manager);
             } else if (current->type() == OBJ_SHOT) // optimization
                 break;

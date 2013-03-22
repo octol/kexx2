@@ -16,6 +16,7 @@
 //    You should have received a copy of the GNU General Public License
 //    along with Kexx2.  If not, see <http://www.gnu.org/licenses/>.
 
+#include <cassert>
 #include "Object.h"
 #include "FxManager.h"
 #include "SDLc/Timer.h"
@@ -53,37 +54,38 @@ Object::Object(std::string n, int energy, int score, Surface& s,
     set_activation_y_vel(init_y_vel);
 }
 
-Object::~Object()
-{
-}
-
 // -----------------------------------------------------------------------------
 // Member Functions
 // -----------------------------------------------------------------------------
 
 void Object::activate(ObjectManager& object_manager)
 {
+    UNUSED(object_manager);
+
     if (activation_y_vel_set_)
-        setYVel(activation_y_vel_);
+        set_y_vel(activation_y_vel_);
 }
 
 void Object::think(ObjectManager& object_manager, FxManager& fx_manager)
 {
+    UNUSED(object_manager);
+    UNUSED(fx_manager);
 }
 
 void Object::check_collisions(ObjectManager& object_manager, 
         FxManager& fx_manager)
 {
+    UNUSED(object_manager);
+    UNUSED(fx_manager);
 }
 
 void Object::update(sdlc::Timer& timer)
 {
     Sprite::update(timer);
-    //if (hit_timer && SDL_GetTicks() - hit_timer > 20) {
     if (hit_timer && timer.ticks() - hit_timer > 20) {
         hit_timer = 0;
         // flip SDL_Surface's
-        // TODO: use basesurface/surface from sdlc instead.
+        // TODO: Use BaseSurface/Surface from sdlc instead.
         SDL_Surface* tmp = data;
         data = hit_img.data;
         hit_img.data = tmp;
@@ -98,7 +100,7 @@ void Object::hurt(int value, ObjectManager& object_manager,
         hit_timer = SDL_GetTicks();
 
         // flip SDL_Surface's
-        // TODO: use basesurface/surface from sdlc instead.
+        // TODO: Use BaseSurface/Surface from sdlc instead.
         SDL_Surface* tmp = data;
         data = hit_img.data;
         hit_img.data = tmp;
@@ -111,15 +113,72 @@ void Object::hurt(int value, ObjectManager& object_manager,
 
 void Object::kill(ObjectManager& object_manager, FxManager& fx_manager)
 {
+    UNUSED(object_manager);
+
     set_energy(0);
-    fx_manager.explode_normal((int)(getX() + getWidth() / 2), 
-            (int)(getY() + getHeight() / 2));
+    fx_manager.explode_normal((int)(x() + width() / 2), 
+                              (int)(y() + height() / 2));
 }
 
 float Object::set_activation_y_vel(float value)
 {
     activation_y_vel_set_ = true;
     return activation_y_vel_ = value;
+}
+
+ObjIndex Object::parse_obj_index(std::string type)
+{
+    ObjIndex object = NONE; 
+
+    if (type == "ENEMYSTD")      
+        object = ENEMYSTD;
+    else if (type == "ENEMYSIDEWAYS") 
+        object = ENEMYSIDEWAYS;
+    else if (type == "ENEMYRAMMER")   
+        object = ENEMYRAMMER;
+    else if (type == "ENEMYBONUS")    
+        object = ENEMYBONUS;
+    else if (type == "OBJECTBIGSHIP") 
+        object = OBJECTBIGSHIP;
+
+    // formations
+    else if (type == "ENEMYSTD_V_FORMATION")
+        object = ENEMYSTD_V_FORMATION;
+    else if (type == "ENEMYSTD_3V_FORMATION")
+        object = ENEMYSTD_3V_FORMATION;
+    else if (type == "ENEMYSTD_DIAGONAL_FORMATION")
+        object = ENEMYSTD_DIAGONAL_FORMATION;
+    else if (type == "ENEMYSTD_MASSIVE_FORMATION")
+        object = ENEMYSTD_MASSIVE_FORMATION;
+    else if (type == "ENEMYSIDEWAYS_VLINE_FORMATION")
+        object = ENEMYSIDEWAYS_VLINE_FORMATION;
+    else if (type == "ENEMYSIDEWAYS_HLINE_FORMATION")
+        object = ENEMYSIDEWAYS_HLINE_FORMATION;
+    else if (type == "ENEMYSIDEWAYS_V_FORMATION")
+        object = ENEMYSIDEWAYS_V_FORMATION;
+    else if (type == "ENEMYSIDEWAYS_MASSIVE_FORMATION")
+        object = ENEMYSIDEWAYS_MASSIVE_FORMATION;
+    else if (type == "ENEMYRAMMER_VLINE_FORMATION")
+        object = ENEMYRAMMER_VLINE_FORMATION;
+    else if (type == "ENEMYRAMMER_DIAGONAL_FORMATION")
+        object = ENEMYRAMMER_DIAGONAL_FORMATION;
+    else if (type == "ENEMYRAMMER_FULLDIAGONAL_FORMATION")
+        object = ENEMYRAMMER_FULLDIAGONAL_FORMATION;
+
+    assert(object != NONE);
+
+    return object;
+}
+
+Owner Object::parse_owner(std::string player)
+{
+    Owner owner = OWNER_NONE;
+    if (player == "Player 1")
+        owner = OWNER_PLAYER1;
+    else if (player == "Player 2")
+        owner = OWNER_PLAYER2;
+
+    return owner;
 }
 
 // -----------------------------------------------------------------------------
@@ -129,23 +188,16 @@ float Object::set_activation_y_vel(float value)
 void Object::calculate_hit_img()
 {
     // TODO: replace raw SDL call.
+    // TODO: need to implement copy constructor for Surface.
     hit_img.data = SDL_DisplayFormat(data);
 
     hit_img.lock();
-    int ix, iy;
-    for (iy = 0; iy < hit_img.data->h; iy++) {
-        for (ix = 0; ix < hit_img.data->w; ix++) {
-
-            bool transparent = false;
-            Uint8 r = 0, g = 0, b = 0, a = 255;
-            getPix(ix, iy, &r, &g, &b);
-            if (r >= 248 && g == 0 && b >= 248)
-                transparent = true;
-            else if (a != 255)
-                transparent = true;
-
-            if (!transparent)
-                hit_img.setPix(ix, iy, 255, 255, 255);
+    for (int iy = 0; iy < hit_img.data->h; iy++) {
+        for (int ix = 0; ix < hit_img.data->w; ix++) {
+            uint8_t r = 0, g = 0, b = 0, a = 255;
+            get_pix(ix, iy, &r, &g, &b);
+            if (false == ((r >= 248 && g == 0 && b >= 248) || (a != 255)))
+                hit_img.set_pix(ix, iy, 255, 255, 255);
         }
     }
     hit_img.unlock();

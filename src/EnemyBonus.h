@@ -23,7 +23,7 @@
 
 class EnemyBonus final : public Object {
 public:
-    EnemyBonus(std::string name, int energy, int score, sdlc::Surface& s);
+    EnemyBonus(std::string name, int energy, sdlc::Surface& s);
     virtual ~EnemyBonus() {};
 
     void activate(ObjectManager& object_manager) override;

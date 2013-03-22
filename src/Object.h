@@ -19,8 +19,8 @@
 #ifndef KEXX2_OBJECT_H
 #define KEXX2_OBJECT_H
 
-#include "SDLc/Sprite.h"
 #include <list>
+#include "SDLc/Sprite.h"
 #include "Defines.h"
 
 class ObjectManager;
@@ -44,6 +44,7 @@ enum ObjType {
 };
 
 enum ObjIndex {
+    NONE,
     PLAYER1,
     PLAYER2,
     ENEMYSTD,
@@ -95,14 +96,16 @@ enum SoundChannel {
     SND_ALARM 
 };
 
+// TODO: change this to composition?
+
 class Object : public sdlc::Sprite {
 public:
     Object();
     Object(std::string n, int energy, ObjType t);
     Object(std::string n, int energy, sdlc::Surface& s, ObjType t);
-    Object(std::string n, int energy, int score, sdlc::Surface& s, ObjType t, 
-            float init_y_vel);
-    virtual ~Object();
+    Object(std::string n, int energy, int score, sdlc::Surface& s, 
+           ObjType t, float init_y_vel);
+    virtual ~Object() {};
 
     virtual void activate(ObjectManager& object_manager);
     virtual void think(ObjectManager& object_manager, FxManager& fx_manager);
@@ -120,7 +123,8 @@ public:
     int set_energy_max(int value);
 
     bool active();
-    bool active(bool value);
+    bool active(bool value); // DEPRECATED
+    bool set_active(bool value);
 
     float set_activation_y_vel(float value);
 
@@ -128,7 +132,10 @@ public:
     int set_score(int value);
     int adjust_score(int value);
 
-    // TODO: Why is this marked protected?
+    static ObjIndex parse_obj_index(std::string type);
+    static Owner parse_owner(std::string type);
+
+    // TODO: Why did I mark this protected?
     // protected:
     Owner owner();
     Owner set_owner(Owner value);
@@ -176,8 +183,7 @@ int Object::energy()
 inline
 int Object::set_energy(int value)
 {
-    if (value < 0) 
-        value = 0;
+    value = std::max(value, 0);
     if (energy_max() != 0 && value > energy_max())
         value = energy_max();
 
@@ -215,6 +221,12 @@ bool Object::active(bool value)
 }
 
 inline
+bool Object::set_active(bool value)     
+{
+    return active_ = value;
+}
+
+inline
 int Object::score()          
 {
     return score_;
@@ -223,9 +235,7 @@ int Object::score()
 inline
 int Object::set_score(int value)
 {
-    if (value < 0) 
-        value = 0;
-    return score_ = value;
+    return score_ = std::max(value, 0);
 }
 
 inline
@@ -234,7 +244,6 @@ int Object::adjust_score(int value)
     return set_score(score() + value);
 }
 
-// TODO: why protected?
 //protected:
 inline
 Owner Object::owner()        

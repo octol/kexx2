@@ -20,13 +20,14 @@
 #define KEXX2_OBJECTMANAGER_H
 
 #include <list>
-
+#include <memory>
 #include "SDLc.h"
 #include "Defines.h"
 #include "Object.h"
 
 class FxManager;
 class PlayerState;
+class Weapon;
 
 typedef std::list<Object*> ObjectList;
 
@@ -49,14 +50,20 @@ public:
     int num_of_enemies();
     int num_of_players_alive();
 
-    // TODO: replay C arrays
+    // TODO: replace C arrays
     ObjectList list;                                // object list
     sdlc::Surface obj[ENEMYSTD_V_FORMATION];        // object graphics
     sdlc::Sound snd[SND_SHOTROCKET + 1];            // object sound
 
 private:
+    Object* allocate_object(ObjIndex object, Owner owner);
     void create_formation(int x, int y, float x_vel, float y_vel, 
                           enum ObjIndex object);
+
+    std::unique_ptr<Weapon> create_main_weapon(int player, 
+                                               PlayerState player_state);
+    std::unique_ptr<Weapon> create_extra_weapon(int player, 
+                                                PlayerState player_state);
 
     // list maintenance functions
     void update_player_state(PlayerState& player_state);

@@ -28,27 +28,21 @@
 // -----------------------------------------------------------------------------
 
 Ship::Ship(std::string n, int energy, int score, Surface& s, 
-           Weapon* main, Weapon* extra, KeySet keyset)
+           std::unique_ptr<Weapon>& main, std::unique_ptr<Weapon>& extra, 
+           KeySet keyset)
     : Object(n, energy, s, OBJ_PLAYER),
-      main_weapon_(main),
-      extra_weapon_(extra),
+      main_weapon_(std::move(main)),
+      extra_weapon_(std::move(extra)),
       keyset_(keyset)
 {
     set_score(score);
 
-    // TODO: should redo this.
-    int tmp = n[n.length() - 1] - (int)'0';
-    set_owner((Owner)(OWNER_PLAYER1 + tmp - 1));
+    // Parse the player number from the name.
+    int player_number = n[n.length() - 1] - (int)'0';
+    set_owner((Owner)(OWNER_PLAYER1 + player_number - 1));
 
-    lockedToScreen(false);
-    active(true);
-
-}
-
-Ship::~Ship()
-{
-    delete main_weapon_;
-    delete extra_weapon_;
+    set_locked_to_screen(false);
+    set_active(true);
 }
 
 // -----------------------------------------------------------------------------
@@ -57,75 +51,34 @@ Ship::~Ship()
 
 void Ship::think(ObjectManager& object_manager, FxManager& fx_manager)
 {
+    UNUSED(fx_manager);
+
     // TODO: remove extern Input class.
     extern sdlc::Input* input;
+    // TODO: remove extern Timer class
+    extern sdlc::Timer* timer;
 
-    // reset movement velocity (if not input locked)
     if (invincible_ != INPUT_LOCKED) {
-        setXVel(0);
-        setYVel(0);
-
-        // check keyboard
-        if (input->keyPressed(keyset_.left, sdlc::AUTOFIRE))
-            setXVel(-100.0f/*-0.1f*/);
-        else if (input->keyPressed(keyset_.right, sdlc::AUTOFIRE))
-            setXVel(100.0f);
-        if (input->keyPressed(keyset_.up, sdlc::AUTOFIRE))
-            setYVel(-100.0f);
-        else if (input->keyPressed(keyset_.down, sdlc::AUTOFIRE))
-            setYVel(100.0f);
-
-        if (input->keyPressed(keyset_.fire_main, sdlc::AUTOFIRE) 
-                && main_weapon_) {
-            main_weapon_->shoot((int)(getX() + (getWidth() / 2)), 
-                               (int)(getY() + 10), object_manager);
-        }
-        if (input->keyPressed(keyset_.fire_extra, sdlc::NO_AUTOFIRE) 
-                && extra_weapon_) {
-            extra_weapon_->shoot((int)(getX() + (getWidth() / 2)), 
-                                (int)(getY() + 10), object_manager);
-        }
+        process_input(*input, object_manager);
     } else {
-        // do some scripted movement when entering/leaving a level
-        if (!level_complete_) {
-            // TODO: remove extern Timer class
-            extern sdlc::Timer* timer;
-            setYVel(getYVel() + (130.0f * timer->frame_time()));
-
-            if (getYVel() > -10.0f /*-0.0100f*/) {
-                setYVel(0);
-                invincible_ = 0;
-                lockedToScreen(true);
-            }
-        } else if (level_complete_) {
-            if (lockedToScreen()) {
-                setXVel(0);
-                setYVel(0);
-                lockedToScreen(false);
-            }
-
-            // TODO: remove extern Timer class
-            extern sdlc::Timer* timer;
-            setYVel(getYVel() - (130.0f * timer->frame_time()));
-        }
+        do_scripted_movement(*timer);
     }
 
     // blinking when hit
-    if (invincible_ == BLINKING && SDL_GetTicks() - blinking_timer_ > 50) {
+    if (invincible_ == BLINKING && timer->ticks() - blinking_timer_ > 50) {
         times_blinked_++;
-        blinking_timer_ = SDL_GetTicks();
+        blinking_timer_ = timer->ticks();
 
         // flip SDL_Surface's
+        // TODO: use Surface/BaseSurface instead.
         SDL_Surface* tmp = data;
         data = hit_img.data;
         hit_img.data = tmp;
     }
 
     // check if empty clip
-    if (extra_weapon_ && extra_weapon_->count() < 1) {
-        delete extra_weapon_;
-        extra_weapon_ = 0;
-    }
+    if (extra_weapon_ && extra_weapon_->count() < 1) 
+        extra_weapon_.reset();
 
     // smoke trail
     update_smoketrail(object_manager);
@@ -140,53 +93,36 @@ void Ship::think(ObjectManager& object_manager, FxManager& fx_manager)
 void Ship::check_collisions(ObjectManager& object_manager, FxManager& fx_manager)
 {
     // check collisions  player <-> objects
-    ObjectList::iterator i = object_manager.list.begin();
-    for (; i != object_manager.list.end(); i++) {
-        Object* current = *i;
+    for (Object* current : object_manager.list) {
 
-        SDL_Rect tmp1 = getReducedRect();
-        SDL_Rect tmp2 = current->getReducedRect();
-        if (current->type() == OBJ_ENEMY && current->energy() && \
-                overlap(tmp1, tmp2) && !invincible_) {
-            // kill both objects
-            kill(object_manager, fx_manager);
-            current->kill(object_manager, fx_manager);
-        } else if (current->type() == OBJ_BONUS && current->energy() && \
-                   overlap(tmp1, tmp2)) {
-            // blaster
-            if (current->name == "Blaster Bonus" && \
-                    main_weapon_->name == "Blaster Weapon")
-                main_weapon_->upgrade();
-            else if (current->name == "Blaster Bonus")
-                set_main_weapon(new WeaponBlaster(
-                            object_manager.snd[SND_SHOTBLASTER], owner()));
+        SDL_Rect ship_rect = getReducedRect();
+        SDL_Rect object_rect = current->getReducedRect();
 
-            current->set_energy(0); // want mute removal
-        }
+        if (current->energy() && overlap(ship_rect, object_rect))
+            collide_with_object(*current, object_manager, fx_manager);
     }
 }
 
 void Ship::update(sdlc::Timer& timer)
 {
     Sprite::update(timer);
-    if (hit_timer > 0 && times_blinked_ > 100) {
-        hit_timer = 0;
-        times_blinked_ = 0;
-        blinking_timer_ = 0;
-        invincible_ = 0;
-    }
+
+    if (hit_timer > 0 && times_blinked_ > 100) 
+        set_not_invincible();
 }
 
 void Ship::hurt(int value, ObjectManager& object_manager, FxManager& fx_manager)
 {
+    // TODO: remove extern Timer class.
+    extern sdlc::Timer *timer;
+
     if (!invincible_ && hit_timer == 0) {
         Object::hurt(value, object_manager, fx_manager);
         if (energy())
             fx_manager.play_player_hit_snd();
 
         invincible_ = BLINKING;
-        // TODO: replace with call to Timer class.
-        blinking_timer_ = SDL_GetTicks();
+        blinking_timer_ = timer->ticks();
     }
 }
 
@@ -202,60 +138,129 @@ void Ship::kill(ObjectManager& object_manager, FxManager& fx_manager)
 // Private Functions
 // -----------------------------------------------------------------------------
 
-void Ship::set_main_weapon(Weapon* w)
+void Ship::process_input(sdlc::Input& input, ObjectManager& object_manager)
 {
-    delete main_weapon_;
-    main_weapon_ = w;
+    // reset movement velocity
+    set_x_vel(0);
+    set_y_vel(0);
+
+    // check keyboard
+    if (input.key_pressed(keyset_.left, sdlc::AUTOFIRE))
+        set_x_vel(-100.0f);
+    else if (input.key_pressed(keyset_.right, sdlc::AUTOFIRE))
+        set_x_vel(100.0f);
+    if (input.key_pressed(keyset_.up, sdlc::AUTOFIRE))
+        set_y_vel(-100.0f);
+    else if (input.key_pressed(keyset_.down, sdlc::AUTOFIRE))
+        set_y_vel(100.0f);
+
+    int sx = x() + width() / 2;
+    int sy = y() + 10;
+
+    if (input.key_pressed(keyset_.fire_main, sdlc::AUTOFIRE) && main_weapon_) 
+        main_weapon_->shoot(sx, sy, object_manager);
+    if (input.key_pressed(keyset_.fire_extra, sdlc::NO_AUTOFIRE) && extra_weapon_) 
+        extra_weapon_->shoot(sx, sy, object_manager);
 }
 
-void Ship::set_extra_weapon(Weapon* w)
+void Ship::do_scripted_movement(sdlc::Timer& timer)
 {
-    delete extra_weapon_;
-    extra_weapon_ = w;
+    // do some scripted movement when entering/leaving a level
+    if (!level_complete_) {
+        set_y_vel(y_vel() + (130.0f * timer.frame_time()));
+
+        if (y_vel() > -10.0f) {
+            set_y_vel(0);
+            invincible_ = 0;
+            set_locked_to_screen(true);
+        }
+    } else if (level_complete_) {
+        if (locked_to_screen()) {
+            set_x_vel(0);
+            set_y_vel(0);
+            set_locked_to_screen(false);
+        }
+
+        set_y_vel(y_vel() - (130.0f * timer.frame_time()));
+    }
+}
+
+void Ship::collide_with_object(Object& current, ObjectManager& object_manager, 
+                               FxManager& fx_manager) 
+{
+    switch (current.type()) {
+    case OBJ_ENEMY:
+        if (!invincible_) {
+            // kill both objects
+            kill(object_manager, fx_manager);
+            current.kill(object_manager, fx_manager);
+        }
+        break;
+    case OBJ_BONUS:
+        // blaster
+        if (current.name == "Blaster Bonus" && 
+                main_weapon_->name == "Blaster Weapon") {
+            main_weapon_->upgrade();
+        } else if (current.name == "Blaster Bonus") {
+            main_weapon_ = std::unique_ptr<Weapon>(new WeaponBlaster(
+                        object_manager.snd[SND_SHOTBLASTER], owner()));
+        }
+
+        // mute removal of the bonus object
+        current.set_energy(0); 
+        break;
+    default:
+        break;
+    }
+}
+
+void Ship::set_not_invincible() 
+{
+    hit_timer = 0;
+    times_blinked_ = 0;
+    blinking_timer_ = 0;
+    invincible_ = 0;
 }
 
 void Ship::update_smoketrail(ObjectManager& object_manager)
 {
+    // TODO: remove extern timer class.
+    extern sdlc::Timer* timer;
+
+    // First we check if there already is a smoke trail
     bool smoke_found = false;
-    // TODO: Change to range based loop
-    ObjectList::iterator i = object_manager.list.begin();
-    for (; i != object_manager.list.end(); i++) {
-        Object* obj = *i;
+    for (Object* obj : object_manager.list) {
         if (obj->name == "Smoketrail" && obj->owner() == owner()) {
             smoke_found = true;
             break;
         }
     }
+
+    // If not, then we create one
     if (!smoke_found) {
-        float x = getX() + 60;
-        float y = getY() + 60;
-        object_manager.create_object((int)x, (int)y, 0, 0, SMOKETRAIL, owner());
-        object_manager.create_object((int)(x + 40), (int)y, 0, 0, SMOKETRAIL, owner());
+        float sx = x() + 60;
+        float sy = y() + 60;
+        object_manager.create_object((int)sx, (int)sy, 0, 0, SMOKETRAIL, owner());
+        object_manager.create_object((int)(sx + 40), (int)sy, 0, 0, SMOKETRAIL, owner());
     }
 
-    int current = 1;
-    // TODO: Change to range based loop
-    i = object_manager.list.begin();
-    for (; i != object_manager.list.end(); i++) {
-        Object* obj = *i;
+    // Actually update the smokee trail
+    int current_trail = 1;
+    for (Object* obj : object_manager.list) {
         if (obj->name == "Smoketrail" && obj->owner() == owner()) {
-            if (current == 1) {
-                obj->setPos(getX() + 13, getY() + getHeight() - 2);
-                obj->setVel(getXVel(), getYVel());
+            auto set_trail_position = [this,obj](int xshift) {
+                obj->set_pos(x() + xshift, y() + height() - 2);
+                obj->set_vel(x_vel(), y_vel());
 
-                // TODO: remove extern timer class.
-                extern sdlc::Timer* timer;
                 obj->update(*timer);
-                obj->setVel(0, 0);
-                current++;
-            } else if (current == 2) {
-                obj->setPos(getX() + 24, getY() + getHeight() - 2);
-                obj->setVel(getXVel(), getYVel());
+                obj->set_vel(0, 0);
+            };
 
-                // TODO: remove extern timer class.
-                extern sdlc::Timer* timer;
-                obj->update(*timer);
-                obj->setVel(0, 0);
+            if (current_trail == 1) {
+                set_trail_position(13);
+                current_trail++;
+            } else if (current_trail == 2) {
+                set_trail_position(24);
                 break;
             }
         }
@@ -264,18 +269,9 @@ void Ship::update_smoketrail(ObjectManager& object_manager)
 
 void Ship::remove_smoketrail(ObjectManager& object_manager)
 {
-    int current = 1;
-    // TODO: change to range based for loop
-    ObjectList::iterator i = object_manager.list.begin();
-    for (; i != object_manager.list.end(); i++) {
-        Object* obj = *i;
+    for (Object* obj : object_manager.list) {
         if (obj->name == "Smoketrail" && obj->owner() == owner()) {
-            if (current == 1)
-                obj->set_energy(0);
-            else if (current == 2) {
-                obj->set_energy(0);
-                break;
-            }
+            obj->set_energy(0);
         }
     }
 }

@@ -22,13 +22,12 @@
 #include "SDLc.h"
 #include <list>
 #include <array>
+#include <memory>
 
 class ParticleManager;
 
 class FxManager final {
 public:
-    ~FxManager();
-
     void load(ParticleManager& particle_manager, std::string data_path);
     void update(sdlc::Timer& timer);
     void draw(sdlc::Screen& screen);
@@ -42,15 +41,14 @@ public:
     void play_player_hit_snd();
 
 private:
-    // TODO: change to smart pointer
+    // TODO: change to smart pointer?
     ParticleManager* particle_manager_ = nullptr;
     sdlc::Sound expl_snd_small_;
     sdlc::Sound expl_snd_big_;
     sdlc::Sound expl_snd_player_;
     sdlc::Sound alarm_snd_;
     sdlc::Surface expl_img_;
-    // TODO: change to smart pointer
-    std::list<sdlc::Sprite*> explosion_list_;
+    std::list<std::unique_ptr<sdlc::Sprite>> explosion_list_;
 
     // Store explosion data to avoid recomputation.
     struct ExplParticleData {

@@ -20,20 +20,11 @@
 
 #include <cmath>
 #include <iostream>
+#include <algorithm>
 
 #include "Defines.h"
 #include "ParticleManager.h"
 #include "Object.h"
-
-// -----------------------------------------------------------------------------
-// Construction/Destruction
-// -----------------------------------------------------------------------------
-
-FxManager::~FxManager()
-{
-    for (sdlc::Sprite* i : explosion_list_)
-        delete i;
-}
 
 // -----------------------------------------------------------------------------
 // Member Functions
@@ -72,51 +63,37 @@ void FxManager::load(ParticleManager& particle_manager, std::string data_path)
 
 void FxManager::update(sdlc::Timer& timer)
 {
-    // TODO: What is the idiomatic way of deleting?
-    auto i = begin(explosion_list_);
-    while (i != end(explosion_list_)) {
-       auto sprite = *i;
-       ++i;
+    for (auto& sprite : explosion_list_)
+        sprite->update(timer);
 
-       sprite->update(timer);
-       if (!sprite->animationActive()) {
-           explosion_list_.remove(sprite);
-           delete sprite;
-       }
-    }
-    
-    //std::list<sdlc::Sprite*>::iterator i = explosion_list_.begin();
-    //while (i != explosion_list_.end()) {
-    //    sdlc::Sprite* current = *i;
-    //    i++;
-
-    //    current->update(timer);
-    //    if (!current->animationActive()) {
-    //        explosion_list_.remove(current);
-    //        delete current;
-    //    }
-    //}
+    explosion_list_.erase(std::remove_if(begin(explosion_list_), end(explosion_list_), 
+            [](std::unique_ptr<sdlc::Sprite>& s) {
+                return !s->animation_active();
+            }), end(explosion_list_));
 }
 
 void FxManager::draw(sdlc::Screen& screen)
 {
-    for (auto sprite : explosion_list_)
+    for (auto& sprite : explosion_list_)
         screen.blit(*sprite);
 }
 
 void FxManager::explode_normal(int x, int y)
 {
+    const int PARTICLES = 128;
+
     expl_snd_big_.play(0);
 
-    const int PARTICLES = 128;
-    sdlc::Sprite* sprite = new sdlc::Sprite;
+    std::unique_ptr<sdlc::Sprite> sprite(new sdlc::Sprite);
     sprite->link(expl_img_.data);
     sprite->initAnimation(5, 11, 1);
     sprite->setX(x - sprite->getWidth() / 2);
     sprite->setY(y - sprite->getHeight() / 2);
-    explosion_list_.push_back(sprite);
+    explosion_list_.push_back(std::move(sprite));
 
+    // choose one of the precomputed particles.
     int i_expl = rand() % 10;
+
     for (int i = 0; i < PARTICLES; ++i) {
         int intensity = precalc_norm_expl_[i_expl][i].intensity;
         float x_vel = precalc_norm_expl_[i_expl][i].x_vel;
@@ -133,9 +110,10 @@ void FxManager::explode_tiny(int x, int y)
 
 void FxManager::explode_tiny(int x, int y, float vel, float angle)
 {
+    const int PARTICLES = 32;
+
     play_hit_snd();
 
-    const int PARTICLES = 32;
     angle = angle * (3.1415927f / 180.0f);
     float x_vel_mod = cos(angle) * vel;
     float y_vel_mod = -sin(angle) * vel;
@@ -155,13 +133,14 @@ void FxManager::explode_tiny(int x, int y, float vel, float angle)
 
 void FxManager::smokepuff(int x, int y)
 {
-    int i;
     // TODO: remove extern timer.
     extern sdlc::Timer* timer;
-    int amount = (int)((float)timer->frame_time() / 0.004f/*4.0f*/);
-    for (i = 0; i < amount; i++) {
+
+    int amount = (int)((float)timer->frame_time() / 0.004f);
+
+    for (int i = 0; i < amount; i++) {
         float xVel = ((rand() % 50) - 25)/**0.001*/;
-        float yVel = ((rand() % 50) - 25)/**0.001*/ + 100.0f/*0.1f*/;
+        float yVel = ((rand() % 50) - 25)/**0.001*/ + 100.0f;
         particle_manager_->create(x + (rand() % 10) - 5, y + (rand() % 10) - 5, 
                                   xVel, yVel, 255, 255, 255, 100, 30.0f);
     }

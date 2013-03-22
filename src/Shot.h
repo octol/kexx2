@@ -27,7 +27,7 @@ public:
     Shot(std::string name, int energy, Surface& s, Owner owner);
     virtual ~Shot() {};
 
-    void check_collisions(ObjectManager& object_manager, FxManager& fx_manager) 
+    void check_collisions(ObjectManager& object_manager, FxManager& fx_manager)
         override;
     void kill(ObjectManager& object_manager, FxManager& fx_manager) override;
 };

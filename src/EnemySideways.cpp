@@ -27,7 +27,8 @@
 
 EnemySideways::EnemySideways(std::string name, int energy, int score, sdlc::Surface& s)
     : Object(name, energy, s, OBJ_ENEMY),
-      left_(false), time_when_last_shot_(0)
+      left_(false), 
+      time_when_last_shot_(0)
 {
     set_score(score);
 }
@@ -38,39 +39,43 @@ EnemySideways::EnemySideways(std::string name, int energy, int score, sdlc::Surf
 
 void EnemySideways::activate(ObjectManager& object_manager)
 {
-    setXVel(-100.0f);
-    setYVel(80.0f);
+    UNUSED(object_manager);
 
     // TODO: Remove extern Timer class.
     extern sdlc::Timer* timer;
+
+    set_x_vel(-100.0f);
+    set_y_vel(80.0f);
+
     time_when_last_shot_ = timer->ticks() - (rand() % 2000);
 }
 
 void EnemySideways::think(ObjectManager& object_manager, FxManager& fx_manager)
 {
+    UNUSED(fx_manager);
+
     // TODO: Remove extern Timer class.
     extern sdlc::Timer* timer;
+
     if (active()) {
         if (left_) {
-            setXVel(getXVel() - (100.0f * timer->frame_time()));
-            if (getXVel() < -100.0f)
+            set_x_vel(x_vel() - (100.0f * timer->frame_time()));
+            if (x_vel() < -100.0f)
                 left_ = false;
         } else {
-            setXVel(getXVel() + (100.0f /*0.0001f*/ * timer->frame_time()));
-            if (getXVel() > 100.0f)
+            set_x_vel(x_vel() + (100.0f * timer->frame_time()));
+            if (x_vel() > 100.0f)
                 left_ = true;
         }
 
         // shooting
         if (timer->ticks() - time_when_last_shot_ > 2000) {
-            object_manager.create_object((int)(getX() + getWidth() / 2), 
-                    (int)(getY() + getHeight()), 
-                    0, 200.0f, SHOTENEMYSTD, OWNER_ENEMY);
+            int cx = x() + width() / 2;
+            int cy = y() + height() / 2;
+            object_manager.create_object(cx, cy, 0, 200.0f, SHOTENEMYSTD, 
+                                         OWNER_ENEMY);
             time_when_last_shot_ = timer->ticks();
         }
     }
 }
 
-// -----------------------------------------------------------------------------
-// Private Functions
-// -----------------------------------------------------------------------------

@@ -28,13 +28,10 @@
 ShotRocket::ShotRocket(std::string _name, int _energy, sdlc::Surface& s, 
         Owner _owner)
     : Shot(_name, _energy, s, _owner),
-      time_when_shot_(SDL_GetTicks())
+      // TODO: remove raw SDL call.
+      time_when_shot_(SDL_GetTicks())       
 {
-    initAnimation(50, 2, 0);
-}
-
-ShotRocket::~ShotRocket()
-{
+    init_animation(50, 2, 0);
 }
 
 // -----------------------------------------------------------------------------
@@ -45,11 +42,12 @@ void ShotRocket::think(ObjectManager& object_manager, FxManager& fx_manager)
 {
     // TODO: remove extern Timer class.
     extern sdlc::Timer* timer;
-    setYVel(getYVel() - 500.0f /*0.0005*/*timer->frame_time());
+    set_y_vel(y_vel() - 500.0f * timer->frame_time());
 
-    fx_manager.smokepuff((int)(getX() + getWidth() / 2), 
-                         (int)(getY() + getHeight() / 2));
+    fx_manager.smokepuff((int)(x() + width() / 2), 
+                         (int)(y() + height() / 2));
 
+    // TODO: remove raw SDL call.
     if (SDL_GetTicks() - time_when_shot_ > 1000)
         kill(object_manager, fx_manager);
 }
@@ -57,20 +55,16 @@ void ShotRocket::think(ObjectManager& object_manager, FxManager& fx_manager)
 void ShotRocket::kill(ObjectManager& object_manager, FxManager& fx_manager)
 {
     set_energy(0);
-    fx_manager.explode_normal((int)(getX() + getWidth() / 2), 
-                              (int)(getY() + getHeight() / 2));
+    fx_manager.explode_normal((int)(x() + width() / 2), 
+                              (int)(y() + height() / 2));
 
-    // TODO: remove magic number
-    for (int i = 0; i < 64; i++) {
-        float vel = 500.0f/*0.5f*/ + (rand() % 10 - 5) * 5.0f/*0.005*/;
+    for (int i = 0; i < EXPLOSION_FRAGMENTS; i++) {
+        float vel = 500.0f + (rand() % 10 - 5) * 5.0f;
         float angle = rand() % 360;
-        float x = getX() + getWidth() / 2;
-        float y = getY() + getHeight() / 2;
-        object_manager.create_object((int)x, (int)y, SHOTBOMBFRAGMENT, vel, 
-                angle, owner());
+        float center_x = x() + width() / 2;
+        float center_y = y() + height() / 2;
+        object_manager.create_object((int)center_x, (int)center_y, 
+                SHOTBOMBFRAGMENT, vel, angle, owner());
     }
 }
 
-// -----------------------------------------------------------------------------
-// Private Functions
-// -----------------------------------------------------------------------------

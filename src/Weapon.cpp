@@ -29,10 +29,7 @@
 
 int Weapon::upgrade()
 {
-    level_ += 1;
-    if (level_ > 4)
-        level_ = 4;
-    return level_;
+    return std::min(++level_,4);
 }
 
 // -----------------------------------------------------------------------------

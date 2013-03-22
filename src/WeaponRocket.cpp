@@ -29,7 +29,7 @@ WeaponRocket::WeaponRocket(sdlc::Sound& sound, Owner owner)
 {
     // TODO: redo how these are set.
     shot_snd_.link(&sound);
-    shot_snd_.setChannel((int)SND_W_ROCKET);
+    shot_snd_.set_channel((int)SND_W_ROCKET);
     set_owner(owner);
 
     set_level(1);

@@ -66,7 +66,7 @@ void ObjectManager::load_data(std::string data_path)
     obj[SHOTBLASTERBIG].load(data_path + "gfx/ShotBlasterBig.png");
     obj[SHOTROCKET].load(data_path + "gfx/ShotRocket.png");
     obj[SHOTBOMBFRAGMENT].alloc(2, 2);
-    obj[SHOTBOMBFRAGMENT].fillRect(0, 0, 2, 2, 100, 100, 255);
+    obj[SHOTBOMBFRAGMENT].fill_rect(0, 0, 2, 2, 100, 100, 255);
     obj[SHOTENEMYSTD].load(data_path + "gfx/ShotStd2.png");
     snd[SND_SHOTBLASTER].load(data_path + "soundfx/shoot1.wav");
     snd[SND_SHOTROCKET].load(data_path + "soundfx/rocketshot.wav");
@@ -80,21 +80,16 @@ void ObjectManager::update(sdlc::Timer& timer, FxManager& fx_manager,
 {
     world_y_pos_ = world_y_pos;
 
-    // TODO: nicer loop
-    //auto iterator = list.begin();
-    //while (iterator != list.end()) {
-        //Object* current = *iterator;
-        //++iterator;
-
     for (auto current : list) {
         if (current->energy()) {
+
             // main functions
             current->think(*this, fx_manager);
             current->update(timer);
             current->check_collisions(*this, fx_manager);
 
             // kill objects who move outside their allowed area
-            if (current->getY() > 480) {
+            if (current->y() > 480) {
                 ObjType t = current->type();
                 if (t == OBJ_ENEMY || t == OBJ_PASSIVE 
                         || t == OBJ_BONUS || t == OBJ_SHOT) {
@@ -119,7 +114,7 @@ void ObjectManager::update(sdlc::Timer& timer, FxManager& fx_manager,
         }
     }
 
-    // run maintenance functions
+    // Run maintenance functions
     update_player_state(player_state);
     flush_list();               // flush dead objects
     add_from_queue();           // add the new objects
@@ -128,91 +123,34 @@ void ObjectManager::update(sdlc::Timer& timer, FxManager& fx_manager,
 
 void ObjectManager::draw(sdlc::Screen& screen)
 {
-    //ObjectList::iterator i = list.begin();
-    // TODO: range based loop
-    for (auto i = list.begin(); i != list.end(); i++) {
-        Object* current = *i;
+    for (Object* current : list) 
         screen.blit(*current);
-    }
 }
 
 Object* ObjectManager::create_object(int x, int y, float x_vel, float y_vel, 
                                      ObjIndex object, Owner owner)
 {
-    // TODO: Redo to use a Factory pattern instead.
+    // TODO: Redo to use a Factory pattern.
+    // TODO: Read all parameters from file.
     
-    Object* tmp = 0;
+    Object* new_obj = nullptr;
 
+    // Create formation
     if (object >= ENEMYSTD_V_FORMATION)
         create_formation(x, y, x_vel, y_vel, object);
 
+    // Create single entity
     else {
-        // enemies
-        if (object == ENEMYSTD)
-            tmp = new Object("Standard Enemy", 5, 52, 
-                    obj[ENEMYSTD], OBJ_ENEMY, SCROLLING_SPEED);
-        else if (object == ENEMYSIDEWAYS)
-            tmp = new EnemySideways("Sideways Enemy", 3, 71, 
-                    obj[ENEMYSIDEWAYS]);
-        else if (object == ENEMYRAMMER)
-            tmp = new EnemyRammer("Rammer Enemy", 2, 43, obj[ENEMYRAMMER]);
-        else if (object == ENEMYBONUS) {
-            tmp = new EnemyBonus("Bonus Enemy", 10, 200, obj[ENEMYBONUS]);
-            tmp->initAnimation(50, 2, 0);
-        }
+        Object* new_obj = allocate_object(object, owner);
 
-        // passive objects
-        else if (object == OBJECTBIGSHIP) {
-            tmp = new Object("Object Bigship", 5, 0, obj[OBJECTBIGSHIP], 
-                    OBJ_PASSIVE,  10.0f);
-            tmp->initAnimation(40, 2, 0);
-        }
+        new_obj->set_x(x - new_obj->width() / 2);
+        new_obj->set_y(y - new_obj->height() / 2 + world_y_pos_);
+        new_obj->set_x_vel(x_vel);
+        new_obj->set_y_vel(y_vel);
 
-        // bonuses
-        else if (object == BONUSBLASTER) {
-            tmp = new Object("Blaster Bonus", 1, 0, obj[BONUSBLASTER], 
-                    OBJ_BONUS,  20.0f);
-            tmp->initAnimation(40, 3, 0);
-        } else if (object == BONUSROCKET) {
-            tmp = new Object("Rocket Bonus", 1, 0, obj[BONUSROCKET], 
-                    OBJ_BONUS,  20.0f);
-            tmp->initAnimation(40, 3, 0);
-        }
-
-        // shots
-        else if (object == SHOTBLASTER)
-            tmp = new Shot("Blaster Shot", 1, obj[SHOTBLASTER], owner);
-        else if (object == SHOTBLASTERBIG)
-            tmp = new Shot("Big Blaster Shot", 1, obj[SHOTBLASTERBIG], owner);
-        else if (object == SHOTROCKET)
-            tmp = new ShotRocket("Rocket Shot", 10, obj[SHOTROCKET], owner);
-        else if (object == SHOTBOMBFRAGMENT)
-            tmp = new Shot("Bomb Fragment Shot", 4, obj[SHOTBOMBFRAGMENT], 
-                    owner);
-        else if (object == SHOTENEMYSTD)
-            // TODO: check this (why?)
-            tmp = new Shot("Standard Enemy Shot", 1, obj[SHOTENEMYSTD], owner);
-
-        // misc
-        else if (object == SMOKETRAIL) {
-            tmp = new Object("Smoketrail", 1, 0, obj[SMOKETRAIL], 
-                    OBJ_PLAYERPASSIVE, 0);
-            tmp->set_owner(owner);
-            tmp->initAnimation(40, 2, 0);
-        }
-
-        else {
-            std::cout << "ObjectManager::create_object(): undefined object." 
-                << std::endl;
-        }
-
-        tmp->setX(x - tmp->getWidth() / 2);
-        tmp->setY(y - tmp->getHeight() / 2 + world_y_pos_);
-        tmp->setXVel(x_vel);
-        tmp->setYVel(y_vel);
-        queue.push_back(tmp);
+        queue.push_back(new_obj);
     }
-    return tmp;
+    return new_obj;
 }
 
 Object* ObjectManager::create_object(int x, int y, ObjIndex object, 
@@ -227,59 +165,29 @@ Object* ObjectManager::create_object(int x, int y, ObjIndex object,
 
 void ObjectManager::create_ships(PlayerState& player_state)
 {
-    int i, j;
-    for (i = 1; i <= NUM_OF_POSSIBLE_PLAYERS; i++) {
+    for (int i = 1; i <= NUM_OF_POSSIBLE_PLAYERS; i++) {
         if (player_state.energy_max(i)) {
-            Weapon* w1 = 0;
-            Weapon* w2 = 0;
 
-            if (player_state.main_weapon(i) == "Blaster Weapon")
-                // TODO: remove C style cast.
-                w1 = new WeaponBlaster(snd[SND_SHOTBLASTER], 
-                        (Owner)(OWNER_PLAYER1 + i - 1));
-            for (j = 1; j < player_state.main_weapon_level(i); j++)
-                w1->upgrade();
-
-            if (player_state.extra_weapon(i) == "Rocket Weapon") {
-                // TODO: remove C style cast
-                w2 = new WeaponRocket(snd[SND_SHOTROCKET], 
-                        (Owner)(OWNER_PLAYER1 + i - 1));
-                w2->set_count(player_state.extra_weapon_count(i));
-            }
             std::string name = "Player " + std::to_string(i);
-            KeySet keyset;
-            if (i == 1) {
-                keyset.up = SDLK_UP;
-                keyset.left = SDLK_LEFT;
-                keyset.down = SDLK_DOWN;
-                keyset.right = SDLK_RIGHT;
-                keyset.fire_main = SDLK_RCTRL;
-                keyset.fire_extra = SDLK_RSHIFT;
-            } else if (i == 2) {
-                keyset.up = SDLK_w;
-                keyset.left = SDLK_a;
-                keyset.down = SDLK_s;
-                keyset.right = SDLK_d;
-                keyset.fire_main = SDLK_LSHIFT;
-                keyset.fire_extra = SDLK_GREATER;
-            } else {
-                std::cout << "ObjectManager::createShips() keys not set!" 
-                    << std::endl;
-            }
 
-            player_state.set_keyset(i, keyset);
-
-            int e = player_state.energy_max(i);
-            player_state.set_energy(i, e);
             int s = player_state.score(i);
-            Object* tmp = new Ship(name, e, s, obj[PLAYER1 + i - 1], w1, w2, 
-                    keyset);
+            int e = player_state.energy_max(i);
+            player_state.set_energy(i, e);  // reset energy to max
 
-            tmp->lockedToScreen(false);
-            tmp->setX(213 * i - tmp->getWidth());
-            tmp->setY(480);
-            tmp->setVel(0, -200.0f);
-            queue.push_back(tmp);
+            sdlc::Surface& gfx = obj[PLAYER1 + i - 1];
+
+            auto w1 = create_main_weapon(i, player_state);
+            auto w2 = create_extra_weapon(i, player_state);
+
+            KeySet keyset(i);   // For now we dont set custom keys
+
+            Object* new_ship = new Ship(name, e, s, gfx, w1, w2, keyset);
+
+            new_ship->set_locked_to_screen(false);
+            new_ship->set_x(213 * i - new_ship->width());
+            new_ship->set_y(480);
+            new_ship->set_vel(0, -200.0f);
+            queue.push_back(new_ship);
         }
     }
 }
@@ -297,6 +205,76 @@ int ObjectManager::num_of_players_alive()
 // -----------------------------------------------------------------------------
 // Private Functions
 // -----------------------------------------------------------------------------
+
+Object* ObjectManager::allocate_object(ObjIndex object, Owner owner)
+{
+    Object* new_obj = nullptr;
+    sdlc::Surface& gfx = obj[object];
+
+    switch (object) {
+
+    // enemies
+    case ENEMYSTD:
+        new_obj = new Object("Standard Enemy", 5, 52, gfx, OBJ_ENEMY, 
+                             SCROLLING_SPEED);
+        break;
+    case ENEMYSIDEWAYS:
+        new_obj = new EnemySideways("Sideways Enemy", 3, 71, gfx);
+        break;
+    case ENEMYRAMMER:
+        new_obj = new EnemyRammer("Rammer Enemy", 2, 43, gfx);
+        break;
+    case ENEMYBONUS:
+        new_obj = new EnemyBonus("Bonus Enemy", 10, gfx);
+        new_obj->init_animation(50, 2, 0);
+        break;
+
+    // passive objects
+    case OBJECTBIGSHIP:
+        new_obj = new Object("Object Bigship", 5, 0, gfx, OBJ_PASSIVE,  10.0f);
+        new_obj->init_animation(40, 2, 0);
+        break;
+
+    // bonuses
+    case BONUSBLASTER:
+        new_obj = new Object("Blaster Bonus", 1, 0, gfx, OBJ_BONUS,  20.0f);
+        new_obj->init_animation(40, 3, 0);
+        break;
+    case BONUSROCKET:
+        new_obj = new Object("Rocket Bonus", 1, 0, gfx, OBJ_BONUS,  20.0f);
+        new_obj->init_animation(40, 3, 0);
+        break;
+
+    // shots
+    case SHOTBLASTER:
+        new_obj = new Shot("Blaster Shot", 1, gfx, owner);
+        break;
+    case SHOTBLASTERBIG:
+        new_obj = new Shot("Big Blaster Shot", 1, gfx, owner);
+        break;
+    case SHOTROCKET:
+        new_obj = new ShotRocket("Rocket Shot", 10, gfx, owner);
+        break;
+    case SHOTBOMBFRAGMENT:
+        new_obj = new Shot("Bomb Fragment Shot", 4, gfx, owner);
+        break;
+    case SHOTENEMYSTD:
+        new_obj = new Shot("Standard Enemy Shot", 1, gfx, owner);
+        break;
+
+    // misc
+    case SMOKETRAIL:
+        new_obj = new Object("Smoketrail", 1, 0, gfx, OBJ_PLAYERPASSIVE, 0);
+        new_obj->set_owner(owner);
+        new_obj->init_animation(40, 2, 0);
+        break;
+
+    default:
+        std::cout << "Warning: undefined object." << std::endl;
+        break;
+    }
+    return new_obj;
+}
 
 void ObjectManager::create_formation(int x, int y, float x_vel, float y_vel, 
                                      enum ObjIndex object)
@@ -363,10 +341,10 @@ void ObjectManager::create_formation(int x, int y, float x_vel, float y_vel,
         create_object(x + 40, y - 20, x_vel, y_vel, ENEMYSIDEWAYS, OWNER_NONE);
         create_object(x + 80, y - 40, x_vel, y_vel, ENEMYSIDEWAYS, OWNER_NONE);
     } else if (object == ENEMYSIDEWAYS_MASSIVE_FORMATION) {
-        int i;
-        for (i = 0; i < 20; i++)
+        for (int i = 0; i < 20; i++) {
             create_object((rand() % 560) + 40 , y - (rand() % 200), x_vel, 
                     y_vel, ENEMYSIDEWAYS, OWNER_NONE);
+        }
     } else if (object == ENEMYRAMMER_VLINE_FORMATION) {
         create_object(x, y     , x_vel, y_vel, ENEMYRAMMER, OWNER_NONE);
         create_object(x, y - 20, x_vel, y_vel, ENEMYRAMMER, OWNER_NONE);
@@ -390,31 +368,65 @@ void ObjectManager::create_formation(int x, int y, float x_vel, float y_vel,
     }
 }
 
+std::unique_ptr<Weapon> 
+ObjectManager::create_main_weapon(int player, PlayerState player_state) 
+{
+    std::unique_ptr<Weapon> w;
+
+    if (player_state.main_weapon(player) == "Blaster Weapon") {
+        sdlc::Sound& sfx = snd[SND_SHOTBLASTER];
+        Owner own = static_cast<Owner>(OWNER_PLAYER1 + player - 1);
+        w = std::unique_ptr<Weapon>(new WeaponBlaster(sfx, own));
+    }
+
+    for (int j = 1; j < player_state.main_weapon_level(player); ++j)
+        w->upgrade();
+
+    return w;
+}
+
+std::unique_ptr<Weapon> 
+ObjectManager::create_extra_weapon(int player, PlayerState player_state)
+{
+    std::unique_ptr<Weapon> w;
+
+    if (player_state.extra_weapon(player) == "Rocket Weapon") {
+        sdlc::Sound& sfx = snd[SND_SHOTROCKET];
+        Owner own = static_cast<Owner>(OWNER_PLAYER1 + player - 1);
+        w = std::unique_ptr<Weapon>(new WeaponRocket(sfx, own));
+        w->set_count(player_state.extra_weapon_count(player));
+    }
+
+    return w;
+}
+
+
 void ObjectManager::update_player_state(PlayerState& player_state)
 {
     for (auto object : list) {
         if (object->type() == OBJ_PLAYER) {
-            int which = object->name[object->name.length() - 1] - (int)'0';
 
-            player_state.set_energy(which, object->energy());
-            player_state.set_energy_max(which, object->energy_max());
-            player_state.set_score(which, object->score());
+            // Get the player number from the name
+            int player_id = object->name[object->name.length() - 1] - (int)'0';
 
-            Ship* tmp;
-            tmp = (Ship*)object;
-            if (tmp->main_weapon_) {
-                player_state.set_main_weapon(which, tmp->main_weapon_->name);
-                player_state.set_main_weapon_level(which, 
-                        tmp->main_weapon_->level());
+            player_state.set_energy(player_id, object->energy());
+            player_state.set_energy_max(player_id, object->energy_max());
+            player_state.set_score(player_id, object->score());
+
+            Ship* ship = (Ship*)object;
+            if (ship->main_weapon_) {
+                player_state.set_main_weapon(player_id, ship->main_weapon_->name);
+                player_state.set_main_weapon_level(player_id, 
+                        ship->main_weapon_->level());
             }
-            if (tmp->extra_weapon_) {
-                player_state.set_extra_weapon(which, tmp->extra_weapon_->name);
-                player_state.set_extra_weapon_count(which, 
-                        tmp->extra_weapon_->count());
-            } else player_state.set_extra_weapon(which, "none");
+            if (ship->extra_weapon_) {
+                player_state.set_extra_weapon(player_id, ship->extra_weapon_->name);
+                player_state.set_extra_weapon_count(player_id, 
+                        ship->extra_weapon_->count());
+            } else player_state.set_extra_weapon(player_id, "none");
 
             if (object->energy() == 0)
-                player_state.set_energy_max(which, 0);
+                player_state.set_energy_max(player_id, 0);
         }
     }
 }

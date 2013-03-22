@@ -74,6 +74,8 @@ void Interface::draw(sdlc::Font& font, sdlc::Screen& screen)
 void Interface::draw_energy(int x, int y, int value, int max_value, 
         sdlc::Font& font, sdlc::Screen& screen)
 {
+    UNUSED(font);
+
     int w = 20 * max_value;
     int h = 20;
     int multi = (w / max_value);

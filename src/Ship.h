@@ -20,6 +20,8 @@
 #define KEXX2_SHIP_H
 
 #include <list>
+#include <memory>
+#include "SDLc.h"
 #include "Object.h"
 #include "PlayerState.h"
 
@@ -32,8 +34,9 @@ class Ship final : public Object {
     friend class ObjectManager;
 public:
     Ship(std::string n, int energy, int score, Surface& s, 
-         Weapon* main, Weapon* extra, KeySet keyset);
-    virtual ~Ship();
+         std::unique_ptr<Weapon>& main, std::unique_ptr<Weapon>& extra, 
+         KeySet keyset);
+    virtual ~Ship() {};
 
     void think(ObjectManager& object_manager, FxManager& fx_manager);
     void check_collisions(ObjectManager& object_manager, FxManager& fx_manager);
@@ -41,18 +44,22 @@ public:
     void hurt(int value, ObjectManager& object_manager, FxManager& fx_manager);
     void kill(ObjectManager& object_manager, FxManager& fx_manager);
 
-    void set_main_weapon(Weapon* w);
-    void set_extra_weapon(Weapon* w);
-
 private:
+    void process_input(sdlc::Input& input, ObjectManager& object_manager);
+    void do_scripted_movement(sdlc::Timer& timer);
+
+    void collide_with_object(Object& current, ObjectManager& object_manager, 
+                             FxManager& fx_manager);
+
+    void set_not_invincible();
+
     void update_smoketrail(ObjectManager& object_manager);
     void remove_smoketrail(ObjectManager& object_manager);
 
     void calculate_hit_img();
 
-    // TODO: change to std::unique_ptr
-    Weapon* main_weapon_ = nullptr;
-    Weapon* extra_weapon_ = nullptr;
+    std::unique_ptr<Weapon> main_weapon_;
+    std::unique_ptr<Weapon> extra_weapon_;
     KeySet keyset_;
 
     int invincible_ = INPUT_LOCKED;
