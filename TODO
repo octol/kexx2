@@ -15,11 +15,21 @@ Local issues:
 - grep for "for" loops.
 - Remove all empty destructors for leaf node classes.
 - Fix compiler warnings.
+- Move to using Coord, Color etc objects instead of (x,y,xvel,yvel,r,g,b,a)
+- Rename object_manager -> objects ? (applies to all "managers")
+- Move to using new c++11 style type safe enums.
 
 Architectural issues:
 ---------------------
 - Store pointers or objects in lists? e.g Sprites, Objects.
 - Systematic way of doing dependency injection in e.g Interface.
+- Raw pointer to dependencies
+    - FxManager
+- Weapon really need to have object manager in constructor so we don't have
+  to pass it as argument everything we use it. Maybe when (if?) we change to
+  shorter Manager names it will not be such a hassle?
+- Storing player data dynamically instead of C arrays.
+- Passing references by const, and make functions const.
 
 Organisation of system classes:
 -------------------------------
@@ -37,22 +47,21 @@ Subsystems overview:
 
 IGameState: 
     Menu, World, BuyScreen, Finished, GameOver.
-Weapon: 
-    WeaponBlaster, WeaponRocket.
-Object
-    Shot: 
-        ShotRocket.
-    Enemy:
-        EnemyBonus, EnemyRammer, EnemySideways
-    Ship
-FxManager
-LevelManager
 ObjectManager
 
 ### Parts done
 
+Object:
+    Shot: 
+        ShotRocket
+    EnemyBonus, EnemyRammer, EnemySideways
+    Ship
+FxManager
 ParticleManager: 
     Starfield
+Weapon: 
+    WeaponBlaster, WeaponRocket.
+LevelManager
 
 Feature changes:
 ----------------
@@ -70,8 +79,10 @@ Specific issues:
 ----------------
 BuyScreen::runLogic(), playerState argument shadows a class member.
 World:World(), seems to do too much in constructor.
+Object::calculate_hit_img(), manipulate the raw Surface data, should implement copy constructor in Surface.
 
 Bugs:
 -----
 - Blinking of ship when hit seems off, is this due to precalc hit surface?
+- Window title is not set.
 
