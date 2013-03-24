@@ -18,6 +18,8 @@ Local issues:
 - Move to using Coord, Color etc objects instead of (x,y,xvel,yvel,r,g,b,a)
 - Rename object_manager -> objects ? (applies to all "managers")
 - Move to using new c++11 style type safe enums.
+- Should probably use several separate lists in ObjectManager to avoid
+  having if statements in loops.
 
 Architectural issues:
 ---------------------
@@ -47,10 +49,10 @@ Subsystems overview:
 
 IGameState: 
     Menu, World, BuyScreen, Finished, GameOver.
-ObjectManager
 
 ### Parts done
 
+ObjectManager
 Object:
     Shot: 
         ShotRocket
