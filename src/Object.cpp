@@ -64,6 +64,8 @@ void Object::activate(ObjectManager& object_manager)
 
     if (activation_y_vel_set_)
         set_y_vel(activation_y_vel_);
+
+    set_active(true);
 }
 
 void Object::think(ObjectManager& object_manager, FxManager& fx_manager)
@@ -182,6 +184,16 @@ Owner Object::parse_owner(std::string player)
 }
 
 // -----------------------------------------------------------------------------
+// Static Functions
+// -----------------------------------------------------------------------------
+
+// TODO: remove this function
+bool Object::compare_type(const Object* o1, const Object* o2)
+{
+    return o1->type() < o2->type();
+}
+
+// -----------------------------------------------------------------------------
 // Private Functions
 // -----------------------------------------------------------------------------
 
@@ -202,3 +214,4 @@ void Object::calculate_hit_img()
     }
     hit_img.unlock();
 }
+

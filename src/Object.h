@@ -114,21 +114,22 @@ public:
     virtual void hurt(int value, ObjectManager& object_manager, FxManager& fx_manager);
     virtual void kill(ObjectManager& object_manager, FxManager& fx_manager);
 
-    ObjType type();
+    ObjType type() const;
     ObjType set_type(ObjType value);
-    int energy();
+    int energy() const;
     int set_energy(int value);
     int adjust_energy(int e);
-    int energy_max();
+    int energy_max() const;
     int set_energy_max(int value);
 
-    bool active();
+    bool active() const;
+    // TODO: these should be private/protected?
     bool active(bool value); // DEPRECATED
     bool set_active(bool value);
 
     float set_activation_y_vel(float value);
 
-    int score();
+    int score() const;
     int set_score(int value);
     int adjust_score(int value);
 
@@ -137,8 +138,11 @@ public:
 
     // TODO: Why did I mark this protected?
     // protected:
-    Owner owner();
+    Owner owner() const;
     Owner set_owner(Owner value);
+
+    static bool compare_type(const Object* o1, const Object* o2);
+
 
 protected:
     virtual void calculate_hit_img();
@@ -163,7 +167,7 @@ private:
 // -----------------------------------------------------------------------------
 
 inline
-ObjType Object::type()       
+ObjType Object::type() const
 {
     return type_;
 }
@@ -175,7 +179,7 @@ ObjType Object::set_type(ObjType value)
 }
 
 inline
-int Object::energy()         
+int Object::energy() const
 {
     return energy_;
 }
@@ -197,7 +201,7 @@ int Object::adjust_energy(int e)
 }
 
 inline
-int Object::energy_max()          
+int Object::energy_max() const
 {
     return energy_max_;
 }
@@ -209,7 +213,7 @@ int Object::set_energy_max(int value)
 }
 
 inline
-bool Object::active()           
+bool Object::active() const
 {
     return active_;
 }
@@ -227,7 +231,7 @@ bool Object::set_active(bool value)
 }
 
 inline
-int Object::score()          
+int Object::score() const
 {
     return score_;
 }
@@ -246,7 +250,7 @@ int Object::adjust_score(int value)
 
 //protected:
 inline
-Owner Object::owner()        
+Owner Object::owner() const
 {
     return owner_;
 }
@@ -256,4 +260,5 @@ Owner Object::set_owner(Owner value)
 {
     return owner_ = value;
 }
+
 #endif // KEXX2_OBJECT_H

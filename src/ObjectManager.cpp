@@ -19,6 +19,7 @@
 #include "ObjectManager.h"
 
 #include <cmath>
+#include <cassert>
 #include <list>
 #include <iostream>
 #include <algorithm>
@@ -115,7 +116,7 @@ void ObjectManager::update(sdlc::Timer& timer, FxManager& fx_manager,
     }
 
     // Run maintenance functions
-    update_player_state(player_state);
+    update_all_player_state(player_state);
     flush_list();               // flush dead objects
     add_from_queue();           // add the new objects
     update_enemy_count();       // update/count how many enemies
@@ -194,7 +195,7 @@ void ObjectManager::create_ships(PlayerState& player_state)
 
 int ObjectManager::num_of_enemies()
 {
-    return amount_of_enemies_in_list_;
+    return enemies_in_list_;
 }
 
 int ObjectManager::num_of_players_alive()
@@ -401,34 +402,37 @@ ObjectManager::create_extra_weapon(int player, PlayerState player_state)
 }
 
 
-void ObjectManager::update_player_state(PlayerState& player_state)
+void ObjectManager::update_all_player_state(PlayerState& player_state)
 {
-    for (auto object : list) {
-        if (object->type() == OBJ_PLAYER) {
+    for (auto object : list) 
+        if (object->type() == OBJ_PLAYER) 
+            update_player_state(object, player_state);
+}
 
-            // Get the player number from the name
-            int player_id = object->name[object->name.length() - 1] - (int)'0';
+void ObjectManager::update_player_state(Object*& object, 
+                                        PlayerState& player_state)
+{
+    assert(object->type() == OBJ_PLAYER);
 
-            player_state.set_energy(player_id, object->energy());
-            player_state.set_energy_max(player_id, object->energy_max());
-            player_state.set_score(player_id, object->score());
+    // Get the player number from the name
+    int player_id = object->name[object->name.length() - 1] - (int)'0';
 
-            Ship* ship = (Ship*)object;
-            if (ship->main_weapon_) {
-                player_state.set_main_weapon(player_id, ship->main_weapon_->name);
-                player_state.set_main_weapon_level(player_id, 
-                        ship->main_weapon_->level());
-            }
-            if (ship->extra_weapon_) {
-                player_state.set_extra_weapon(player_id, ship->extra_weapon_->name);
-                player_state.set_extra_weapon_count(player_id, 
-                        ship->extra_weapon_->count());
-            } else player_state.set_extra_weapon(player_id, "none");
+    player_state.set_energy(player_id, object->energy());
+    player_state.set_energy_max(player_id, object->energy_max());
+    player_state.set_score(player_id, object->score());
 
-            if (object->energy() == 0)
-                player_state.set_energy_max(player_id, 0);
-        }
+    Ship* s = (Ship*)object;
+    if (s->main_weapon_) {
+        player_state.set_main_weapon(player_id, s->main_weapon_->name);
+        player_state.set_main_weapon_level(player_id, s->main_weapon_->level());
     }
+    if (s->extra_weapon_) {
+        player_state.set_extra_weapon(player_id, s->extra_weapon_->name);
+        player_state.set_extra_weapon_count(player_id, s->extra_weapon_->count());
+    } else player_state.set_extra_weapon(player_id, "none");
+
+    if (object->energy() == 0)
+        player_state.set_energy_max(player_id, 0);
 }
 
 void ObjectManager::flush_list()
@@ -441,6 +445,7 @@ void ObjectManager::flush_list()
     list.erase(last, end(list));
 }
 
+/*
 void ObjectManager::add_from_queue()
 {
     // TODO: range based loop
@@ -479,30 +484,56 @@ void ObjectManager::add_from_queue()
             queue.remove(current);
         }
     }
+
+    // Test that list is in order according to current->type()
+    ObjType ot = OBJ_UNDEFINED;
+    for (Object* obj : list) {
+        assert(obj->type() >= ot);
+        ot = obj->type();
+    }
+}
+*/
+
+void ObjectManager::add_from_queue()
+{
+    // Objects that are now inside the screen, are moved to the end of the
+    // queue. 
+    // TODO: should use a sorted queue object instead.
+    auto last = std::stable_partition(begin(queue),end(queue), [this](Object* o) {
+        return world_y_pos_ >= o->y() + o->height();
+    });
+
+    // Then they are activated and moved to the list object.
+    for (auto i = last; i != end(queue); ++i) {
+        (*i)->set_y((*i)->y() - world_y_pos_);
+        (*i)->activate(*this);
+
+        // Insert in the right order
+        auto next = std::find_if(begin(list), end(list), [i](Object* o) {
+            return  o->type() > (*i)->type();
+        });
+        list.insert(next, *i);
+    }
+    queue.erase(last, end(queue));
+    
+    assert(std::is_sorted(begin(list), end(list), Object::compare_type));
 }
 
 void ObjectManager::update_enemy_count()
 {
-    amount_of_enemies_in_list_ = 0;
-    players_alive_ = 0;
+    auto add_other = [](int n, Object* o) {
+        return (o->type() == OBJ_ENEMY || o->type() == OBJ_BONUS) ? n + 1 : n;
+    };
 
-    // TODO: range based loop
-    ObjectList::iterator iterator;
-    for (iterator = list.begin(); iterator != list.end(); iterator++) {
-        Object* current = *iterator;
-        ObjType t = current->type();
-        if (t == OBJ_ENEMY || t == OBJ_BONUS)
-            amount_of_enemies_in_list_++;
-        else if (t == OBJ_PLAYER)
-            players_alive_++;
-    }
-    // TODO: range based loop
-    for (iterator = queue.begin(); iterator != queue.end(); iterator++) {
-        Object* current = *iterator;
-        ObjType t = current->type();
-        if (t == OBJ_ENEMY || t == OBJ_BONUS)
-            amount_of_enemies_in_list_++;
-        else if (t == OBJ_PLAYER)
-            players_alive_++;
-    }
+    enemies_in_list_ = std::accumulate(begin(list), end(list), 0, add_other);
+    enemies_in_list_ = std::accumulate(begin(queue), end(queue), 
+                                       enemies_in_list_, add_other);
+
+    auto add_player = [](int n, Object* o) {
+        return o->type() == OBJ_PLAYER ? n + 1 : n;
+    };
+
+    players_alive_ = std::accumulate(begin(list), end(list), 0, add_player);
+    players_alive_ = std::accumulate(begin(queue), end(queue), players_alive_, 
+                                     add_player);
 }

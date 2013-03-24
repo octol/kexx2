@@ -37,6 +37,7 @@ EnemyRammer::EnemyRammer(std::string name, int energy, int score, Surface& s)
 
 void EnemyRammer::activate(ObjectManager& object_manager)
 {
+    Object::activate(object_manager);
     std::vector<Object*> player_vector;
 
     // Fetch the player ship objects

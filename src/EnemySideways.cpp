@@ -39,7 +39,7 @@ EnemySideways::EnemySideways(std::string name, int energy, int score, sdlc::Surf
 
 void EnemySideways::activate(ObjectManager& object_manager)
 {
-    UNUSED(object_manager);
+    Object::activate(object_manager);
 
     // TODO: Remove extern Timer class.
     extern sdlc::Timer* timer;

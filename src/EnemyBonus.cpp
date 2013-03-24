@@ -36,9 +36,8 @@ EnemyBonus::EnemyBonus(std::string name, int energy, sdlc::Surface& s)
 
 void EnemyBonus::activate(ObjectManager& object_manager)
 {
-    UNUSED(object_manager);
-
-    setYVel(120.0f);
+    Object::activate(object_manager);
+    set_y_vel(120.0f);
 }
 
 void EnemyBonus::kill(ObjectManager& object_manager, FxManager& fx_manager)

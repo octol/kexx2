@@ -37,15 +37,12 @@ public:
 
     void load_data(std::string data_path);
 
-    void update(sdlc::Timer& timer, FxManager& fx_manager, float world_y_pos, 
-                PlayerState& player_state);
-    void draw(sdlc::Screen& screen);
+    void update(sdlc::Timer&, FxManager&, float world_y_pos, PlayerState&);
+    void draw(sdlc::Screen&);
 
-    Object* create_object(int x, int y, float x_vel, float y_vel, 
-                          ObjIndex object, Owner owner);
-    Object* create_object(int x, int y, ObjIndex object, float vel, 
-                          float angle, Owner owner);
-    void create_ships(PlayerState& player_state);
+    Object* create_object(int x, int y, float x_vel, float y_vel, ObjIndex, Owner);
+    Object* create_object(int x, int y, ObjIndex, float vel, float angle, Owner);
+    void create_ships(PlayerState&);
 
     int num_of_enemies();
     int num_of_players_alive();
@@ -57,22 +54,28 @@ public:
 
 private:
     Object* allocate_object(ObjIndex object, Owner owner);
-    void create_formation(int x, int y, float x_vel, float y_vel, 
-                          enum ObjIndex object);
+    void create_formation(int x, int y, float x_vel, float y_vel, enum ObjIndex);
 
-    std::unique_ptr<Weapon> create_main_weapon(int player, 
-                                               PlayerState player_state);
-    std::unique_ptr<Weapon> create_extra_weapon(int player, 
-                                                PlayerState player_state);
+    std::unique_ptr<Weapon> create_main_weapon(int player, PlayerState);
+    std::unique_ptr<Weapon> create_extra_weapon(int player, PlayerState);
 
-    // list maintenance functions
-    void update_player_state(PlayerState& player_state);
+    // Update the player_state to reflect the actual state
+    void update_all_player_state(PlayerState&);
+    void update_player_state(Object*&, PlayerState&);
+
+    // Remove objects with energy <= 0
     void flush_list();
+
+    // Add inactive objects (typically loaded from level file) to the list
+    // of active objectes.
     void add_from_queue();
+    void add_from_queue2();
+
     void update_enemy_count();
 
+    // TODO: should switch to std::priority_queue or something similar.
     ObjectList queue;
-    int amount_of_enemies_in_list_ = 0;
+    int enemies_in_list_ = 0;
     int players_alive_ = 0;
     float world_y_pos_ = 0;
 };
