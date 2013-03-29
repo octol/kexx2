@@ -45,8 +45,7 @@ public:
     virtual ~IGameState() {};
 
     // Main game state functions
-    virtual void run_logic(sdlc::Input& input, sdlc::Timer& timer, sdlc::Mixer& mixer,
-                           PlayerState& player_state) = 0;
+    virtual void run_logic(sdlc::Input&, sdlc::Timer&, sdlc::Mixer&, PlayerState&) = 0;
     virtual void draw(sdlc::Screen& screen, sdlc::Font& font) = 0;
 
     // Querying the game state.

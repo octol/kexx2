@@ -67,9 +67,9 @@ void FxManager::update(sdlc::Timer& timer)
         sprite->update(timer);
 
     explosion_list_.erase(std::remove_if(begin(explosion_list_), end(explosion_list_), 
-            [](std::unique_ptr<sdlc::Sprite>& s) {
-                return !s->animation_active();
-            }), end(explosion_list_));
+        [](std::unique_ptr<sdlc::Sprite>& s) {
+            return !s->animation_active();
+        }), end(explosion_list_));
 }
 
 void FxManager::draw(sdlc::Screen& screen)

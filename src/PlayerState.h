@@ -19,7 +19,9 @@
 #ifndef KEXX2_PLAYERSTATE_H
 #define KEXX2_PLAYERSTATE_H
 
+#include <cassert>
 #include <iostream>
+#include <array>
 #include "Weapon.h"
 #include "Defines.h"
 
@@ -43,7 +45,7 @@ struct KeySet {
         } else {
             std::cout << "Warning: keys not set" << std::endl;
         }
-    };
+    }
 
     int left = 0;
     int right = 0;
@@ -52,6 +54,17 @@ struct KeySet {
     int fire_main = 0;
     int fire_extra = 0;
 };
+
+struct Player {
+    int energy = 0;
+    int energy_max = 0;
+    int score = 0;
+    int main_weapon_level = 1;
+    int extra_weapon_count = 0;
+    std::string main_weapon = "Blaster Weapon";
+    std::string extra_weapon = "none";
+    KeySet keyset;
+}; 
 
 class PlayerState final {
 public:
@@ -82,17 +95,7 @@ public:
     void kill_all();
 
 private:
-    // TODO: switch to STL container
-    struct player_ {
-        int energy = 0;
-        int energy_max = 0;
-        int score = 0;
-        int main_weapon_level = 1;
-        int extra_weapon_count = 0;
-        std::string main_weapon = "Blaster Weapon";
-        std::string extra_weapon = "none";
-        KeySet keyset;
-    } player_[NUM_OF_POSSIBLE_PLAYERS];
+    std::array<Player,NUM_OF_POSSIBLE_PLAYERS> players_;
 };
 
 #endif // KEXX2_PLAYERSTATE_H

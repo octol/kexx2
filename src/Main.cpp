@@ -52,7 +52,7 @@ int main(int argc, char* argv[])
 
 #ifdef TESTING
         // Developer mode escape key.
-        if (input->keyPressed(SDLK_F1, sdlc::NO_AUTOFIRE)) 
+        if (input->key_pressed(SDLK_F1, sdlc::NO_AUTOFIRE)) 
             kexx2->set_done(true);
 #endif
 
@@ -63,7 +63,7 @@ int main(int argc, char* argv[])
             print_fps_counter(*screen, *timer);
 
         screen->flipAll();
-        screen->fillRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0, 0);
+        screen->fill_rect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0, 0);
         timer->update();
     }
 

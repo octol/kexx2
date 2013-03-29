@@ -43,7 +43,7 @@ Shot::Shot(std::string n, int _energy, Surface& s, Owner _owner)
 // -----------------------------------------------------------------------------
 
 void Shot::check_collisions(ObjectManager& object_manager, 
-        FxManager& fx_manager)
+                            FxManager& fx_manager)
 {
     if (owner() >= OWNER_PLAYER1 
             && owner() <= OWNER_PLAYER1 + NUM_OF_POSSIBLE_PLAYERS - 1) {
@@ -51,10 +51,10 @@ void Shot::check_collisions(ObjectManager& object_manager,
         // 1) Check collision:  friendly fire <-> enemies 
         
         // start by getting pointer to the player
-        Object* owner_player = *std::find_if(
+        std::shared_ptr<Object> owner_player = *std::find_if(
             begin(object_manager.list), 
             end(object_manager.list), 
-            [this](Object* o) {
+            [this](std::shared_ptr<Object> o) {
                 return Object::parse_owner(o->name) == this->owner();
             });
 

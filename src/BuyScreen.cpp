@@ -20,6 +20,7 @@
 
 #include <iostream>
 #include <string>
+#include <array>
 
 #include "SDLc/Screen.h"
 #include "SDLc/Font.h"
@@ -35,14 +36,18 @@
 
 BuyScreen::BuyScreen(Options& options, PlayerState& player_state, int current_level)
     : IGameState(ENV_BUYSCREEN),
-      player_state_(&player_state),
+      player_state_(player_state),
       current_level_(current_level),
-      how_many_players_(options.num_of_players())
+      num_of_players_(options.num_of_players())
 {
+    for (int i = 0; i < NUM_OF_POSSIBLE_PLAYERS; ++i) 
+        selectors_.pos.push_back(0);
+
     selectors_.gfx.load(options.data_path + "gfx/EnemyRammer.png");
     
-    if (how_many_players_ > 2)
-        std::cout << "Warning: >2 players not supported" << std::endl;
+    // This layout can really only handle 2 players
+    if (num_of_players_ > 2)
+        std::cout << "Warning: too many players" << std::endl;
 }
 
 // -----------------------------------------------------------------------------
@@ -55,96 +60,98 @@ void BuyScreen::run_logic(sdlc::Input& input, sdlc::Timer& timer,
     UNUSED(timer);
     UNUSED(mixer);
 
-    KeySet keys[2];
-    keys[0] = player_state.keyset(1);
-    keys[1] = player_state.keyset(2);
+    // TODO: for now we do not read the keys from player_state.
+    std::vector<KeySet> keys = { KeySet(1), KeySet(2) };
 
-    // TODO: range based for loop
-    for (int i = 0; i < 2; i++) {
+    for (size_t i = 0; i < keys.size(); i++) {
         if (player_state.energy_max(i + 1)) {
-            if (input.keyPressed(keys[i].down, sdlc::NO_AUTOFIRE))
-                selectors_.pos[i]++;
-            else if (input.keyPressed(keys[i].up, sdlc::NO_AUTOFIRE))
-                selectors_.pos[i]--;
-            selectors_.pos[i] = sdlc::bound(selectors_.pos[i], 0, 2);
 
-            if (input.keyPressed(keys[i].fire_main, sdlc::NO_AUTOFIRE)) {
-                if (selectors_.pos[i] == 0 && player_state.score(i + 1) >= ROCKET_COST) {
-                    if (player_state.extra_weapon(i + 1) == "Rocket Weapon") {
-                        player_state.set_extra_weapon_count(i + 1, player_state.extra_weapon_count(i + 1) + 10);
-                    } else {
-                        player_state.set_extra_weapon(i + 1, "Rocket Weapon");
-                        player_state.set_extra_weapon_count(i + 1, 10);
-                    }
-                    player_state.set_score(i + 1, player_state.score(i + 1) - ROCKET_COST);
-                } else if (selectors_.pos[i] == 2) {
-                    player_done_[i] = true;
-                }
+            // Move selector up/down
+            if (input.key_pressed(keys.at(i).down, sdlc::NO_AUTOFIRE)) {
+                selectors_.pos.at(i)++;
+            } else if (input.key_pressed(keys.at(i).up, sdlc::NO_AUTOFIRE)) {
+                selectors_.pos.at(i)--;
+            }
+            selectors_.pos.at(i) = sdlc::bound(selectors_.pos.at(i), 0, 2);
+
+            if (input.key_pressed(keys.at(i).fire_main, sdlc::NO_AUTOFIRE)) {
+                press_enter(i, player_state);
             }
         } else {
-            player_done_[i] = true;
+            player_done_.at(i) = true;
         }
     }
 
     // check if done
     int players_done = 0;
-    for (int i = 0; i < how_many_players_; i++) {
-        if (player_done_[i])
+    for (int i = 0; i < num_of_players_; i++) {
+        if (player_done_.at(i))
             players_done++;
     }
-    if (players_done == how_many_players_)
+    if (players_done == num_of_players_)
         done_ = true;
 }
 
 void BuyScreen::draw(sdlc::Screen& screen, sdlc::Font& font)
 {
-    screen.print(200, 50, "level " 
-            + std::to_string(current_level_ - 1) + " complete!", font);
-    screen.print(30, 100, "player 1", font);
-    screen.print(60, 120, "score: " 
-            + std::to_string(player_state_->score(1)), font);
-
-    if (player_state_->extra_weapon(1) != "none") {
-        int length = (player_state_->extra_weapon(1)).length();
-        std::string text 
-            = (player_state_->extra_weapon(1)).substr(0, length - 7);
-
-        screen.print(60, 140, text + " count: " 
-                + std::to_string(player_state_->extra_weapon_count(1)), font);
-    }
-
-    if (how_many_players_ > 1) {
-        screen.print(370, 100, "player 2", font);
-        screen.print(400, 120, "score: " 
-                + std::to_string(player_state_->score(2)), font);
-
-        if (player_state_->extra_weapon(2) != "none") {
-            int length = (player_state_->extra_weapon(2)).length();
-            std::string text 
-                = (player_state_->extra_weapon(2)).substr(0, length - 7);
-            screen.print(400, 140, text + " count: " 
-                    + std::to_string(player_state_->extra_weapon_count(2)), font);
-        }
-    }
-
-    int pos1 = selectors_.pos[0];
-    int pos2 = selectors_.pos[1];
-    if (selectors_.pos[0] == 2)
-        pos1++;
-    if (selectors_.pos[1] == 2)
-        pos2++;
-
-    if (!player_done_[0])
-        screen.blit(50, 200 + (20 * pos1), selectors_.gfx);
-    if (!player_done_[1])
-        screen.blit(550, 200 + (20 * pos2), selectors_.gfx);
-
-    screen.print(150, 200, "buy rockets (cost: " 
-            + std::to_string(ROCKET_COST) + ")", font);
+    auto lvl = std::to_string(current_level_ - 1);
+    auto rocket_cost = std::to_string(ROCKET_COST);
+    screen.print(200, 50, "level " + lvl + " complete!", font);
+    screen.print(150, 200, "buy rockets (cost: " + rocket_cost + ")", font);
     screen.print(150, 220, "buy megavapen (not avail)", font);
     screen.print(150, 260, "goto next level", font);
+
+    draw_player_info(1, screen, font);
+
+    if (num_of_players_ > 1) 
+        draw_player_info(2, screen, font);
 }
 
 // -----------------------------------------------------------------------------
 // Private Functions
 // -----------------------------------------------------------------------------
+
+void BuyScreen::press_enter(int i, PlayerState& player_state)
+{
+    // Buy weapons
+    if (selectors_.pos[i] == 0 && player_state.score(i + 1) >= ROCKET_COST) {
+        if (player_state.extra_weapon(i + 1) == "Rocket Weapon") {
+            player_state.set_extra_weapon_count(i + 1, player_state.extra_weapon_count(i + 1) + 5);
+        } else {
+            player_state.set_extra_weapon(i + 1, "Rocket Weapon");
+            player_state.set_extra_weapon_count(i + 1, 10);
+        }
+        player_state.set_score(i + 1, player_state.score(i + 1) - ROCKET_COST);
+
+    // Exit
+    } else if (selectors_.pos[i] == 2) {
+        player_done_[i] = true;
+    }
+}
+
+void BuyScreen::draw_player_info(int i, sdlc::Screen& screen, sdlc::Font& font)
+{
+    screen.print(30 + (i-1)*340, 100, "player " + std::to_string(i), font);
+    screen.print(60 + (i-1)*340, 120, "score: " + std::to_string(player_state_.score(i)), font);
+
+    draw_extra_weapon(i, screen, font);
+
+    int pos = selectors_.pos.at(i-1);
+    if (selectors_.pos.at(i-1) == 2)
+        pos++;
+
+    if (!player_done_.at(i-1))
+        screen.blit(50 + 500*(i-1), 200 + (20 * pos), selectors_.gfx);
+}
+
+void BuyScreen::draw_extra_weapon(int i, sdlc::Screen& screen, sdlc::Font& font)
+{
+    if (player_state_.extra_weapon(i) != "none") {
+        int length = (player_state_.extra_weapon(i)).length();
+        auto text = (player_state_.extra_weapon(i)).substr(0, length - 7);
+        auto num_weapons = std::to_string(player_state_.extra_weapon_count(i));
+        int x = 60 + 340*(i - 1);
+        screen.print(x, 140, text + " count: " + num_weapons, font);
+    }
+}
+

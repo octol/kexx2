@@ -26,32 +26,36 @@
 class PlayerState;
 class Options;
 
-enum MenuWhich {
-    MENU_ROOT,
-    MENU_OPTIONS,
-    MENU_EXIT
-};
 
 class Menu final : public IGameState {
 public:
-    Menu(Options& options);
+    Menu(Options&);
     virtual ~Menu() {};
 
     void load_data();
 
-    void run_logic(sdlc::Input& input, sdlc::Timer& timer, sdlc::Mixer& mixer, 
-                   PlayerState& player_state) override;
-    void draw(sdlc::Screen& screen, sdlc::Font& font) override;
+    void run_logic(sdlc::Input&, sdlc::Timer&, sdlc::Mixer&, PlayerState&) override;
+    void draw(sdlc::Screen&, sdlc::Font&) override;
 
 private:
-    void precalc_bg_surface(sdlc::Surface& surface);
-    void draw_group(int x, int y, sdlc::Surface& surface);
+    void root_menu_logic(sdlc::Timer&, sdlc::Mixer&, PlayerState&);
+    void options_menu_logic();
+
+    void draw_root_screen(sdlc::Screen&, sdlc::Font&);
+    void draw_options_screen(sdlc::Screen&, sdlc::Font&);
+    void draw_exit_screen(sdlc::Screen&, sdlc::Font&);
+
+    void precalc_bg_surface(sdlc::Surface&);
+    void draw_group(int x, int y, sdlc::Surface&);
 
     sdlc::Surface logo_;
     sdlc::Surface sdl_logo_;
     std::array<sdlc::Surface,10> bg_data_;
     sdlc::Music bg_music_;
-    MenuWhich which_menu_ = MENU_ROOT;
+
+    enum State { ROOT, OPTIONS, EXIT };
+
+    State which_menu_ = ROOT;
 
     struct Selector {
         sdlc::Surface gfx;
@@ -62,7 +66,11 @@ private:
     std::string players_;
     std::string display_;
     std::string fps_;
+
     int exit_timer_ = 0;
+
+    bool toggle_screen_ = false;
+    int screen_type_ = 0;   // used to toogle fullscreen
 };
 
 #endif // KEXX2_MENU_H

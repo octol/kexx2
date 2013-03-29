@@ -28,90 +28,89 @@
 
 int PlayerState::energy(int player)
 {
-    return player_[player - 1].energy;
+    return players_.at(player - 1).energy;
 }
 
 int PlayerState::set_energy(int player, int value)
 {
-    return (player_[player - 1].energy = value);
+    return players_.at(player - 1).energy = value;
 }
 
 int PlayerState::energy_max(int player)
 {
-    return player_[player - 1].energy_max;
+    return players_.at(player - 1).energy_max;
 }
 
 int PlayerState::set_energy_max(int player, int value)
 {
-    return (player_[player - 1].energy_max = value);
+    return players_.at(player - 1).energy_max = value;
 }
 
 int PlayerState::score(int player)
 {
-    return player_[player - 1].score;
+    return players_.at(player - 1).score;
 }
 
 int PlayerState::set_score(int player, int score)
 {
-    return (player_[player - 1].score = score);
+    return players_.at(player - 1).score = score;
 }
 
 int PlayerState::main_weapon_level(int player)
 {
-    return player_[player - 1].main_weapon_level;
+    return players_.at(player - 1).main_weapon_level;
 }
 
 int PlayerState::set_main_weapon_level(int player, int level)
 {
-    return (player_[player - 1].main_weapon_level = level);
+    return players_.at(player - 1).main_weapon_level = level;
 }
 
 int PlayerState::extra_weapon_count(int player)
 {
-    return player_[player - 1].extra_weapon_count;
+    return players_.at(player - 1).extra_weapon_count;
 }
 
 int PlayerState::set_extra_weapon_count(int player, int count)
 {
-    return (player_[player - 1].extra_weapon_count = count);
+    return players_.at(player - 1).extra_weapon_count = count;
 }
 
 std::string PlayerState::main_weapon(int player)
 {
-    return player_[player - 1].main_weapon;
+    return players_.at(player - 1).main_weapon;
 }
 
 std::string PlayerState::set_main_weapon(int player, std::string s)
 {
-    return (player_[player - 1].main_weapon = s);
+    return players_.at(player - 1).main_weapon = s;
 }
 
 std::string PlayerState::extra_weapon(int player)
 {
-    return player_[player - 1].extra_weapon;
+    return players_.at(player - 1).extra_weapon;
 }
 
 std::string PlayerState::set_extra_weapon(int player, std::string s)
 {
-    return (player_[player - 1].extra_weapon = s);
+    return players_.at(player - 1).extra_weapon = s;
 }
 
 KeySet PlayerState::keyset(int player)
 {
-    return player_[player - 1].keyset;
+    return players_.at(player - 1).keyset;
 }
 
 KeySet PlayerState::set_keyset(int player, KeySet keyset_)
 {
-    return (player_[player - 1].keyset = keyset_);
+    return players_.at(player - 1).keyset = keyset_;
 }
 
 bool PlayerState::anyone_alive()
 {
     bool a = false;
-    int i;
-    for (i = 0; i < NUM_OF_POSSIBLE_PLAYERS; i++) {
-        if (player_[i].energy_max)
+    for (auto& player : players_) {
+        if (player.energy_max)
             a = true;
     }
     return a;
@@ -119,27 +118,18 @@ bool PlayerState::anyone_alive()
 
 void PlayerState::kill_all()
 {
-    int i;
-    for (i = 0; i < NUM_OF_POSSIBLE_PLAYERS; i++) {
-        player_[i].energy_max = 0;
-        player_[i].energy = 0;
-        player_[i].score = 0;
-        player_[i].main_weapon_level = 1;
-        player_[i].extra_weapon_count = 0;
-        player_[i].main_weapon = "Blaster Weapon";
-        player_[i].extra_weapon = "none";
-
-        /*int energy;
-        int energy_max;
-        int score;
-        int main_weapon_level;
-        int extra_weapon_count;
-        std::string main_weapon;
-        std::string extra_weapon;
-        KeySet keyset;*/
+    for (auto& player : players_) {
+        player.energy_max = 0;
+        player.energy = 0;
+        player.score = 0;
+        player.main_weapon_level = 1;
+        player.extra_weapon_count = 0;
+        player.main_weapon = "Blaster Weapon";
+        player.extra_weapon = "none";
     }
 }
 
 // -----------------------------------------------------------------------------
 // Private Functions
 // -----------------------------------------------------------------------------
+

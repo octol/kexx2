@@ -188,7 +188,8 @@ Owner Object::parse_owner(std::string player)
 // -----------------------------------------------------------------------------
 
 // TODO: remove this function
-bool Object::compare_type(const Object* o1, const Object* o2)
+bool Object::compare_type(const std::shared_ptr<Object>& o1, 
+                          const std::shared_ptr<Object>& o2)
 {
     return o1->type() < o2->type();
 }

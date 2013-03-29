@@ -29,8 +29,7 @@ public:
     GameOver();
     virtual ~GameOver() {};
 
-    void run_logic(sdlc::Input& input, sdlc::Timer& timer, sdlc::Mixer& mixer,
-                   PlayerState& player_state) override;
+    void run_logic(sdlc::Input&, sdlc::Timer&, sdlc::Mixer&, PlayerState&) override;
     void draw(sdlc::Screen& screen, sdlc::Font& font) override;
 };
 

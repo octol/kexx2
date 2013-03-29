@@ -20,6 +20,7 @@
 #define KEXX2_OBJECT_H
 
 #include <list>
+#include <memory>
 #include "SDLc/Sprite.h"
 #include "Defines.h"
 
@@ -141,7 +142,8 @@ public:
     Owner owner() const;
     Owner set_owner(Owner value);
 
-    static bool compare_type(const Object* o1, const Object* o2);
+    static bool compare_type(const std::shared_ptr<Object>& o1, 
+                             const std::shared_ptr<Object>& o2);
 
 
 protected:

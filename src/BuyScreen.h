@@ -19,8 +19,11 @@
 #ifndef KEXX_BUYSCREEN_H
 #define KEXX_BUYSCREEN_H
 
+#include <vector>
+#include <array>
 #include "SDLc.h"
 #include "IGameState.h"
+#include "Defines.h"
 
 class Options;
 class PlayerState;
@@ -29,25 +32,28 @@ const int ROCKET_COST = 1000;
 
 class BuyScreen final : public IGameState {
 public:
-    BuyScreen(Options& options, PlayerState& player_state, int current_level);
+    BuyScreen(Options&, PlayerState&, int current_level);
 
-    void run_logic(sdlc::Input& input, sdlc::Timer& timer, sdlc::Mixer& mixer,
-                   PlayerState& player_state) override;
-    void draw(sdlc::Screen& screen, sdlc::Font& font) override;
+    void run_logic(sdlc::Input&, sdlc::Timer&, sdlc::Mixer&, PlayerState&) override;
+    void draw(sdlc::Screen&, sdlc::Font&) override;
 
 private:
-    // TODO: move to smart pointer.
-    PlayerState* player_state_ = nullptr;
+    void press_enter(int i, PlayerState&);
+    void draw_player_info(int i, sdlc::Screen& screen, sdlc::Font& font);
+    void draw_extra_weapon(int i, sdlc::Screen&, sdlc::Font&);
+
+    PlayerState& player_state_;
 
     int current_level_ = 0;
-    int how_many_players_ = 0;
+    const int num_of_players_ = 0;
+
+    // If the players are finished in the buy screen
+    std::array<bool,2> player_done_ = {{ false, false }};
 
     struct Selector {
         sdlc::Surface gfx;
-        int pos[2] = { 0, 0 };
+        std::vector<int> pos;
     } selectors_;
-
-    bool player_done_[2] = { false, false };
 };
 
 #endif // KEXX2_BUYSCREEN_H

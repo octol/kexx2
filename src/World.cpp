@@ -28,13 +28,11 @@
 // Construction/Destruction
 // -----------------------------------------------------------------------------
 
-World::World(sdlc::Timer& timer, Options& options, PlayerState& player_state, 
-             int level)
+World::World(sdlc::Timer& timer, Options& options, PlayerState& player_state, int level)
     : IGameState(ENV_WORLD),
-      num_of_players_(options.num_of_players()), 
+      num_of_players_(options.num_of_players()),
       current_level_(level),
-      time_when_entering_level_(timer.ticks()),
-      flashing_text_timer_(timer.ticks())
+      state_(State::ENTERING, timer)
 {
     // setup data
     object_manager_.load_data(options.data_path);
@@ -54,7 +52,7 @@ World::World(sdlc::Timer& timer, Options& options, PlayerState& player_state,
 
     // sounds
     level_complete_snd_.load(options.data_path + "soundfx/levelcomplete.wav");
-    game_over_snd_.load(options.data_path + "soundfx/die.wav");
+    //game_over_snd_.load(options.data_path + "soundfx/die.wav");
     entering_level_snd_.load(options.data_path + "soundfx/newlevel.wav");
     entering_level_snd_.play(0);
 }
@@ -63,68 +61,43 @@ World::World(sdlc::Timer& timer, Options& options, PlayerState& player_state,
 // Member Functions
 // -----------------------------------------------------------------------------
 
-void World::run_logic(sdlc::Input& input, sdlc::Timer& timer, sdlc::Mixer& mixer,
-                      PlayerState& player_state)
+void World::run_logic(sdlc::Input& input, sdlc::Timer& timer,
+                      sdlc::Mixer& mixer, PlayerState& player_state)
 {
     UNUSED(input);
     UNUSED(mixer);
 
-    // update scrolling position
+    // Update scrolling position
     world_y_pos_ += - SCROLLING_SPEED * timer.frame_time();
 
-    // rest
+    // Update the different components.
     starfield_.update(timer);
     object_manager_.update(timer, fx_manager_, world_y_pos_, player_state);
     particle_manager_.update(timer);
     fx_manager_.update(timer);
     interface_.update(num_of_players_, player_state);
 
-    // when entering level
-    if (time_when_entering_level_) {
-        if (timer.ticks() - time_when_entering_level_ > 3000) {
-            time_when_entering_level_ = 0;
-            flashing_text_timer_ = 0;
-        } else if (timer.ticks() - flashing_text_timer_ > 400)
-            flashing_text_timer_ = timer.ticks();
-    }
+    state_ = transition_state(state_);
 
-    // when level complete
-    else if (object_manager_.num_of_enemies() == 0 && !all_players_dead_) {
-        if (time_when_all_enemies_dead_ == 0) {
-            level_complete_snd_.play(0);
-
-            time_when_all_enemies_dead_ = timer.ticks();
-            flashing_text_timer_ = timer.ticks();
+    // Run state dependent logic
+    if (state_ == State::ENTERING) {
+        show_text_ = SHOW_TEXT;  
+    } else if (state_ == State::IN_GAME) {
+        if (state_.time_since_transition() < 2000) {
+            show_text_ = state_.time_since_transition() % TEXT_PERIOD_TIME; 
+        } else { 
+            show_text_ = 0; 
         }
-        if (timer.ticks() - time_when_all_enemies_dead_ > 3500)
-            done_ = true;
-
-        // flashing text
-        if (flashing_text_timer_ == 0)
-            flashing_text_timer_ = timer.ticks();
-        else if (timer.ticks() - flashing_text_timer_ > 400)
-            flashing_text_timer_ = 0;
-        // stop flashing
-        if (timer.ticks() - time_when_all_enemies_dead_ > 2000)
-            flashing_text_timer_ = 0;
-    }
-
-    // when all players are dead
-    else if (object_manager_.num_of_players_alive() == 0) {
-        all_players_dead_ = true;
-        if (time_when_all_enemies_dead_ == 0) {
-            game_over_snd_.play(0);
-            time_when_all_enemies_dead_ = timer.ticks();
-            flashing_text_timer_ = timer.ticks();
-        }
-        if (timer.ticks() - time_when_all_enemies_dead_ > 4000)
-            done_ = true;
-
-        // flashing text
-        if (flashing_text_timer_ == 0)
-            flashing_text_timer_ = timer.ticks();
-        else if (timer.ticks() - flashing_text_timer_ > 400)
-            flashing_text_timer_ = 0;
+    } else if (state_ == State::COMPLETE) {
+        show_text_ = state_.time_since_transition() % TEXT_PERIOD_TIME; 
+        if (state_.time_since_transition() > 3500)
+           done_ = true;
+        else if (state_.time_since_transition() > 2000)
+            show_text_ = SHOW_TEXT;
+    } else if (state_ == State::DEAD) {
+        show_text_ = state_.time_since_transition() % TEXT_PERIOD_TIME; 
+        if (state_.time_since_transition() > 4000)
+           done_ = true;
     }
 }
 
@@ -136,27 +109,81 @@ void World::draw(sdlc::Screen& screen, sdlc::Font& font)
     fx_manager_.draw(screen);
     interface_.draw(font, screen);
 
-    // TODO: move ticks logic to run_logic()
-    if (time_when_entering_level_) {
-        if (SDL_GetTicks() - time_when_entering_level_ < 1000 
-                || SDL_GetTicks() - flashing_text_timer_ < 200) {
-            screen.print(200, 200, "entering level " + std::to_string(current_level_), font);
-            screen.print(200, 235, "ctrl for blaster", font);
-            screen.print(200, 255, "shift for rockets", font);
-        }
-    }
+    // Half of the time we show the text
+    bool show_text = show_text_ > TEXT_PERIOD_TIME / 2;
 
-    if (object_manager_.num_of_enemies() == 0 && !all_players_dead_) {
-        if (SDL_GetTicks() - flashing_text_timer_ < 200 
-                || flashing_text_timer_ == 0) {
-            screen.print(250, 200, "level complete!", font);
-        }
-    }
+    std::string lvl = std::to_string(current_level_);
 
-    if (all_players_dead_ && SDL_GetTicks() - flashing_text_timer_ < 200)
+    if ((state_ == State::ENTERING || state_ == State::IN_GAME) && show_text) {
+        screen.print(200, 200, "entering level " + lvl, font);
+        screen.print(200, 235, "ctrl for blaster", font);
+        screen.print(200, 255, "shift for rockets", font);
+    } else if (state_ == State::COMPLETE && show_text) {
+        screen.print(220, 200, "level complete!", font);
+    } else if (state_ == State::DEAD && show_text) {
         screen.print(250, 200, "terminated!", font);
+    }
 }
-
 // -----------------------------------------------------------------------------
 // Private Functions
 // -----------------------------------------------------------------------------
+
+State World::transition_state(State state)
+{
+    // Cache state
+    bool all_players_dead = object_manager_.num_of_players_alive() == 0;
+
+    // Transition state
+    if (state == State::ENTERING) {
+        if (state.time_since_transition() > 1000) {
+            state.transition_to(State::IN_GAME);
+        }
+    } else if (state == State::IN_GAME) {
+        if (object_manager_.num_of_enemies() == 0 && !all_players_dead) {
+            state.transition_to(State::COMPLETE);
+            level_complete_snd_.play(0);
+        } else if (all_players_dead) {
+            state.transition_to(State::DEAD);
+            //game_over_snd_.play(0);
+        }
+    }
+
+    return state;
+}
+
+// -----------------------------------------------------------------------------
+// State class
+// -----------------------------------------------------------------------------
+
+State::State(Transition current, sdlc::Timer& timer)
+    : timer_(&timer), current_(current), transition_time_(timer.ticks())
+{
+}
+
+bool State::operator==(const State& rhs) const
+{
+    return current() == rhs.current();
+}
+
+bool State::operator==(const State::Transition& rhs) const
+{
+    return current() == rhs;
+}
+
+State::Transition State::transition_to(Transition new_state)
+{
+    current_ = new_state;
+    transition_time_ = timer_->ticks();
+    return current_;
+}
+
+State::Transition State::current() const
+{
+    return current_;
+}
+
+int State::time_since_transition() const
+{
+    return timer_->ticks() - transition_time_;
+}
+

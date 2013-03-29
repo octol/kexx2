@@ -18,8 +18,6 @@ Local issues:
 - Move to using Coord, Color etc objects instead of (x,y,xvel,yvel,r,g,b,a)
 - Rename object_manager -> objects ? (applies to all "managers")
 - Move to using new c++11 style type safe enums.
-- Should probably use several separate lists in ObjectManager to avoid
-  having if statements in loops.
 
 Architectural issues:
 ---------------------
@@ -30,7 +28,7 @@ Architectural issues:
 - Weapon really need to have object manager in constructor so we don't have
   to pass it as argument everything we use it. Maybe when (if?) we change to
   shorter Manager names it will not be such a hassle?
-- Storing player data dynamically instead of C arrays.
+- Storing player data dynamically instead of C arrays.      <-- important
 - Passing references by const, and make functions const.
 
 Organisation of system classes:
@@ -40,18 +38,15 @@ Organisation of system classes:
 - Pass SDLc classes in constructors only? Or Maybe pass references to game
   specific classes in ctor and system class to separate check_input(),
   run_logic(), draw() functions?
+  Possbly the other way around.
 - An issue is that the Mixer class is used as extern inside SDLc.
 
 Subsystems overview:
 --------------------
 
-### Parts not yet done
-
-IGameState: 
-    Menu, World, BuyScreen, Finished, GameOver.
-
-### Parts done
-
+PlayerState
+IGameState:
+    Menu, World, BuyScreen, Finished, GameOver
 ObjectManager
 Object:
     Shot: 
@@ -87,4 +82,5 @@ Bugs:
 -----
 - Blinking of ship when hit seems off, is this due to precalc hit surface?
 - Window title is not set.
+- Hardcoded keycodes instead of using player_state.
 

@@ -93,12 +93,14 @@ void Ship::think(ObjectManager& object_manager, FxManager& fx_manager)
 void Ship::check_collisions(ObjectManager& object_manager, FxManager& fx_manager)
 {
     // check collisions  player <-> objects
-    for (Object* current : object_manager.list) {
+    for (auto current : object_manager.list) {
 
         SDL_Rect ship_rect = getReducedRect();
         SDL_Rect object_rect = current->getReducedRect();
 
         if (current->energy() && overlap(ship_rect, object_rect))
+            // TODO: should we really pass *current instead of the
+            // shared_ptr ?
             collide_with_object(*current, object_manager, fx_manager);
     }
 }
@@ -229,7 +231,7 @@ void Ship::update_smoketrail(ObjectManager& object_manager)
 
     // First we check if there already is a smoke trail
     bool smoke_found = false;
-    for (Object* obj : object_manager.list) {
+    for (auto obj : object_manager.list) {
         if (obj->name == "Smoketrail" && obj->owner() == owner()) {
             smoke_found = true;
             break;
@@ -246,7 +248,7 @@ void Ship::update_smoketrail(ObjectManager& object_manager)
 
     // Actually update the smokee trail
     int current_trail = 1;
-    for (Object* obj : object_manager.list) {
+    for (auto obj : object_manager.list) {
         if (obj->name == "Smoketrail" && obj->owner() == owner()) {
             auto set_trail_position = [this,obj](int xshift) {
                 obj->set_pos(x() + xshift, y() + height() - 2);
@@ -269,7 +271,7 @@ void Ship::update_smoketrail(ObjectManager& object_manager)
 
 void Ship::remove_smoketrail(ObjectManager& object_manager)
 {
-    for (Object* obj : object_manager.list) {
+    for (auto obj : object_manager.list) {
         if (obj->name == "Smoketrail" && obj->owner() == owner()) {
             obj->set_energy(0);
         }

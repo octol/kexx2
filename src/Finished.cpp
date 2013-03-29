@@ -36,8 +36,8 @@ Finished::Finished(Options& options, PlayerState& player_state)
 // Member Functions
 // -----------------------------------------------------------------------------
 
-void Finished::run_logic(sdlc::Input& input, sdlc::Timer& timer, sdlc::Mixer& mixer, 
-                         PlayerState& player_state)
+void Finished::run_logic(sdlc::Input& input, sdlc::Timer& timer, 
+                         sdlc::Mixer& mixer, PlayerState& player_state)
 {
     UNUSED(timer);
     UNUSED(mixer);

@@ -18,12 +18,15 @@
 
 #include <fstream>
 #include <iostream>
+
 #include "Game.h"
+
 #include "SDLc/Screen.h"
 #include "SDLc/Mixer.h"
 #include "SDLc/Misc.h"
 #include "SDLc/Timer.h"
 #include "SDLc/Input.h"
+
 #include "World.h"
 #include "BuyScreen.h"
 #include "Menu.h"
@@ -68,20 +71,20 @@ void Game::write_options()
     options.write(options.data_path + "kexx2.cfg");
 }
 
-void Game::setup_environment(sdlc::Screen& screen, sdlc::Timer& timer, 
-        sdlc::Mixer& mixer)
+void Game::setup_environment(sdlc::Screen& screen, sdlc::Timer& timer, sdlc::Mixer& mixer)
 {
     srand(timer.ticks());
     screen.set_caption(("Kexx 2 " + std::string(VERSION)).c_str());
 
 #ifdef WIN32
-    int video_type = options.fullscreen() ?
-                     SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_FULLSCREEN :
-                     SDL_SWSURFACE;
+    int video_type = options.fullscreen() 
+                        ? SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_FULLSCREEN 
+                        : SDL_SWSURFACE;
 #endif
 #ifndef WIN32
-    int video_type = options.fullscreen() ? SDL_SWSURFACE | SDL_FULLSCREEN
-                     : SDL_SWSURFACE;
+    int video_type = options.fullscreen() 
+                        ? SDL_SWSURFACE | SDL_FULLSCREEN
+                        : SDL_SWSURFACE;
 #endif
 
     screen.init(SCREEN_WIDTH, SCREEN_HEIGHT, 16, video_type);
@@ -106,30 +109,25 @@ void Game::run_logic(sdlc::Input& input, sdlc::Timer& timer, sdlc::Mixer& mixer)
         case ENV_MENU:
             current_level_ = 1;
             if (player_state.anyone_alive())
-                game_state_ = std::unique_ptr<World>
-                    (new World(timer, options, player_state, current_level_));
+                game_state_ = std::unique_ptr<World>(new World(timer, options, player_state, current_level_));
             else
                 set_done(true);
             break;
 
         case ENV_BUYSCREEN:
-            game_state_ = std::unique_ptr<World>
-                (new World(timer, options, player_state, current_level_));
+            game_state_ = std::unique_ptr<World> (new World(timer, options, player_state, current_level_));
             break;
 
         case ENV_WORLD:
             current_level_++;
 
             // game complete
-            if (current_level_ > options.num_of_levels() &&
-                    player_state.anyone_alive()) {
-                game_state_ = std::unique_ptr<Finished>
-                    (new Finished(options, player_state));
+            if (current_level_ > options.num_of_levels() && player_state.anyone_alive()) {
+                game_state_ = std::unique_ptr<Finished>(new Finished(options, player_state));
             }
             // goto inbetween levels buyscreen
             else if (player_state.anyone_alive()) {
-                game_state_ = std::unique_ptr<BuyScreen>
-                    (new BuyScreen(options, player_state, current_level_));
+                game_state_ = std::unique_ptr<BuyScreen>(new BuyScreen(options, player_state, current_level_));
             }
             // game over
             else {

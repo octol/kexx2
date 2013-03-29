@@ -31,12 +31,11 @@ public:
     // Initialisation functions.
     void load_options();
     void write_options();
-    void setup_environment(sdlc::Screen& screen, sdlc::Timer& timer, 
-            sdlc::Mixer& mixer);
+    void setup_environment(sdlc::Screen&, sdlc::Timer&, sdlc::Mixer&);
     void start();
 
     // Functions called in the game loop.
-    void run_logic(sdlc::Input& input, sdlc::Timer& timer, sdlc::Mixer& mixer);
+    void run_logic(sdlc::Input&, sdlc::Timer&, sdlc::Mixer&);
     void draw(sdlc::Screen& screen);
 
     bool done() const;

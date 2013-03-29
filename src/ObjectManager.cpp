@@ -39,12 +39,6 @@
 // Construction/Destruction
 // -----------------------------------------------------------------------------
 
-ObjectManager::~ObjectManager()
-{
-    std::for_each(begin(list), end(list), [](Object* i) { delete i; });
-    std::for_each(begin(queue), end(queue), [](Object* i) { delete i; });
-}
-
 // -----------------------------------------------------------------------------
 // Member Functions
 // -----------------------------------------------------------------------------
@@ -52,6 +46,7 @@ ObjectManager::~ObjectManager()
 void ObjectManager::load_data(std::string data_path)
 {
     // load objects
+    //obj.reserve(SHOTENEMYSTD);
     obj[PLAYER1].load(data_path + "gfx/Ship1.png");
     obj[PLAYER2].load(data_path + "gfx/Ship2.png");
     obj[ENEMYSTD].load(data_path + "gfx/EnemyStd.png");
@@ -124,17 +119,18 @@ void ObjectManager::update(sdlc::Timer& timer, FxManager& fx_manager,
 
 void ObjectManager::draw(sdlc::Screen& screen)
 {
-    for (Object* current : list) 
+    for (std::shared_ptr<Object> current : list) 
         screen.blit(*current);
 }
 
-Object* ObjectManager::create_object(int x, int y, float x_vel, float y_vel, 
-                                     ObjIndex object, Owner owner)
+std::shared_ptr<Object> 
+ObjectManager::create_object(int x, int y, float x_vel, float y_vel, 
+                             ObjIndex object, Owner owner)
 {
     // TODO: Redo to use a Factory pattern.
     // TODO: Read all parameters from file.
     
-    Object* new_obj = nullptr;
+    std::shared_ptr<Object> new_obj;
 
     // Create formation
     if (object >= ENEMYSTD_V_FORMATION)
@@ -142,7 +138,8 @@ Object* ObjectManager::create_object(int x, int y, float x_vel, float y_vel,
 
     // Create single entity
     else {
-        Object* new_obj = allocate_object(object, owner);
+        //Object* new_obj = allocate_object(object, owner);
+        new_obj = allocate_object(object, owner);
 
         new_obj->set_x(x - new_obj->width() / 2);
         new_obj->set_y(y - new_obj->height() / 2 + world_y_pos_);
@@ -154,14 +151,15 @@ Object* ObjectManager::create_object(int x, int y, float x_vel, float y_vel,
     return new_obj;
 }
 
-Object* ObjectManager::create_object(int x, int y, ObjIndex object, 
-                                     float vel, float angle, Owner owner)
+std::shared_ptr<Object> 
+ObjectManager::create_object(int x, int y, ObjIndex object, float vel, 
+                             float angle, Owner owner)
 {
     angle = angle * (3.1415927f / 180.0f);
 
     float x_vel = cos(angle) * vel;
     float y_vel = -sin(angle) * vel;
-    return (create_object(x, y, x_vel, y_vel, object, owner));
+    return create_object(x, y, x_vel, y_vel, object, owner);
 }
 
 void ObjectManager::create_ships(PlayerState& player_state)
@@ -182,7 +180,7 @@ void ObjectManager::create_ships(PlayerState& player_state)
 
             KeySet keyset(i);   // For now we dont set custom keys
 
-            Object* new_ship = new Ship(name, e, s, gfx, w1, w2, keyset);
+            auto new_ship = std::shared_ptr<Ship>(new Ship(name, e, s, gfx, w1, w2, keyset));
 
             new_ship->set_locked_to_screen(false);
             new_ship->set_x(213 * i - new_ship->width());
@@ -207,7 +205,8 @@ int ObjectManager::num_of_players_alive()
 // Private Functions
 // -----------------------------------------------------------------------------
 
-Object* ObjectManager::allocate_object(ObjIndex object, Owner owner)
+std::shared_ptr<Object> 
+ObjectManager::allocate_object(ObjIndex object, Owner owner)
 {
     Object* new_obj = nullptr;
     sdlc::Surface& gfx = obj[object];
@@ -274,7 +273,8 @@ Object* ObjectManager::allocate_object(ObjIndex object, Owner owner)
         std::cout << "Warning: undefined object." << std::endl;
         break;
     }
-    return new_obj;
+
+    return std::shared_ptr<Object>(new_obj);
 }
 
 void ObjectManager::create_formation(int x, int y, float x_vel, float y_vel, 
@@ -409,7 +409,7 @@ void ObjectManager::update_all_player_state(PlayerState& player_state)
             update_player_state(object, player_state);
 }
 
-void ObjectManager::update_player_state(Object*& object, 
+void ObjectManager::update_player_state(std::shared_ptr<Object>& object, 
                                         PlayerState& player_state)
 {
     assert(object->type() == OBJ_PLAYER);
@@ -421,7 +421,8 @@ void ObjectManager::update_player_state(Object*& object,
     player_state.set_energy_max(player_id, object->energy_max());
     player_state.set_score(player_id, object->score());
 
-    Ship* s = (Ship*)object;
+    //Ship* s = (Ship*)object;
+    std::shared_ptr<Ship> s = std::dynamic_pointer_cast<Ship>(object);
     if (s->main_weapon_) {
         player_state.set_main_weapon(player_id, s->main_weapon_->name);
         player_state.set_main_weapon_level(player_id, s->main_weapon_->level());
@@ -437,69 +438,19 @@ void ObjectManager::update_player_state(Object*& object,
 
 void ObjectManager::flush_list()
 {
-    // Delete and remove all objects with energy <= 0.
-    auto last = std::stable_partition(begin(list), end(list), [](Object* o) {
-        return o->energy() > 0;
-    });
-    for_each(last, end(list), [](Object* o) { delete o; });
-    list.erase(last, end(list));
+    list.erase(std::remove_if(begin(list), end(list), 
+    [](std::shared_ptr<Object> o) {
+        return o->energy() <= 0;
+    }), end(list));
 }
-
-/*
-void ObjectManager::add_from_queue()
-{
-    // TODO: range based loop
-    ObjectList::iterator i = queue.begin();
-    while (i != queue.end()) {
-        Object* current = *i;
-        i++;
-
-        if (world_y_pos_ < current->getY() + current->getHeight()) {
-            current->setY(current->getY() - world_y_pos_);
-
-            current->active(true);
-            current->activate(*this);
-
-            if (list.empty() || current->type() == OBJ_SHOT)
-                list.push_back(current);
-            else {
-                unsigned j;
-                // TODO: range based loop
-                ObjectList::iterator iterator = list.begin();
-                for (j = 0; j < list.size(); j++) {
-                    Object* current_list = *iterator;
-                    if (current->type() < current_list->type()) {
-                        list.insert(iterator, current);
-                        j = list.size(); // break;
-                    }
-
-                    // when we reach the end of the list
-                    else if (j == list.size() - 1) {
-                        list.push_back(current);
-                        j = list.size(); // break;
-                    }
-                    iterator++;
-                }
-            }
-            queue.remove(current);
-        }
-    }
-
-    // Test that list is in order according to current->type()
-    ObjType ot = OBJ_UNDEFINED;
-    for (Object* obj : list) {
-        assert(obj->type() >= ot);
-        ot = obj->type();
-    }
-}
-*/
 
 void ObjectManager::add_from_queue()
 {
     // Objects that are now inside the screen, are moved to the end of the
     // queue. 
     // TODO: should use a sorted queue object instead.
-    auto last = std::stable_partition(begin(queue),end(queue), [this](Object* o) {
+    auto last = std::stable_partition(begin(queue),end(queue), 
+    [this](std::shared_ptr<Object>& o) {
         return world_y_pos_ >= o->y() + o->height();
     });
 
@@ -509,7 +460,8 @@ void ObjectManager::add_from_queue()
         (*i)->activate(*this);
 
         // Insert in the right order
-        auto next = std::find_if(begin(list), end(list), [i](Object* o) {
+        auto next = std::find_if(begin(list), end(list), 
+        [i](std::shared_ptr<Object>& o) {
             return  o->type() > (*i)->type();
         });
         list.insert(next, *i);
@@ -521,7 +473,7 @@ void ObjectManager::add_from_queue()
 
 void ObjectManager::update_enemy_count()
 {
-    auto add_other = [](int n, Object* o) {
+    auto add_other = [](int n, std::shared_ptr<Object> o) {
         return (o->type() == OBJ_ENEMY || o->type() == OBJ_BONUS) ? n + 1 : n;
     };
 
@@ -529,7 +481,7 @@ void ObjectManager::update_enemy_count()
     enemies_in_list_ = std::accumulate(begin(queue), end(queue), 
                                        enemies_in_list_, add_other);
 
-    auto add_player = [](int n, Object* o) {
+    auto add_player = [](int n, std::shared_ptr<Object> o) {
         return o->type() == OBJ_PLAYER ? n + 1 : n;
     };
 

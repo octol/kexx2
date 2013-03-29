@@ -31,41 +31,66 @@
 class Options;
 class PlayerState;
 
-// TODO: moved fields to this struct.
-struct WorldData {
-};
+const int TEXT_PERIOD_TIME = 400;
+const int SHOW_TEXT = TEXT_PERIOD_TIME;
+
+// -----------------------------------------------------------------------------
+// Keeps track of the meta state of the World class.
+// -----------------------------------------------------------------------------
+
+class State {
+public:
+    enum Transition { ENTERING, IN_GAME, COMPLETE, DEAD };
+
+    State() = default;
+    State(State::Transition current, sdlc::Timer& timer);
+    bool operator==(const State& rhs) const;
+    bool operator==(const State::Transition& rhs) const;
+
+    State::Transition transition_to(Transition new_state);
+    State::Transition current() const;
+    int time_since_transition() const;
+
+private:
+    sdlc::Timer* timer_;
+    Transition current_ = ENTERING;
+    int transition_time_ = 0; 
+}; 
+
+// -----------------------------------------------------------------------------
+// The main game object, containing most of the game play.
+// -----------------------------------------------------------------------------
 
 class World final : public IGameState {
 public:
-    World(sdlc::Timer& timer, Options& options,
-          PlayerState& player_state, int level);
+    World(sdlc::Timer&, Options&, PlayerState&, int level);
 
-    void run_logic(sdlc::Input& input, sdlc::Timer& timer, sdlc::Mixer& mixer,
-                   PlayerState& player_state) override;
-    void draw(sdlc::Screen& screen, sdlc::Font& font) override;
+    void run_logic(sdlc::Input&, sdlc::Timer&, sdlc::Mixer&, PlayerState&) override;
+    void draw(sdlc::Screen&, sdlc::Font&) override;
 
 private:
+    State transition_state(State state);
+
     ObjectManager object_manager_;
     LevelManager level_manager_;
     ParticleManager particle_manager_;
     FxManager fx_manager_;
     Starfield starfield_;
-    WorldData world_data_;
     Interface interface_;
 
-    float world_y_pos_ = 0; // how much the screen has scrolled
     int num_of_players_ = 1;
     int current_level_ = 0;
+
+    // Keeping track of the amount the screen has scrolled.
+    float world_y_pos_ = 0;
+
     sdlc::Music bg_music_;
     sdlc::Sound level_complete_snd_;
     sdlc::Sound entering_level_snd_;
-    sdlc::Sound game_over_snd_;
+    //sdlc::Sound game_over_snd_;
 
-    // minor stuff
-    int time_when_entering_level_ = 0;
-    int time_when_all_enemies_dead_ = 0;
-    int flashing_text_timer_ = 0;
-    bool all_players_dead_ = false;
+    State state_;
+    int show_text_ = 0;
 };
 
 #endif // KEXX2_WORLD_H
