@@ -1,6 +1,13 @@
 NEWS
 ====
 
+2013-03-30  Jon Haggblad  <jon@haeggblad.com>
+
+    Complted another cleanup. This time most c-style arrays were replaced by
+    stdlib containers, raw pointers were replaced with smart pointers
+    (std::unique_ptr, std::shared_ptr) and some sections was replaced with
+    algorithms from <algorithm>.
+
 2013-03-10  Jon Haggblad  <jon@haeggblad.com>
 
     As of today we are down to 10 extern system classes and 72 TODO

@@ -1,35 +1,40 @@
 Change Log
 ==========
 
-Kexx2 1.0.4 released on 11-mar-2013
+v1.0.5 released on 30-mar-2013
+    * Moved most containers to STL ones.
+    * Replaced raw pointers with smart pointers from the standard library.
+    * Template based algorithms from the standard library.
+
+v1.0.4 released on 11-mar-2013
     * Code cleanup release.
 
-Kexx2 1.0.3 released on 05-mar-2013
+v1.0.3 released on 05-mar-2013
     * Moved to using sdlc namespace.
     * Further cleanup.
 
-Kexx2 1.0.2 released on 17-feb-2013
+v1.0.2 released on 17-feb-2013
     * Modernized the Autotools build system.
     * Very minor cleanup and reorganization for re-release.
 
-Kexx2 1.0.1b released on 06-jun-2003
+v1.0.1b released on 06-jun-2003
     * Bugfixes.
     * Upped cost for rockets.
 
-Kexx2 1.0.1a released on 04-nov-2002
+v1.0.1a released on 04-nov-2002
     * Autoconf and other various tiny fixes.
 
-Kexx2 1.0.1 released on 03-feb-2002
+v1.0.1 released on 03-feb-2002
     * Misc updates.
 
-Kexx2 1.0.0 released on 02-feb-2002
+v1.0.0 released on 02-feb-2002
     * Complete rewrite (again).
 
-Kexx2 0.7.0 released on 11-aug-2001
+v0.7.0 released on 11-aug-2001
     * Loads of content improvements.
 
-Kexx2 0.6.0 never released to the public
+v0.6.0 never released to the public
     * Complete rewrite.
 
-Kexx2 0.5.0 released on 03-jan-2001
+v0.5.0 released on 03-jan-2001
     * First public release.
