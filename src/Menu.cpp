@@ -206,7 +206,7 @@ void Menu::draw_exit_screen(sdlc::Screen& screen, sdlc::Font& font)
     if (tmpB == false)
         sdl_logo_.load(options_.data_path + "gfx/SDLnow.png");
     tmpB = true;
-    screen.blit(640 - sdl_logo_.getWidth(), 480 - sdl_logo_.getHeight(), sdl_logo_);
+    screen.blit(640 - sdl_logo_.width(), 480 - sdl_logo_.height(), sdl_logo_);
 
     int x = 170, y = 100;
     screen.print(x, y, "programming by:", font);

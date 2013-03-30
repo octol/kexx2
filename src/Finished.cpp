@@ -43,7 +43,7 @@ void Finished::run_logic(sdlc::Input& input, sdlc::Timer& timer,
     UNUSED(mixer);
     UNUSED(player_state);
 
-    if (input.keyPressed(SDLK_RETURN, sdlc::NO_AUTOFIRE))
+    if (input.key_pressed(SDLK_RETURN, sdlc::NO_AUTOFIRE))
         done_ = true;
 }
 

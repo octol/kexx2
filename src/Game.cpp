@@ -144,7 +144,7 @@ void Game::run_logic(sdlc::Input& input, sdlc::Timer& timer, sdlc::Mixer& mixer)
 
     // abort in world
     if (game_state_ && game_state_->type() == ENV_WORLD) {
-        if (input.keyPressed(SDLK_ESCAPE, sdlc::NO_AUTOFIRE)) {
+        if (input.key_pressed(SDLK_ESCAPE, sdlc::NO_AUTOFIRE)) {
             player_state.kill_all();
             game_state_ = std::unique_ptr<Menu>(new Menu(options));
         }
@@ -152,13 +152,13 @@ void Game::run_logic(sdlc::Input& input, sdlc::Timer& timer, sdlc::Mixer& mixer)
 
 #ifdef TESTING
     // used for testing
-    if (input.keyPressed(SDLK_F2, sdlc::NO_AUTOFIRE)) {
+    if (input.key_pressed(SDLK_F2, sdlc::NO_AUTOFIRE)) {
     }
-    if (input.keyPressed(SDLK_F3, sdlc::NO_AUTOFIRE)) {
+    if (input.key_pressed(SDLK_F3, sdlc::NO_AUTOFIRE)) {
         game_state_ = std::unique_ptr<World>
             (new World(timer, options, player_state, current_level_ = 1));
     }
-    if (input.keyPressed(SDLK_F4, sdlc::NO_AUTOFIRE)) {
+    if (input.key_pressed(SDLK_F4, sdlc::NO_AUTOFIRE)) {
         game_state_ = std::unique_ptr<BuyScreen>
             (new BuyScreen(options, player_state, current_level_));
     }

@@ -80,10 +80,10 @@ void Interface::draw_energy(int x, int y, int value, int max_value,
     int h = 20;
     int multi = (w / max_value);
 
-    screen.fillRect(x - 1, y - 1, w + 2, h + 2, 150, 150, 150);
-    screen.fillRect(x, y, w, h, 0, 0, 0);
+    screen.fill_rect(x - 1, y - 1, w + 2, h + 2, 150, 150, 150);
+    screen.fill_rect(x, y, w, h, 0, 0, 0);
     if (value > 0) {
-        screen.fillRect(x + 1, y + 1, 
+        screen.fill_rect(x + 1, y + 1, 
                 multi * (max_value - (max_value - value)) - 1, 
                 h - 1, 100, 100, 100);
     }

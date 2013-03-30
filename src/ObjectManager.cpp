@@ -92,9 +92,9 @@ void ObjectManager::update(sdlc::Timer& timer, FxManager& fx_manager,
                     current->set_energy(0);
                 }
             } else if (current->type() == OBJ_SHOT) {
-                if (current->getY() < 0 - current->getHeight() 
-                        || current->getX() > 640 
-                        || current->getX() < 0 - current->getWidth()) {
+                if (current->y() < 0 - current->height() 
+                        || current->x() > 640 
+                        || current->x() < 0 - current->width()) {
                     current->set_energy(0);
                 }
             }

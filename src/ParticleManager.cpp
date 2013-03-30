@@ -53,10 +53,10 @@ void ParticleManager::update(sdlc::Timer& timer)
 void ParticleManager::draw(sdlc::Screen& screen)
 {
     auto draw_pix = [&screen](sdlc::Particle p) {
-        screen.fastBlendPix(p.x()  , p.y()  , p.r(), p.g(), p.b(), p.alpha());
-        screen.fastBlendPix(p.x() + 1, p.y()  , p.r(), p.g(), p.b(), p.alpha());
-        screen.fastBlendPix(p.x()  , p.y() + 1, p.r(), p.g(), p.b(), p.alpha());
-        screen.fastBlendPix(p.x() + 1, p.y() + 1, p.r(), p.g(), p.b(), p.alpha());
+        screen.fast_blend_pix(p.x()  , p.y()  , p.r(), p.g(), p.b(), p.alpha());
+        screen.fast_blend_pix(p.x() + 1, p.y()  , p.r(), p.g(), p.b(), p.alpha());
+        screen.fast_blend_pix(p.x()  , p.y() + 1, p.r(), p.g(), p.b(), p.alpha());
+        screen.fast_blend_pix(p.x() + 1, p.y() + 1, p.r(), p.g(), p.b(), p.alpha());
     };
 
     screen.lock();

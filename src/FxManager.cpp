@@ -40,10 +40,10 @@ void FxManager::load(ParticleManager& particle_manager, std::string data_path)
     expl_snd_player_.load(data_path + "soundfx/playerhit.wav");
     alarm_snd_.load(data_path + "soundfx/alarm.wav");
 
-    expl_snd_small_.setChannel((int)SND_EXPL_SMALL);
-    expl_snd_big_.setChannel((int)SND_EXPL_BIG);
-    expl_snd_player_.setChannel((int)SND_EXPL_PLAYER);
-    alarm_snd_.setChannel((int)SND_ALARM);
+    expl_snd_small_.set_channel((int)SND_EXPL_SMALL);
+    expl_snd_big_.set_channel((int)SND_EXPL_BIG);
+    expl_snd_player_.set_channel((int)SND_EXPL_PLAYER);
+    alarm_snd_.set_channel((int)SND_ALARM);
 
     // pre-calculate explosion data for speed
     for (auto& expl : precalc_norm_expl_) {
@@ -86,9 +86,9 @@ void FxManager::explode_normal(int x, int y)
 
     std::unique_ptr<sdlc::Sprite> sprite(new sdlc::Sprite);
     sprite->link(expl_img_.data);
-    sprite->initAnimation(5, 11, 1);
-    sprite->setX(x - sprite->getWidth() / 2);
-    sprite->setY(y - sprite->getHeight() / 2);
+    sprite->init_animation(5, 11, 1);
+    sprite->set_x(x - sprite->width() / 2);
+    sprite->set_y(y - sprite->height() / 2);
     explosion_list_.push_back(std::move(sprite));
 
     // choose one of the precomputed particles.

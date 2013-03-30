@@ -95,8 +95,8 @@ void Ship::check_collisions(ObjectManager& object_manager, FxManager& fx_manager
     // check collisions  player <-> objects
     for (auto current : object_manager.list) {
 
-        SDL_Rect ship_rect = getReducedRect();
-        SDL_Rect object_rect = current->getReducedRect();
+        SDL_Rect ship_rect = reduced_rect();
+        SDL_Rect object_rect = current->reduced_rect();
 
         if (current->energy() && overlap(ship_rect, object_rect))
             // TODO: should we really pass *current instead of the
@@ -282,5 +282,5 @@ void Ship::calculate_hit_img()
 {
     // TODO: remove raw SDL call.
     hit_img.data = SDL_DisplayFormat(data);
-    hit_img.fillRect(0, 0, hit_img.data->w, hit_img.data->h, 255, 0, 255);
+    hit_img.fill_rect(0, 0, hit_img.data->w, hit_img.data->h, 255, 0, 255);
 }

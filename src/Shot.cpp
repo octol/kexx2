@@ -59,8 +59,8 @@ void Shot::check_collisions(ObjectManager& object_manager,
             });
 
         for (auto& object : object_manager.list) {
-            SDL_Rect shot_rect = getReducedRect();
-            SDL_Rect object_rect = object->getRect();
+            SDL_Rect shot_rect = reduced_rect();
+            SDL_Rect object_rect = object->rect();
 
             if (object->type() == OBJ_ENEMY && object->energy() && 
                     overlap(shot_rect, object_rect)) {
@@ -78,8 +78,8 @@ void Shot::check_collisions(ObjectManager& object_manager,
         // 2) Check collision  player <-> enemy fire 
   
         for (auto& current : object_manager.list) {
-            SDL_Rect shot_rect = getReducedRect();
-            SDL_Rect object_rect = current->getRect();
+            SDL_Rect shot_rect = reduced_rect();
+            SDL_Rect object_rect = current->rect();
 
             if (current->type() == OBJ_PLAYER && current->energy() && 
                     overlap(shot_rect, object_rect)) {

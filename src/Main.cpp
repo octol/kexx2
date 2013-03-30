@@ -62,7 +62,7 @@ int main(int argc, char* argv[])
         if (kexx2->options.fps_counter()) 
             print_fps_counter(*screen, *timer);
 
-        screen->flipAll();
+        screen->flip_all();
         screen->fill_rect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0, 0);
         timer->update();
     }
