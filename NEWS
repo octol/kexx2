@@ -3,7 +3,7 @@ NEWS
 
 2013-03-30  Jon Haggblad  <jon@haeggblad.com>
 
-    Complted another cleanup. This time most c-style arrays were replaced by
+    Completed another cleanup. This time most C-style arrays were replaced by
     stdlib containers, raw pointers were replaced with smart pointers
     (std::unique_ptr, std::shared_ptr) and some sections was replaced with
     algorithms from <algorithm>.
