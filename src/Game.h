@@ -32,6 +32,7 @@ public:
     void load_options();
     void write_options();
     void setup_environment(sdlc::Screen&, sdlc::Timer&, sdlc::Mixer&);
+    void close_environment(sdlc::Screen&, sdlc::Timer&, sdlc::Mixer&);
     void start();
 
     // Functions called in the game loop.

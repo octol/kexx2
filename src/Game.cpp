@@ -73,6 +73,8 @@ void Game::write_options()
 
 void Game::setup_environment(sdlc::Screen& screen, sdlc::Timer& timer, sdlc::Mixer& mixer)
 {
+    screen.init();
+
     srand(timer.ticks());
     screen.set_caption(("Kexx 2 " + std::string(VERSION)).c_str());
 
@@ -87,13 +89,22 @@ void Game::setup_environment(sdlc::Screen& screen, sdlc::Timer& timer, sdlc::Mix
                         : SDL_SWSURFACE;
 #endif
 
-    screen.init(SCREEN_WIDTH, SCREEN_HEIGHT, 16, video_type);
-    timer.init();
-    mixer.init();
+    screen.open(SCREEN_WIDTH, SCREEN_HEIGHT, 16, video_type);
+    timer.open();
+    mixer.open();
 
     screen.show_cursor(false);
     main_font_.load(options.data_path + "fonts/font1.bmp");
     timer.delay(500);
+}
+
+void Game::close_environment()
+{
+    mixer.close();
+    timer.close();
+    screen.close();
+
+    screen.quit();
 }
 
 void Game::start()

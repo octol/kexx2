@@ -68,6 +68,7 @@ int main(int argc, char* argv[])
     }
 
     kexx2->write_options();
+    kexx2->close_environment(*screen, *timer, *mixer);
     kexx2.reset();
 
     delete mixer;

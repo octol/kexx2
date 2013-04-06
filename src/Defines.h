@@ -20,7 +20,7 @@
 #define KEXX2_DEFINES_H
 
 // TODO: use VERSION defined by build system (autotools)
-#define VERSION "1.0.5"
+#define VERSION "1.0.6"
 #define UNUSED(x) ((void)x)
 #define TESTING
 

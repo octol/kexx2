@@ -3,7 +3,7 @@ m4_include(m4/acx_pthread.m4)
 
 AC_PREREQ([2.69])
 AC_INIT([Kexx2],
-        [1.0.5],
+        [1.0.6],
         [jon@haeggblad.com],
         [kexx2],
         [http://github.com/octol/kexx2])
@@ -14,7 +14,7 @@ AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE
 LT_INIT
 
-AC_SUBST([KEXX2_VERSION],[1.0.5])
+AC_SUBST([KEXX2_VERSION],[1.0.6])
 
 #-------------------------------------------------------------------------------
 # Checks for programs.
@@ -96,7 +96,7 @@ LIBS="$LIBS -lSDL_image"
 #-------------------------------------------------------------------------------
 # Check for SDLc
 #-------------------------------------------------------------------------------
-PKG_CHECK_MODULES([LIBSDLC], [libsdlc-0.3 >= 0.3])
+PKG_CHECK_MODULES([LIBSDLC], [libsdlc-0.4 >= 0.4])
 
 #-------------------------------------------------------------------------------
 # Finally create all the generated files
