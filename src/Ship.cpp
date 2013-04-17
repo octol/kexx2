@@ -71,9 +71,9 @@ void Ship::think(ObjectManager& object_manager, FxManager& fx_manager)
 
         // flip SDL_Surface's
         // TODO: use Surface/BaseSurface instead.
-        SDL_Surface* tmp = data;
-        data = hit_img.data;
-        hit_img.data = tmp;
+        //SDL_Surface* tmp = data;
+        //data = hit_img.data;
+        //hit_img.data = tmp;
     }
 
     // check if empty clip
@@ -281,6 +281,6 @@ void Ship::remove_smoketrail(ObjectManager& object_manager)
 void Ship::calculate_hit_img()
 {
     // TODO: remove raw SDL call.
-    hit_img.data = SDL_DisplayFormat(data);
-    hit_img.fill_rect(0, 0, hit_img.data->w, hit_img.data->h, 255, 0, 255);
+    //hit_img.data = SDL_DisplayFormat(data);
+    //hit_img.fill_rect(0, 0, hit_img.data->w, hit_img.data->h, 255, 0, 255);
 }

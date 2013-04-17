@@ -88,9 +88,9 @@ void Object::update(sdlc::Timer& timer)
         hit_timer = 0;
         // flip SDL_Surface's
         // TODO: Use BaseSurface/Surface from sdlc instead.
-        SDL_Surface* tmp = data;
-        data = hit_img.data;
-        hit_img.data = tmp;
+        //SDL_Surface* tmp = data;
+        //data = hit_img.data;
+        //hit_img.data = tmp;
     }
 }
 
@@ -103,9 +103,9 @@ void Object::hurt(int value, ObjectManager& object_manager,
 
         // flip SDL_Surface's
         // TODO: Use BaseSurface/Surface from sdlc instead.
-        SDL_Surface* tmp = data;
-        data = hit_img.data;
-        hit_img.data = tmp;
+        //SDL_Surface* tmp = data;
+        //data = hit_img.data;
+        //hit_img.data = tmp;
     }
 
     adjust_energy(-value);
@@ -202,17 +202,17 @@ void Object::calculate_hit_img()
 {
     // TODO: replace raw SDL call.
     // TODO: need to implement copy constructor for Surface.
-    hit_img.data = SDL_DisplayFormat(data);
-
-    hit_img.lock();
-    for (int iy = 0; iy < hit_img.data->h; iy++) {
-        for (int ix = 0; ix < hit_img.data->w; ix++) {
-            uint8_t r = 0, g = 0, b = 0, a = 255;
-            get_pix(ix, iy, &r, &g, &b);
-            if (false == ((r >= 248 && g == 0 && b >= 248) || (a != 255)))
-                hit_img.set_pix(ix, iy, 255, 255, 255);
-        }
-    }
-    hit_img.unlock();
+//    hit_img.data = SDL_DisplayFormat(data);
+//
+//    hit_img.lock();
+//    for (int iy = 0; iy < hit_img.data->h; iy++) {
+//        for (int ix = 0; ix < hit_img.data->w; ix++) {
+//            uint8_t r = 0, g = 0, b = 0, a = 255;
+//            get_pix(ix, iy, &r, &g, &b);
+//            if (false == ((r >= 248 && g == 0 && b >= 248) || (a != 255)))
+//                hit_img.set_pix(ix, iy, 255, 255, 255);
+//        }
+//    }
+//    hit_img.unlock();
 }
 
