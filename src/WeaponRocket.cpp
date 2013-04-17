@@ -25,10 +25,10 @@
 // Construction/Destruction
 // -----------------------------------------------------------------------------
 
-WeaponRocket::WeaponRocket(sdlc::Sound& sound, Owner owner)
+WeaponRocket::WeaponRocket(sdlc::Sound& sound, Owner owner) : Weapon(sound)
 {
     // TODO: redo how these are set.
-    shot_snd_.link(&sound);
+    //shot_snd_.link(&sound);
     shot_snd_.set_channel((int)SND_W_ROCKET);
     set_owner(owner);
 

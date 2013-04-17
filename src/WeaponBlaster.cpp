@@ -24,9 +24,9 @@
 // Construction/Destruction
 // -----------------------------------------------------------------------------
 
-WeaponBlaster::WeaponBlaster(sdlc::Sound& sound, Owner owner)
+WeaponBlaster::WeaponBlaster(sdlc::Sound& sound, Owner owner) : Weapon(sound)
 {
-    shot_snd_.link(&sound);
+    //shot_snd_.link(&sound);
     shot_snd_.set_channel((int)SND_W_BLASTER);
     set_owner(owner);
 

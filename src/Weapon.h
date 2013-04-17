@@ -26,10 +26,14 @@
 
 class ObjectManager;
 
+// TODO: constructors
+
 class Weapon {
     friend class ObjectManager;
 
 public:
+    Weapon() = default;
+    Weapon(sdlc::Sound& sound) : shot_snd_(sound) {};
     virtual ~Weapon() {};
 
     virtual void shoot(int x, int y, ObjectManager& objectManager) = 0;
