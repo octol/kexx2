@@ -26,15 +26,11 @@
 
 class ObjectManager;
 
-// TODO: constructors
-
 class Weapon {
     friend class ObjectManager;
-
 public:
-    Weapon() = default;
-    Weapon(sdlc::Sound& sound) : shot_snd_(sound) {};
-    virtual ~Weapon() {};
+    Weapon(sdlc::Sound& sound);
+    virtual ~Weapon() = default;
 
     virtual void shoot(int x, int y, ObjectManager& objectManager) = 0;
 
@@ -58,7 +54,7 @@ private:
     int count_ = 0;
     int level_ = 0;
     unsigned time_when_last_shot_ = 0;
-    Owner owner_;
+    Owner owner_ = OWNER_NONE;
 };
 
 // -----------------------------------------------------------------------------

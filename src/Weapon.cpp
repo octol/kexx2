@@ -23,6 +23,10 @@
 // Construction/Destruction
 // -----------------------------------------------------------------------------
 
+Weapon::Weapon(sdlc::Sound& sound) : shot_snd_(sound)
+{
+}
+
 // -----------------------------------------------------------------------------
 // Member Functions
 // -----------------------------------------------------------------------------
@@ -39,8 +43,7 @@ int Weapon::upgrade()
 int Weapon::set_count(int value)
 {
     if (value < 0) {
-        std::cerr << "warning: Weapon::setCount() negative parameter" 
-            << std::endl;
+        std::cerr << "warning: Weapon::set_count() negative" << std::endl;
     }
     return count_ = value;
 }
@@ -48,8 +51,7 @@ int Weapon::set_count(int value)
 int Weapon::set_level(int value)
 {
     if (value < 0) {
-        std::cerr << "warning: Weapon::setLevel() negative parameter" 
-           << std::endl;
+        std::cerr << "warning: Weapon::setLevel() negative" << std::endl;
     }
     return level_ = value;
 }
