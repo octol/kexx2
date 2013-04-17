@@ -34,6 +34,10 @@ World::World(sdlc::Timer& timer, Options& options, PlayerState& player_state, in
       current_level_(level),
       state_(State::ENTERING, timer)
 {
+#ifdef DEBUG_LOG
+    std::cerr << "World::World()" << std::endl;
+#endif
+
     // setup data
     object_manager_.load_data(options.data_path);
 
