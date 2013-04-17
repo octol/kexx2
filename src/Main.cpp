@@ -24,6 +24,7 @@
 #include "Game.h"
 #include "Defines.h"
 
+// TODO: remove global system classes
 sdlc::Screen* screen;
 sdlc::Timer* timer;
 sdlc::Input* input;
@@ -37,6 +38,7 @@ int main(int argc, char* argv[])
     UNUSED(argv);
 
     // System subsystems
+    sdlc::init();
     screen = new sdlc::Screen;
     timer = new sdlc::Timer;
     input = new sdlc::Input;
@@ -68,13 +70,13 @@ int main(int argc, char* argv[])
     }
 
     kexx2->write_options();
-    kexx2->close_environment(*screen, *timer, *mixer);
     kexx2.reset();
 
     delete mixer;
     delete input;
     delete timer;
     delete screen;
+    sdlc::quit();
     return 0;
 }
 

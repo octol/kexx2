@@ -59,7 +59,6 @@ void Menu::load_data()
 void Menu::run_logic(sdlc::Input& input, sdlc::Timer& timer, sdlc::Mixer& mixer, 
                      PlayerState& player_state)
 {
-
     // up/down
     if (input.key_pressed(SDLK_UP, sdlc::NO_AUTOFIRE))
         selector_.pos--;
@@ -95,7 +94,7 @@ void Menu::run_logic(sdlc::Input& input, sdlc::Timer& timer, sdlc::Mixer& mixer,
 void Menu::draw(sdlc::Screen& screen, sdlc::Font& font)
 {
     if (toggle_screen_) {
-        screen.init(640, 480, 16, screen_type_);
+        screen.open(640, 480, 16, screen_type_);
         toggle_screen_ = false;
     }
 
@@ -172,9 +171,9 @@ void Menu::options_menu_logic()
             : SDL_SWSURFACE;
         toggle_screen_ = true;
 #endif
-    } else if (selector_.pos == 2)
+    } else if (selector_.pos == 2) {
         options_.set_fps_counter(!options_.fps_counter());
-    else if (selector_.pos == 3) {
+    } else if (selector_.pos == 3) {
         which_menu_ = ROOT;
         selector_.pos = 1;
     }
