@@ -51,10 +51,10 @@ void Shot::check_collisions(ObjectManager& object_manager,
         // 1) Check collision:  friendly fire <-> enemies 
         
         // start by getting pointer to the player
-        std::shared_ptr<Object> owner_player = *std::find_if(
+        std::shared_ptr<IObject> owner_player = *std::find_if(
             begin(object_manager.list), 
             end(object_manager.list), 
-            [this](std::shared_ptr<Object> o) {
+            [this](std::shared_ptr<IObject> o) {
                 return Object::parse_owner(o->name()) == this->owner();
             });
 

@@ -282,8 +282,8 @@ ObjIndex Object::parse_obj_index(std::string type)
     return object;
 }
 
-bool Object::compare_type(const std::shared_ptr<Object>& o1, 
-                          const std::shared_ptr<Object>& o2)
+bool Object::compare_type(const std::shared_ptr<IObject>& o1, 
+                          const std::shared_ptr<IObject>& o2)
 {
     return o1->type() < o2->type();
 }

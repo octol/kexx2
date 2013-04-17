@@ -36,7 +36,7 @@ public:
     Ship(std::string n, int energy, int score, sdlc::Surface& s, 
          std::unique_ptr<Weapon>& main, std::unique_ptr<Weapon>& extra, 
          KeySet keyset);
-    virtual ~Ship() {};
+    virtual ~Ship() = default;
 
     void think(ObjectManager& object_manager, FxManager& fx_manager);
     void check_collisions(ObjectManager& object_manager, FxManager& fx_manager);
@@ -48,7 +48,7 @@ private:
     void process_input(sdlc::Input& input, ObjectManager& object_manager);
     void do_scripted_movement(sdlc::Timer& timer);
 
-    void collide_with_object(Object& current, ObjectManager& object_manager, 
+    void collide_with_object(IObject& current, ObjectManager& object_manager, 
                              FxManager& fx_manager);
 
     void set_not_invincible();

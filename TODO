@@ -12,6 +12,7 @@ Local issues:
 - Rename object_manager -> objects ? (applies to all "managers")
 - Move to using new c++11 style type safe enums.
 - Recheck all UNUSED statements.
+- Use Map instead of c-style array in ObjectManager
 
 Architectural issues:
 ---------------------
@@ -63,9 +64,6 @@ Feature changes:
 
 Specific issues:
 ----------------
-BuyScreen::runLogic(), playerState argument shadows a class member.
-World:World(), seems to do too much in constructor.
-Object::calculate_hit_img(), manipulate the raw Surface data, should implement copy constructor in Surface.
 
 Bugs:
 -----

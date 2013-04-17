@@ -119,18 +119,18 @@ void ObjectManager::update(sdlc::Timer& timer, FxManager& fx_manager,
 
 void ObjectManager::draw(sdlc::Screen& screen)
 {
-    for (std::shared_ptr<Object> current : list) 
+    for (std::shared_ptr<IObject> current : list) 
         screen.blit(current->sprite());
 }
 
-std::shared_ptr<Object> 
+std::shared_ptr<IObject> 
 ObjectManager::create_object(int x, int y, float x_vel, float y_vel, 
                              ObjIndex object, Owner owner)
 {
     // TODO: Redo to use a Factory pattern.
     // TODO: Read all parameters from file.
     
-    std::shared_ptr<Object> new_obj;
+    std::shared_ptr<IObject> new_obj;
 
     // Create formation
     if (object >= ENEMYSTD_V_FORMATION)
@@ -151,7 +151,7 @@ ObjectManager::create_object(int x, int y, float x_vel, float y_vel,
     return new_obj;
 }
 
-std::shared_ptr<Object> 
+std::shared_ptr<IObject> 
 ObjectManager::create_object(int x, int y, ObjIndex object, float vel, 
                              float angle, Owner owner)
 {
@@ -207,10 +207,10 @@ int ObjectManager::num_of_players_alive()
 
 // TODO: remove naked new.
 
-std::shared_ptr<Object> 
+std::shared_ptr<IObject> 
 ObjectManager::allocate_object(ObjIndex object, Owner owner)
 {
-    Object* new_obj = nullptr;
+    IObject* new_obj = nullptr;
     sdlc::Surface& gfx = obj[object];
 
     switch (object) {
@@ -276,7 +276,7 @@ ObjectManager::allocate_object(ObjIndex object, Owner owner)
         break;
     }
 
-    return std::shared_ptr<Object>(new_obj);
+    return std::shared_ptr<IObject>(new_obj);
 }
 
 void ObjectManager::create_formation(int x, int y, float x_vel, float y_vel, 
@@ -411,7 +411,7 @@ void ObjectManager::update_all_player_state(PlayerState& player_state)
             update_player_state(object, player_state);
 }
 
-void ObjectManager::update_player_state(std::shared_ptr<Object>& object, 
+void ObjectManager::update_player_state(std::shared_ptr<IObject>& object, 
                                         PlayerState& player_state)
 {
     assert(object->type() == OBJ_PLAYER);
@@ -442,7 +442,7 @@ void ObjectManager::update_player_state(std::shared_ptr<Object>& object,
 void ObjectManager::flush_list()
 {
     list.erase(std::remove_if(begin(list), end(list), 
-    [](std::shared_ptr<Object> o) {
+    [](std::shared_ptr<IObject> o) {
         return o->energy() <= 0;
     }), end(list));
 }
@@ -453,7 +453,7 @@ void ObjectManager::add_from_queue()
     // queue. 
     // TODO: should use a sorted queue object instead.
     auto last = std::stable_partition(begin(queue),end(queue), 
-    [this](std::shared_ptr<Object>& o) {
+    [this](std::shared_ptr<IObject>& o) {
         return world_y_pos_ >= o->y() + o->height();
     });
 
@@ -464,7 +464,7 @@ void ObjectManager::add_from_queue()
 
         // Insert in the right order
         auto next = std::find_if(begin(list), end(list), 
-        [i](std::shared_ptr<Object>& o) {
+        [i](std::shared_ptr<IObject>& o) {
             return  o->type() > (*i)->type();
         });
         list.insert(next, *i);
@@ -476,7 +476,7 @@ void ObjectManager::add_from_queue()
 
 void ObjectManager::update_enemy_count()
 {
-    auto add_other = [](int n, std::shared_ptr<Object> o) {
+    auto add_other = [](int n, std::shared_ptr<IObject> o) {
         return (o->type() == OBJ_ENEMY || o->type() == OBJ_BONUS) ? n + 1 : n;
     };
 
@@ -484,7 +484,7 @@ void ObjectManager::update_enemy_count()
     enemies_in_list_ = std::accumulate(begin(queue), end(queue), 
                                        enemies_in_list_, add_other);
 
-    auto add_player = [](int n, std::shared_ptr<Object> o) {
+    auto add_player = [](int n, std::shared_ptr<IObject> o) {
         return o->type() == OBJ_PLAYER ? n + 1 : n;
     };
 

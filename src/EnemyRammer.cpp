@@ -39,7 +39,7 @@ void EnemyRammer::activate(ObjectManager& object_manager)
 {
     Object::activate(object_manager);
     //std::vector<Object*> player_vector;
-    std::vector<std::shared_ptr<Object>> player_vector;
+    std::vector<std::shared_ptr<IObject>> player_vector;
 
     // Fetch the player ship objects
     for (auto obj : object_manager.list) {

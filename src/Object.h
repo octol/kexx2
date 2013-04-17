@@ -31,10 +31,11 @@ class FxManager;
 class Object : public IObject {
 public:
     Object();
-    Object(std::string n, int energy, ObjType t);
-    Object(std::string n, int energy, sdlc::Surface& s, ObjType t);
-    Object(std::string n, int energy, int score, sdlc::Surface& s, ObjType t, float init_y_vel);
-    Object(std::string n, int energy, int score, sdlc::Surface& s, ObjType t);
+    Object(std::string n, int energy, ObjType);
+    Object(std::string n, int energy, sdlc::Surface&, ObjType);
+    Object(std::string n, int energy, int score, sdlc::Surface&, ObjType, 
+           float init_y_vel);
+    Object(std::string n, int energy, int score, sdlc::Surface&, ObjType);
     virtual ~Object() {};
 
     // Main functions
@@ -92,11 +93,11 @@ public:
     virtual std::string name() const override;
     virtual std::string set_name(const std::string&) override;
 
-    const sdlc::Sprite& sprite() const override;
+    virtual const sdlc::Sprite& sprite() const override;
 
     // Static functions
-    static bool compare_type(const std::shared_ptr<Object>& o1, 
-                             const std::shared_ptr<Object>& o2);
+    static bool compare_type(const std::shared_ptr<IObject>& o1, 
+                             const std::shared_ptr<IObject>& o2);
 
     static ObjIndex parse_obj_index(std::string type);
     static Owner parse_owner(std::string type);

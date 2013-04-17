@@ -187,7 +187,7 @@ void Ship::do_scripted_movement(sdlc::Timer& timer)
     }
 }
 
-void Ship::collide_with_object(Object& current, ObjectManager& object_manager, 
+void Ship::collide_with_object(IObject& current, ObjectManager& object_manager, 
                                FxManager& fx_manager) 
 {
     switch (current.type()) {

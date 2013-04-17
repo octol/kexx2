@@ -71,8 +71,10 @@ void Game::write_options()
     options.write(options.data_path + "kexx2.cfg");
 }
 
-void Game::setup_environment(sdlc::Screen& screen, sdlc::Timer& timer, sdlc::Mixer& mixer)
+void Game::setup_environment(sdlc::Screen& screen, sdlc::Timer& timer, 
+                             sdlc::Mixer& mixer)
 {
+    UNUSED(mixer);
 #ifdef WIN32
     int video_type = options.fullscreen() 
                         ? SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_FULLSCREEN 

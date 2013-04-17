@@ -95,7 +95,7 @@ class ObjectManager;
 class FxManager;
 
 // -----------------------------------------------------------------------------
-// Defines an interface for all game object.
+// Defines an interface for all game objects.
 // -----------------------------------------------------------------------------
 
 class IObject {

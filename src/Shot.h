@@ -27,9 +27,8 @@ public:
     Shot(std::string name, int energy, sdlc::Surface& s, Owner owner);
     virtual ~Shot() {};
 
-    void check_collisions(ObjectManager& object_manager, FxManager& fx_manager)
-        override;
-    void kill(ObjectManager& object_manager, FxManager& fx_manager) override;
+    void check_collisions(ObjectManager&, FxManager&) override;
+    void kill(ObjectManager&, FxManager&) override;
 };
 
 #endif // KEXX2_SHOT_H
