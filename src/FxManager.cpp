@@ -84,8 +84,8 @@ void FxManager::explode_normal(int x, int y)
 
     expl_snd_big_.play(0);
 
-    std::unique_ptr<sdlc::Sprite> sprite(new sdlc::Sprite);
-    sprite->link(expl_img_.data);
+    std::unique_ptr<sdlc::Sprite> sprite(new sdlc::Sprite(expl_img_));
+    //sprite->link(expl_img_.data);
     sprite->init_animation(5, 11, 1);
     sprite->set_x(x - sprite->width() / 2);
     sprite->set_y(y - sprite->height() / 2);
