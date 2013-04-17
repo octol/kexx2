@@ -30,12 +30,19 @@ AC_LANG_PUSH([C++])
 AX_CXX_COMPILE_STDCXX_11
 AC_LANG_POP([C++])
 
-CXXFLAGS="$CXXFLAGS -pedantic -Wall -W -Wextra"
+#-------------------------------------------------------------------------------
+# Add development flags.
+#-------------------------------------------------------------------------------
+CXXFLAGS="-g -Og -std=gnu++11"
+CXXFLAGS="$CXXFLAGS -Wpedantic -Wall -W -Wextra"
 CXXFLAGS="$CXXFLAGS -Wcast-qual -Wwrite-strings"
+CXXFLAGS="$CXXFLAGS -Weffc++"
 #CXXFLAGS="$CXXFLAGS -Wshadow"
-#CXXFLAGS="$CXXFLAGS -Weffc++"
 #CXXFLAGS="$CXXFLAGS -Wconversion" 
-#CXXFLAGS="$CXXFLAGS -Werror"
+CXXFLAGS="$CXXFLAGS -fno-omit-frame-pointer"
+CXXFLAGS="$CXXFLAGS -fsanitize=address"
+CXXFLAGS="$CXXFLAGS -fno-inline"
+CXXFLAGS="$CXXFLAGS -fdiagnostics-color=auto"
 
 #-------------------------------------------------------------------------------
 # Configure pthreads.
