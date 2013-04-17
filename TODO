@@ -1,17 +1,9 @@
 TODO
 ====
 
-Two approaches:
-1) Bottom up rewriting the basic objects and entities to be modern and
-   self-contained. This includes the managers, which should be switched to used
-   STL containers and smart pointers (or maybe store by value?).
-2) Top-down refactoring of the general layout and design. This includes coming
-   up with a scheme on how to do dependency injection.
-
 Local issues:
 -------------
 - new -> std::make_shared
-- Variable naming conventions.
 - Go over all TODO in code.
 - grep for "for" loops.
 - Remove all empty destructors for leaf node classes.
@@ -23,9 +15,8 @@ Local issues:
 
 Architectural issues:
 ---------------------
-- Store pointers or objects in lists? e.g Sprites, Objects.
 - Systematic way of doing dependency injection in e.g Interface.
-- Raw pointer to dependencies
+- Raw pointer to dependencies?
     - FxManager
 - Weapon really need to have object manager in constructor so we don't have
   to pass it as argument everything we use it. Maybe when (if?) we change to
@@ -50,11 +41,12 @@ PlayerState
 IGameState:
     Menu, World, BuyScreen, Finished, GameOver
 ObjectManager
-Object:
-    Shot: 
-        ShotRocket
-    EnemyBonus, EnemyRammer, EnemySideways
-    Ship
+IObject:
+    Object:
+        Shot: 
+            ShotRocket
+        EnemyBonus, EnemyRammer, EnemySideways
+        Ship
 FxManager
 ParticleManager: 
     Starfield
@@ -68,11 +60,6 @@ Feature changes:
     This requires that we set configuration stuff in .kexx2rc instead of
     kexx2.cfg, due to write permission.
 - Implement Factory pattern for object creation.
-
-Media:
-------
-Change game over sound to something more serious. Consider having no sound for
-now.
 
 Specific issues:
 ----------------
