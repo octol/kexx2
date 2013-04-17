@@ -17,6 +17,7 @@ kexx2_SOURCES = \
 	Game.cpp Game.h \
 	GameOver.cpp GameOver.h \
 	IGameState.h \
+	IObject.h \
 	Interface.cpp Interface.h \
 	LevelManager.cpp LevelManager.h \
 	Main.cpp \
