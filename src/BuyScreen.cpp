@@ -61,7 +61,10 @@ void BuyScreen::run_logic(sdlc::Input& input, sdlc::Timer& timer,
     UNUSED(mixer);
 
     // TODO: for now we do not read the keys from player_state.
-    std::vector<KeySet> keys = { KeySet(1), KeySet(2) };
+    //std::vector<KeySet> keys = { KeySet(1), KeySet(2) };
+    std::vector<KeySet> keys;
+    keys.push_back(KeySet(1));
+    keys.push_back(KeySet(2));
 
     for (size_t i = 0; i < keys.size(); i++) {
         if (player_state.energy_max(i + 1)) {

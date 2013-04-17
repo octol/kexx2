@@ -19,6 +19,7 @@
 #ifndef KEXX_BUYSCREEN_H
 #define KEXX_BUYSCREEN_H
 
+#include <string>
 #include <vector>
 #include <array>
 #include "SDLc.h"
