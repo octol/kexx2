@@ -27,7 +27,7 @@
 // Construction/Destruction
 // -----------------------------------------------------------------------------
 
-Ship::Ship(std::string n, int energy, int score, Surface& s, 
+Ship::Ship(std::string n, int energy, int score, sdlc::Surface& s, 
            std::unique_ptr<Weapon>& main, std::unique_ptr<Weapon>& extra, 
            KeySet keyset)
     : Object(n, energy, s, OBJ_PLAYER),
@@ -98,7 +98,7 @@ void Ship::check_collisions(ObjectManager& object_manager, FxManager& fx_manager
         SDL_Rect ship_rect = reduced_rect();
         SDL_Rect object_rect = current->reduced_rect();
 
-        if (current->energy() && overlap(ship_rect, object_rect))
+        if (current->energy() && sdlc::overlap(ship_rect, object_rect))
             // TODO: should we really pass *current instead of the
             // shared_ptr ?
             collide_with_object(*current, object_manager, fx_manager);
@@ -107,7 +107,7 @@ void Ship::check_collisions(ObjectManager& object_manager, FxManager& fx_manager
 
 void Ship::update(sdlc::Timer& timer)
 {
-    Sprite::update(timer);
+    Object::update(timer);
 
     if (hit_timer > 0 && times_blinked_ > 100) 
         set_not_invincible();
@@ -200,10 +200,10 @@ void Ship::collide_with_object(Object& current, ObjectManager& object_manager,
         break;
     case OBJ_BONUS:
         // blaster
-        if (current.name == "Blaster Bonus" && 
+        if (current.name() == "Blaster Bonus" && 
                 main_weapon_->name == "Blaster Weapon") {
             main_weapon_->upgrade();
-        } else if (current.name == "Blaster Bonus") {
+        } else if (current.name() == "Blaster Bonus") {
             main_weapon_ = std::unique_ptr<Weapon>(new WeaponBlaster(
                         object_manager.snd[SND_SHOTBLASTER], owner()));
         }
@@ -232,7 +232,7 @@ void Ship::update_smoketrail(ObjectManager& object_manager)
     // First we check if there already is a smoke trail
     bool smoke_found = false;
     for (auto obj : object_manager.list) {
-        if (obj->name == "Smoketrail" && obj->owner() == owner()) {
+        if (obj->name() == "Smoketrail" && obj->owner() == owner()) {
             smoke_found = true;
             break;
         }
@@ -249,7 +249,7 @@ void Ship::update_smoketrail(ObjectManager& object_manager)
     // Actually update the smokee trail
     int current_trail = 1;
     for (auto obj : object_manager.list) {
-        if (obj->name == "Smoketrail" && obj->owner() == owner()) {
+        if (obj->name() == "Smoketrail" && obj->owner() == owner()) {
             auto set_trail_position = [this,obj](int xshift) {
                 obj->set_pos(x() + xshift, y() + height() - 2);
                 obj->set_vel(x_vel(), y_vel());
@@ -272,7 +272,7 @@ void Ship::update_smoketrail(ObjectManager& object_manager)
 void Ship::remove_smoketrail(ObjectManager& object_manager)
 {
     for (auto obj : object_manager.list) {
-        if (obj->name == "Smoketrail" && obj->owner() == owner()) {
+        if (obj->name() == "Smoketrail" && obj->owner() == owner()) {
             obj->set_energy(0);
         }
     }

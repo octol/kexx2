@@ -32,10 +32,10 @@ Shot::Shot() : Object("Generic Shot", 1, OBJ_SHOT)
 {
 }
 
-Shot::Shot(std::string n, int _energy, Surface& s, Owner _owner)
+Shot::Shot(std::string n, int _energy, sdlc::Surface& s, Owner _owner)
    : Object(n, _energy, s, OBJ_SHOT)
 {
-   set_owner(_owner);
+    set_owner(_owner);
 }
 
 // -----------------------------------------------------------------------------
@@ -55,7 +55,7 @@ void Shot::check_collisions(ObjectManager& object_manager,
             begin(object_manager.list), 
             end(object_manager.list), 
             [this](std::shared_ptr<Object> o) {
-                return Object::parse_owner(o->name) == this->owner();
+                return Object::parse_owner(o->name()) == this->owner();
             });
 
         for (auto& object : object_manager.list) {
@@ -63,7 +63,7 @@ void Shot::check_collisions(ObjectManager& object_manager,
             SDL_Rect object_rect = object->rect();
 
             if (object->type() == OBJ_ENEMY && object->energy() && 
-                    overlap(shot_rect, object_rect)) {
+                    sdlc::overlap(shot_rect, object_rect)) {
                 object->hurt(energy(), object_manager, fx_manager);
                 if (!object->energy() && owner_player)
                     owner_player->adjust_score(object->score());
@@ -82,7 +82,7 @@ void Shot::check_collisions(ObjectManager& object_manager,
             SDL_Rect object_rect = current->rect();
 
             if (current->type() == OBJ_PLAYER && current->energy() && 
-                    overlap(shot_rect, object_rect)) {
+                    sdlc::overlap(shot_rect, object_rect)) {
                 current->hurt(energy(), object_manager, fx_manager);
 
                 // left the shot kill itself

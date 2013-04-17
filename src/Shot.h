@@ -24,7 +24,7 @@
 class Shot : public Object {
 public:
     Shot();
-    Shot(std::string name, int energy, Surface& s, Owner owner);
+    Shot(std::string name, int energy, sdlc::Surface& s, Owner owner);
     virtual ~Shot() {};
 
     void check_collisions(ObjectManager& object_manager, FxManager& fx_manager)

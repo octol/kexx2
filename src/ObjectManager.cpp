@@ -103,7 +103,7 @@ void ObjectManager::update(sdlc::Timer& timer, FxManager& fx_manager,
                 std::cout << "warning: object with undefined " 
                     << "type detected!" << std::endl;
             }
-            if (current->name == "Generic Object") {
+            if (current->name() == "Generic Object") {
                 std::cout << "warning: object with undefined " 
                     << "name detected!" << std::endl;
             }
@@ -120,7 +120,7 @@ void ObjectManager::update(sdlc::Timer& timer, FxManager& fx_manager,
 void ObjectManager::draw(sdlc::Screen& screen)
 {
     for (std::shared_ptr<Object> current : list) 
-        screen.blit(*current);
+        screen.blit(current->sprite());
 }
 
 std::shared_ptr<Object> 
@@ -204,6 +204,8 @@ int ObjectManager::num_of_players_alive()
 // -----------------------------------------------------------------------------
 // Private Functions
 // -----------------------------------------------------------------------------
+
+// TODO: remove naked new.
 
 std::shared_ptr<Object> 
 ObjectManager::allocate_object(ObjIndex object, Owner owner)
@@ -415,7 +417,8 @@ void ObjectManager::update_player_state(std::shared_ptr<Object>& object,
     assert(object->type() == OBJ_PLAYER);
 
     // Get the player number from the name
-    int player_id = object->name[object->name.length() - 1] - (int)'0';
+    std::string name = object->name();
+    int player_id = name[name.length() - 1] - (int)'0';
 
     player_state.set_energy(player_id, object->energy());
     player_state.set_energy_max(player_id, object->energy_max());

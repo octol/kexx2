@@ -25,33 +25,33 @@
 // Construction/Destruction
 // -----------------------------------------------------------------------------
 
-// TODO: better chaining of the constructors.
-
 Object::Object()
 {
-    name = "Generic Object";
 }
 
 Object::Object(std::string n, int energy, ObjType t) 
-    : type_(t)
+    : name_(n), type_(t), energy_(energy), energy_max_(energy) 
 {
-    name = n;
-    set_energy(set_energy_max(energy));
 }
 
-Object::Object(std::string n, int energy, Surface& s, ObjType t)
-    : Object(n, energy, t)
+Object::Object(std::string n, int energy, sdlc::Surface& s, ObjType t)
+    : Object(n, energy, 0, s, t)
 {
-    link(s.data);
-    calculate_hit_img();
 }
 
-Object::Object(std::string n, int energy, int score, Surface& s, 
+Object::Object(std::string n, int energy, int score, sdlc::Surface& s, 
                ObjType t, float init_y_vel)
-    : Object(n, energy, s, t)
+    : Object(n, energy, score, s, t)
 {
-    set_score(score);
     set_activation_y_vel(init_y_vel);
+}
+
+Object::Object(std::string n, int energy, int score, sdlc::Surface& s, 
+               ObjType t)
+    : name_(n), energy_(energy), energy_max_(energy), score_(score), 
+      sprite_(s), type_(t) 
+{
+    calculate_hit_img();
 }
 
 // -----------------------------------------------------------------------------
@@ -83,7 +83,8 @@ void Object::check_collisions(ObjectManager& object_manager,
 
 void Object::update(sdlc::Timer& timer)
 {
-    Sprite::update(timer);
+    sprite_.update(timer);
+
     if (hit_timer && timer.ticks() - hit_timer > 20) {
         hit_timer = 0;
         // flip SDL_Surface's
@@ -127,6 +128,115 @@ float Object::set_activation_y_vel(float value)
     activation_y_vel_set_ = true;
     return activation_y_vel_ = value;
 }
+
+float Object::x() 
+{
+    return sprite_.x(); 
+}
+
+float Object::y() 
+{
+    return sprite_.y(); 
+}
+
+float Object::set_x(float value) 
+{
+    return sprite_.set_x(value); 
+}
+
+float Object::set_y(float value) 
+{
+    return sprite_.set_y(value); 
+}
+
+void Object::set_pos(float x, float y) 
+{
+    sprite_.set_pos(x,y); 
+}
+
+float Object::x_vel() 
+{
+    return sprite_.x_vel(); 
+}
+
+float Object::y_vel() 
+{
+    return sprite_.y_vel(); 
+}
+
+float Object::set_x_vel(float value) 
+{
+    return sprite_.set_x_vel(value); 
+}
+
+float Object::set_y_vel(float value) 
+{
+    return sprite_.set_y_vel(value); 
+}
+
+void Object::set_vel(float x, float y) 
+{
+    sprite_.set_vel(x,y); 
+}
+
+int Object::width() 
+{
+    return sprite_.width(); 
+}
+
+int Object::height() 
+{
+    return sprite_.height(); 
+}
+
+bool Object::locked_to_screen() const 
+{
+    return sprite_.locked_to_screen(); 
+}
+
+bool Object::set_locked_to_screen(bool value) 
+{
+    return sprite_.set_locked_to_screen(value); 
+}
+
+void Object::init_animation(int speed, int frames, int iterations)
+{
+    sprite_.init_animation(speed, frames, iterations);
+}
+
+void Object::set_current_anim_frame(int num) 
+{
+    sprite_.set_current_anim_frame(num);
+}
+
+SDL_Rect Object::rect() const 
+{
+    return sprite_.rect(); 
+}
+
+SDL_Rect Object::reduced_rect() const 
+{
+    return sprite_.reduced_rect(); 
+}
+
+std::string Object::name() const
+{
+    return name_;
+}
+
+std::string Object::set_name(const std::string& n)
+{
+    return name_ = n;
+}
+
+const sdlc::Sprite& Object::sprite() const 
+{
+    return sprite_;
+}
+
+// -----------------------------------------------------------------------------
+// Static Functions
+// -----------------------------------------------------------------------------
 
 ObjIndex Object::parse_obj_index(std::string type)
 {
@@ -172,6 +282,12 @@ ObjIndex Object::parse_obj_index(std::string type)
     return object;
 }
 
+bool Object::compare_type(const std::shared_ptr<Object>& o1, 
+                          const std::shared_ptr<Object>& o2)
+{
+    return o1->type() < o2->type();
+}
+
 Owner Object::parse_owner(std::string player)
 {
     Owner owner = OWNER_NONE;
@@ -181,17 +297,6 @@ Owner Object::parse_owner(std::string player)
         owner = OWNER_PLAYER2;
 
     return owner;
-}
-
-// -----------------------------------------------------------------------------
-// Static Functions
-// -----------------------------------------------------------------------------
-
-// TODO: remove this function
-bool Object::compare_type(const std::shared_ptr<Object>& o1, 
-                          const std::shared_ptr<Object>& o2)
-{
-    return o1->type() < o2->type();
 }
 
 // -----------------------------------------------------------------------------

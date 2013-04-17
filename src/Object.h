@@ -23,135 +23,96 @@
 #include <memory>
 #include "SDLc/Sprite.h"
 #include "Defines.h"
+#include "IObject.h"
 
 class ObjectManager;
 class FxManager;
 
-enum Owner { 
-    OWNER_NONE,
-    OWNER_PLAYER1,
-    OWNER_PLAYER2,
-    OWNER_ENEMY 
-};
-
-enum ObjType { 
-    OBJ_UNDEFINED, 
-    OBJ_PASSIVE,
-    OBJ_ENEMY,
-    OBJ_BONUS,
-    OBJ_PLAYER,
-    OBJ_PLAYERPASSIVE,
-    OBJ_SHOT 
-};
-
-enum ObjIndex {
-    NONE,
-    PLAYER1,
-    PLAYER2,
-    ENEMYSTD,
-    ENEMYSIDEWAYS,
-    ENEMYRAMMER,
-    ENEMYBONUS,
-    OBJECTBIGSHIP,
-    BONUSBLASTER,
-    BONUSROCKET,
-
-    // shots
-    SHOTBLASTER,
-    SHOTBLASTERBIG,
-    SHOTROCKET,
-    SHOTBOMBFRAGMENT,
-    SHOTENEMYSTD,
-
-    // misc
-    SMOKETRAIL,
-
-    // formations
-    ENEMYSTD_V_FORMATION,
-    ENEMYSTD_3V_FORMATION,
-    ENEMYSTD_DIAGONAL_FORMATION,
-    ENEMYSTD_MASSIVE_FORMATION,
-
-    ENEMYSIDEWAYS_VLINE_FORMATION,
-    ENEMYSIDEWAYS_HLINE_FORMATION,
-    ENEMYSIDEWAYS_V_FORMATION,
-    ENEMYSIDEWAYS_MASSIVE_FORMATION,
-
-    ENEMYRAMMER_VLINE_FORMATION,
-    ENEMYRAMMER_DIAGONAL_FORMATION,
-    ENEMYRAMMER_FULLDIAGONAL_FORMATION
-};
-
-enum ObjSnd {
-    SND_SHOTBLASTER,
-    SND_SHOTROCKET
-};
-
-enum SoundChannel { 
-    SND_DIV,
-    SND_W_BLASTER,
-    SND_W_ROCKET,
-    SND_EXPL_SMALL,
-    SND_EXPL_BIG,
-    SND_EXPL_PLAYER,
-    SND_ALARM 
-};
-
-// TODO: change this to composition?
-
-class Object : public sdlc::Sprite {
+class Object : public IObject {
 public:
     Object();
     Object(std::string n, int energy, ObjType t);
     Object(std::string n, int energy, sdlc::Surface& s, ObjType t);
-    Object(std::string n, int energy, int score, sdlc::Surface& s, 
-           ObjType t, float init_y_vel);
+    Object(std::string n, int energy, int score, sdlc::Surface& s, ObjType t, float init_y_vel);
+    Object(std::string n, int energy, int score, sdlc::Surface& s, ObjType t);
     virtual ~Object() {};
 
-    virtual void activate(ObjectManager& object_manager);
-    virtual void think(ObjectManager& object_manager, FxManager& fx_manager);
-    virtual void check_collisions(ObjectManager& object_manager, FxManager& fx_manager);
-    virtual void update(sdlc::Timer& timer);
-    virtual void hurt(int value, ObjectManager& object_manager, FxManager& fx_manager);
-    virtual void kill(ObjectManager& object_manager, FxManager& fx_manager);
+    // Main functions
+    virtual void activate(ObjectManager&) override;
+    virtual void think(ObjectManager&, FxManager&) override;
+    virtual void check_collisions(ObjectManager&, FxManager&) override;
+    virtual void update(sdlc::Timer&) override;
+    virtual void hurt(int value, ObjectManager&, FxManager&) override;
+    virtual void kill(ObjectManager&, FxManager&) override;
 
-    ObjType type() const;
-    ObjType set_type(ObjType value);
-    int energy() const;
-    int set_energy(int value);
-    int adjust_energy(int e);
-    int energy_max() const;
-    int set_energy_max(int value);
+    // State data
+    virtual float x() override;
+    virtual float y() override;
+    virtual float set_x(float value) override;
+    virtual float set_y(float value) override;
+    virtual void set_pos(float x, float y) override;
+    virtual float x_vel() override;
+    virtual float y_vel() override;
+    virtual float set_x_vel(float value) override;
+    virtual float set_y_vel(float value) override;
+    virtual void  set_vel(float x, float y) override;
 
-    bool active() const;
-    // TODO: these should be private/protected?
-    bool active(bool value); // DEPRECATED
-    bool set_active(bool value);
+    virtual int width() override;
+    virtual int height() override;
 
-    float set_activation_y_vel(float value);
+    virtual bool locked_to_screen() const override;
+    virtual bool set_locked_to_screen(bool value) override;
 
-    int score() const;
-    int set_score(int value);
-    int adjust_score(int value);
+    virtual void init_animation(int speed, int frames, int iterations) override;
+    virtual void set_current_anim_frame(int num) override;   // set current frame
+
+    virtual SDL_Rect rect() const override;
+    virtual SDL_Rect reduced_rect() const override;
+
+    virtual ObjType type() const override;
+    virtual ObjType set_type(ObjType value) override;
+    virtual int energy() const override;
+    virtual int set_energy(int value) override;
+    virtual int adjust_energy(int e) override;
+    virtual int energy_max() const override;
+    virtual int set_energy_max(int value) override;
+
+    // Some objects toggle between active and passive state.
+    virtual bool active() const override;
+    virtual bool set_active(bool value) override;
+    virtual float set_activation_y_vel(float value) override;
+
+    virtual int score() const override;
+    virtual int set_score(int value) override;
+    virtual int adjust_score(int value) override;
+
+    virtual Owner owner() const override;
+    virtual Owner set_owner(Owner value) override;
+
+    virtual std::string name() const override;
+    virtual std::string set_name(const std::string&) override;
+
+    const sdlc::Sprite& sprite() const override;
+
+    // Static functions
+    static bool compare_type(const std::shared_ptr<Object>& o1, 
+                             const std::shared_ptr<Object>& o2);
 
     static ObjIndex parse_obj_index(std::string type);
     static Owner parse_owner(std::string type);
 
-    // TODO: Why did I mark this protected?
-    // protected:
-    Owner owner() const;
-    Owner set_owner(Owner value);
-
-    static bool compare_type(const std::shared_ptr<Object>& o1, 
-                             const std::shared_ptr<Object>& o2);
-
-
 protected:
     virtual void calculate_hit_img();
-    Surface hit_img;
+
+    // The sprite object maintains position and velocity state.
+    sdlc::Sprite sprite_;
+
+    // the graphics shown when being hit.
+    sdlc::Surface hit_img_;
     int hit_timer = 0;
 
 private:
+    std::string name_ = "Generic object";
     ObjType type_ = OBJ_UNDEFINED;
     bool active_ = false;
     int energy_ = 0;
@@ -218,12 +179,6 @@ inline
 bool Object::active() const
 {
     return active_;
-}
-
-inline
-bool Object::active(bool value)     
-{
-    return active_ = value;
 }
 
 inline

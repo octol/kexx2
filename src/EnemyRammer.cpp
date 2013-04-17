@@ -25,7 +25,7 @@
 // Construction/Destruction
 // -----------------------------------------------------------------------------
 
-EnemyRammer::EnemyRammer(std::string name, int energy, int score, Surface& s)
+EnemyRammer::EnemyRammer(std::string name, int energy, int score, sdlc::Surface& s)
     : Object(name, energy, s, OBJ_ENEMY)
 {
     set_score(score);

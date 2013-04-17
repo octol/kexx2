@@ -33,7 +33,7 @@ const int INPUT_LOCKED = 2;
 class Ship final : public Object {
     friend class ObjectManager;
 public:
-    Ship(std::string n, int energy, int score, Surface& s, 
+    Ship(std::string n, int energy, int score, sdlc::Surface& s, 
          std::unique_ptr<Weapon>& main, std::unique_ptr<Weapon>& extra, 
          KeySet keyset);
     virtual ~Ship() {};

@@ -31,7 +31,7 @@ ShotRocket::ShotRocket(std::string _name, int _energy, sdlc::Surface& s,
       // TODO: remove raw SDL call.
       time_when_shot_(SDL_GetTicks())       
 {
-    init_animation(50, 2, 0);
+    Object::init_animation(50, 2, 0);
 }
 
 // -----------------------------------------------------------------------------
