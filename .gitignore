@@ -18,3 +18,12 @@ cscope.out
 *.o
 *.lo
 *.swp
+Makefile
+src/Makefile
+src/kexx2
+stamp-h1
+config.h
+config.log
+config.status
+src/.deps
+libtool
