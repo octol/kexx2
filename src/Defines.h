@@ -19,8 +19,10 @@
 #ifndef KEXX2_DEFINES_H
 #define KEXX2_DEFINES_H
 
-// TODO: use VERSION defined by build system (autotools)
+#ifndef VERSION
 #define VERSION "1.0.6"
+#endif
+
 #define UNUSED(x) ((void)x)
 #define TESTING
 

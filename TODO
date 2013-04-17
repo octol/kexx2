@@ -5,7 +5,6 @@ Local issues:
 -------------
 - new -> std::make_shared
 - Go over all TODO in code.
-- grep for "for" loops.
 - Remove all empty destructors for leaf node classes.
 - Fix compiler warnings.
 - Move to using Coord, Color etc objects instead of (x,y,xvel,yvel,r,g,b,a)

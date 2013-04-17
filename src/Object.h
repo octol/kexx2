@@ -109,7 +109,7 @@ protected:
     sdlc::Sprite sprite_;
 
     // the graphics shown when being hit.
-    sdlc::Surface hit_img_;
+    sdlc::Sprite hit_img_;
     int hit_timer = 0;
 
 private:

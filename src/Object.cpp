@@ -46,12 +46,15 @@ Object::Object(std::string n, int energy, int score, sdlc::Surface& s,
     set_activation_y_vel(init_y_vel);
 }
 
-Object::Object(std::string n, int energy, int score, sdlc::Surface& s, 
-               ObjType t)
-    : name_(n), energy_(energy), energy_max_(energy), score_(score), 
-      sprite_(s), type_(t) 
+Object::Object(std::string n, int energy, int score, sdlc::Surface& s, ObjType t)
+    : name_(n), 
+      energy_(energy), 
+      energy_max_(energy), 
+      score_(score), 
+      sprite_(s), 
+      hit_img_(s), 
+      type_(t) 
 {
-    calculate_hit_img();
 }
 
 // -----------------------------------------------------------------------------
@@ -85,13 +88,12 @@ void Object::update(sdlc::Timer& timer)
 {
     sprite_.update(timer);
 
+    // keep other sprites in sync
+    hit_img_.set_pos(sprite_.x(), sprite_.y());
+    hit_img_.set_vel(sprite_.x_vel(), sprite_.y_vel());
+
     if (hit_timer && timer.ticks() - hit_timer > 20) {
         hit_timer = 0;
-        // flip SDL_Surface's
-        // TODO: Use BaseSurface/Surface from sdlc instead.
-        //SDL_Surface* tmp = data;
-        //data = hit_img.data;
-        //hit_img.data = tmp;
     }
 }
 
@@ -101,12 +103,6 @@ void Object::hurt(int value, ObjectManager& object_manager,
     if (hit_timer == 0) {
         // TODO: replace with Timer object.
         hit_timer = SDL_GetTicks();
-
-        // flip SDL_Surface's
-        // TODO: Use BaseSurface/Surface from sdlc instead.
-        //SDL_Surface* tmp = data;
-        //data = hit_img.data;
-        //hit_img.data = tmp;
     }
 
     adjust_energy(-value);
@@ -231,6 +227,8 @@ std::string Object::set_name(const std::string& n)
 
 const sdlc::Sprite& Object::sprite() const 
 {
+    if (hit_timer)
+        return hit_img_;
     return sprite_;
 }
 
@@ -305,19 +303,16 @@ Owner Object::parse_owner(std::string player)
 
 void Object::calculate_hit_img()
 {
-    // TODO: replace raw SDL call.
-    // TODO: need to implement copy constructor for Surface.
-//    hit_img.data = SDL_DisplayFormat(data);
-//
-//    hit_img.lock();
-//    for (int iy = 0; iy < hit_img.data->h; iy++) {
-//        for (int ix = 0; ix < hit_img.data->w; ix++) {
-//            uint8_t r = 0, g = 0, b = 0, a = 255;
-//            get_pix(ix, iy, &r, &g, &b);
-//            if (false == ((r >= 248 && g == 0 && b >= 248) || (a != 255)))
-//                hit_img.set_pix(ix, iy, 255, 255, 255);
-//        }
-//    }
-//    hit_img.unlock();
+    hit_img_.make_independent_copy();
+    hit_img_.lock();
+    for (int iy = 0; iy < sprite_.height(); ++iy) {
+        for (int ix = 0; ix < sprite_.width(); ++ix) {
+            uint8_t r = 0, g = 0, b = 0, a = 255;
+            sprite_.get_pix(ix, iy, &r, &g, &b);
+            if (false == ((r >= 248 && g == 0 && b >= 248) || (a != 255)))
+                hit_img_.set_pix(ix, iy, 255, 255, 255);
+        }
+    }    
+    hit_img_.unlock();
 }
 

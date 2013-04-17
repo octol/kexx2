@@ -29,6 +29,7 @@ EnemyRammer::EnemyRammer(std::string name, int energy, int score, sdlc::Surface&
     : Object(name, energy, s, OBJ_ENEMY)
 {
     set_score(score);
+    calculate_hit_img();
 }
 
 // -----------------------------------------------------------------------------

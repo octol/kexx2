@@ -28,6 +28,7 @@
 
 #include "Ship.h"
 #include "EnemySideways.h"
+#include "EnemyStandard.h"
 #include "EnemyRammer.h"
 #include "EnemyBonus.h"
 #include "ShotRocket.h"
@@ -217,8 +218,7 @@ ObjectManager::allocate_object(ObjIndex object, Owner owner)
 
     // enemies
     case ENEMYSTD:
-        new_obj = new Object("Standard Enemy", 5, 52, gfx, OBJ_ENEMY, 
-                             SCROLLING_SPEED);
+        new_obj = new EnemyStandard("Standard Enemy", 5, 52, gfx, SCROLLING_SPEED);
         break;
     case ENEMYSIDEWAYS:
         new_obj = new EnemySideways("Sideways Enemy", 3, 71, gfx);

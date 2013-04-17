@@ -28,6 +28,7 @@ EnemyBonus::EnemyBonus(std::string name, int energy, sdlc::Surface& s)
     : Object(name, energy, s, OBJ_ENEMY)
 {
     set_score(0);
+    calculate_hit_img();
 }
 
 // -----------------------------------------------------------------------------

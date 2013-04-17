@@ -43,6 +43,8 @@ Ship::Ship(std::string n, int energy, int score, sdlc::Surface& s,
 
     set_locked_to_screen(false);
     set_active(true);
+
+    calculate_hit_img();
 }
 
 // -----------------------------------------------------------------------------
@@ -68,12 +70,6 @@ void Ship::think(ObjectManager& object_manager, FxManager& fx_manager)
     if (invincible_ == BLINKING && timer->ticks() - blinking_timer_ > 50) {
         times_blinked_++;
         blinking_timer_ = timer->ticks();
-
-        // flip SDL_Surface's
-        // TODO: use Surface/BaseSurface instead.
-        //SDL_Surface* tmp = data;
-        //data = hit_img.data;
-        //hit_img.data = tmp;
     }
 
     // check if empty clip
@@ -99,15 +95,17 @@ void Ship::check_collisions(ObjectManager& object_manager, FxManager& fx_manager
         SDL_Rect object_rect = current->reduced_rect();
 
         if (current->energy() && sdlc::overlap(ship_rect, object_rect))
-            // TODO: should we really pass *current instead of the
-            // shared_ptr ?
-            collide_with_object(*current, object_manager, fx_manager);
+            collide_with_object(current, object_manager, fx_manager);
     }
 }
 
 void Ship::update(sdlc::Timer& timer)
 {
-    Object::update(timer);
+    sprite_.update(timer);
+    
+    // keep other sprites in sync
+    hit_img_.set_pos(sprite_.x(), sprite_.y());
+    hit_img_.set_vel(sprite_.x_vel(), sprite_.y_vel());
 
     if (hit_timer > 0 && times_blinked_ > 100) 
         set_not_invincible();
@@ -133,6 +131,15 @@ void Ship::kill(ObjectManager& object_manager, FxManager& fx_manager)
     if (!invincible_) {
         Object::kill(object_manager, fx_manager);
         remove_smoketrail(object_manager);
+    }
+}
+
+const sdlc::Sprite& Ship::sprite() const 
+{
+    if (blinking_timer_ && times_blinked_ % 2) {
+        return hit_img_;
+    } else {
+        return sprite_;
     }
 }
 
@@ -187,29 +194,30 @@ void Ship::do_scripted_movement(sdlc::Timer& timer)
     }
 }
 
-void Ship::collide_with_object(IObject& current, ObjectManager& object_manager, 
+void Ship::collide_with_object(std::shared_ptr<IObject>& current, 
+                               ObjectManager& object_manager, 
                                FxManager& fx_manager) 
 {
-    switch (current.type()) {
+    switch (current->type()) {
     case OBJ_ENEMY:
         if (!invincible_) {
             // kill both objects
             kill(object_manager, fx_manager);
-            current.kill(object_manager, fx_manager);
+            current->kill(object_manager, fx_manager);
         }
         break;
     case OBJ_BONUS:
         // blaster
-        if (current.name() == "Blaster Bonus" && 
+        if (current->name() == "Blaster Bonus" && 
                 main_weapon_->name == "Blaster Weapon") {
             main_weapon_->upgrade();
-        } else if (current.name() == "Blaster Bonus") {
+        } else if (current->name() == "Blaster Bonus") {
             main_weapon_ = std::unique_ptr<Weapon>(new WeaponBlaster(
                         object_manager.snd[SND_SHOTBLASTER], owner()));
         }
 
         // mute removal of the bonus object
-        current.set_energy(0); 
+        current->set_energy(0); 
         break;
     default:
         break;
@@ -280,7 +288,6 @@ void Ship::remove_smoketrail(ObjectManager& object_manager)
 
 void Ship::calculate_hit_img()
 {
-    // TODO: remove raw SDL call.
-    //hit_img.data = SDL_DisplayFormat(data);
-    //hit_img.fill_rect(0, 0, hit_img.data->w, hit_img.data->h, 255, 0, 255);
+    hit_img_.make_independent_copy();
+    hit_img_.fill_rect(0, 0, hit_img_.data->w, hit_img_.data->h, 255, 0, 255);
 }

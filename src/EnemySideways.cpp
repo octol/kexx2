@@ -31,6 +31,7 @@ EnemySideways::EnemySideways(std::string name, int energy, int score, sdlc::Surf
       time_when_last_shot_(0)
 {
     set_score(score);
+    calculate_hit_img();
 }
 
 // -----------------------------------------------------------------------------

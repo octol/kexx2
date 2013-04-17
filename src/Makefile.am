@@ -12,6 +12,7 @@ kexx2_SOURCES = \
 	EnemyBonus.cpp EnemyBonus.h \
 	EnemyRammer.cpp EnemyRammer.h \
 	EnemySideways.cpp EnemySideways.h \
+	EnemyStandard.cpp EnemyStandard.h \
 	Finished.cpp Finished.h \
 	FxManager.cpp FxManager.h \
 	Game.cpp Game.h \

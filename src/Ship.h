@@ -38,25 +38,27 @@ public:
          KeySet keyset);
     virtual ~Ship() = default;
 
-    void think(ObjectManager& object_manager, FxManager& fx_manager);
-    void check_collisions(ObjectManager& object_manager, FxManager& fx_manager);
-    void update(sdlc::Timer& timer);
-    void hurt(int value, ObjectManager& object_manager, FxManager& fx_manager);
-    void kill(ObjectManager& object_manager, FxManager& fx_manager);
+    virtual void think(ObjectManager&, FxManager&) override;
+    virtual void check_collisions(ObjectManager&, FxManager&) override;
+    virtual void update(sdlc::Timer& timer) override;
+    virtual void hurt(int value, ObjectManager&, FxManager&) override;
+    virtual void kill(ObjectManager&, FxManager&) override;
+
+    virtual const sdlc::Sprite& sprite() const override;
 
 private:
-    void process_input(sdlc::Input& input, ObjectManager& object_manager);
-    void do_scripted_movement(sdlc::Timer& timer);
+    void process_input(sdlc::Input&, ObjectManager&);
+    void do_scripted_movement(sdlc::Timer&);
 
-    void collide_with_object(IObject& current, ObjectManager& object_manager, 
-                             FxManager& fx_manager);
+    void collide_with_object(std::shared_ptr<IObject>& current, 
+                             ObjectManager&, FxManager&);
 
     void set_not_invincible();
 
-    void update_smoketrail(ObjectManager& object_manager);
-    void remove_smoketrail(ObjectManager& object_manager);
+    void update_smoketrail(ObjectManager&);
+    void remove_smoketrail(ObjectManager&);
 
-    void calculate_hit_img();
+    virtual void calculate_hit_img() override;
 
     std::unique_ptr<Weapon> main_weapon_;
     std::unique_ptr<Weapon> extra_weapon_;
@@ -66,8 +68,6 @@ private:
     bool level_complete_ = false;
     int blinking_timer_ = 0;
     int times_blinked_ = 0;
-
-    sdlc::Sound hit_snd;
 };
 
 #endif // KEXX2_SHIP_H
