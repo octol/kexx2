@@ -10,6 +10,7 @@ Two approaches:
 
 Local issues:
 -------------
+- new -> std::make_shared
 - Variable naming conventions.
 - Go over all TODO in code.
 - grep for "for" loops.
@@ -18,6 +19,7 @@ Local issues:
 - Move to using Coord, Color etc objects instead of (x,y,xvel,yvel,r,g,b,a)
 - Rename object_manager -> objects ? (applies to all "managers")
 - Move to using new c++11 style type safe enums.
+- Recheck all UNUSED statements.
 
 Architectural issues:
 ---------------------
