@@ -3,6 +3,9 @@ README
 
 Kexx2 is a top down scrolling shoot'em up, similar to Raptor and Tyrian.
 
+DISCLAIMER: Most of the code is from 2000-2001 and in an old C++ style (C with
+classes). 
+
 The project web page is at: http://www.haeggblad.com/kexx2
 and the source code is hosted at: http://github.com/octol/kexx2
 
