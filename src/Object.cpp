@@ -198,6 +198,7 @@ bool Object::set_locked_to_screen(bool value)
 void Object::init_animation(int speed, int frames, int iterations)
 {
     sprite_.init_animation(speed, frames, iterations);
+    hit_img_.init_animation(speed, frames, iterations);
 }
 
 void Object::set_current_anim_frame(int num) 
