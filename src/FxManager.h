@@ -41,7 +41,7 @@ public:
     void play_player_hit_snd();
 
 private:
-    // TODO: change to smart pointer?
+    // TODO: change to std::weak_ptr?
     ParticleManager* particle_manager_ = nullptr;
     sdlc::Sound expl_snd_small_;
     sdlc::Sound expl_snd_big_;
