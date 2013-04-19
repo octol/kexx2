@@ -47,13 +47,13 @@ Object::Object(std::string n, int energy, int score, sdlc::Surface& s,
 }
 
 Object::Object(std::string n, int energy, int score, sdlc::Surface& s, ObjType t)
-    : name_(n), 
+    : sprite_(s), 
+      hit_img_(s),
+      name_(n), 
+      type_(t),
       energy_(energy), 
       energy_max_(energy), 
-      score_(score), 
-      sprite_(s), 
-      hit_img_(s), 
-      type_(t) 
+      score_(score)
 {
 }
 
