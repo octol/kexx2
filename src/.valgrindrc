@@ -1,5 +1,4 @@
 --memcheck:leak-check=full
 --memcheck:show-reachable=yes
 --suppressions=sdl.supp
---suppressions=sdlc.supp
 
