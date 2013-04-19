@@ -1,6 +1,16 @@
 NEWS
 ====
 
+2013-04-19  Jon Haggblad  <jon@haeggblad.com>
+
+    Removal of most (all?) memory leaks by switching to the new
+    reference counting objects in SDLc. Valgrind reports no leaks so
+    far. The big class inheritance hierarchy has been broken up by
+    making Object the new base class, instead of inheriting from
+    sdlc::Sprite. 
+    
+    This release of Kexx2 goes together with SDLc 0.4.1.
+
 2013-03-30  Jon Haggblad  <jon@haeggblad.com>
 
     Completed another cleanup. This time most C-style arrays was replaced by

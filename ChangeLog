@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+v1.0.8 released on 19-apr-2013
+    * Switched to the new reference counted classes in SDLc 0.4.1.
+    * Memory leaks fixed.
+    * Made Object the new base class. Introduced IObject interface.
+    * Optional debug logging
+    * Moved to gcc-4.8
+
 v1.0.5 released on 30-mar-2013
     * Moved most containers to STL ones.
     * Replaced raw pointers with smart pointers from the standard library.
