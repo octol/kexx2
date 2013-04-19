@@ -20,7 +20,7 @@
 #define KEXX2_DEFINES_H
 
 #ifndef VERSION
-#define VERSION "1.0.7"
+#define VERSION "1.0.8"
 #endif
 
 #define UNUSED(x) ((void)x)
