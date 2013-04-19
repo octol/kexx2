@@ -47,7 +47,7 @@ int main(int argc, char* argv[])
     auto kexx2 = std::unique_ptr<Game>(new Game);
     kexx2->load_options();
     kexx2->setup_environment(*screen, *timer, *mixer);
-    kexx2->start();
+    kexx2->start(*mixer);
 
     while (!kexx2->done()) {
         input->update();

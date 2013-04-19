@@ -28,7 +28,8 @@
 // Construction/Destruction
 // -----------------------------------------------------------------------------
 
-World::World(sdlc::Timer& timer, Options& options, PlayerState& player_state, int level)
+World::World(sdlc::Mixer& mixer, sdlc::Timer& timer, Options& options, 
+             PlayerState& player_state, int level)
     : IGameState(ENV_WORLD),
       num_of_players_(options.num_of_players()),
       current_level_(level),

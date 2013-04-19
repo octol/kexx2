@@ -63,7 +63,7 @@ private:
 
 class World final : public IGameState {
 public:
-    World(sdlc::Timer&, Options&, PlayerState&, int level);
+    World(sdlc::Mixer&, sdlc::Timer&, Options&, PlayerState&, int level);
 
     void run_logic(sdlc::Input&, sdlc::Timer&, sdlc::Mixer&, PlayerState&) override;
     void draw(sdlc::Screen&, sdlc::Font&) override;
