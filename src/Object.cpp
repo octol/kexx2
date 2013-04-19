@@ -47,13 +47,13 @@ Object::Object(std::string n, int energy, int score, sdlc::Surface& s,
 }
 
 Object::Object(std::string n, int energy, int score, sdlc::Surface& s, ObjType t)
-    : name_(n), 
+    : sprite_(s), 
+      hit_img_(s),
+      name_(n), 
+      type_(t),
       energy_(energy), 
       energy_max_(energy), 
-      score_(score), 
-      sprite_(s), 
-      hit_img_(s), 
-      type_(t) 
+      score_(score)
 {
 }
 
@@ -198,6 +198,7 @@ bool Object::set_locked_to_screen(bool value)
 void Object::init_animation(int speed, int frames, int iterations)
 {
     sprite_.init_animation(speed, frames, iterations);
+    hit_img_.init_animation(speed, frames, iterations);
 }
 
 void Object::set_current_anim_frame(int num) 

@@ -1,17 +1,18 @@
 TODO
 ====
 
+Priority:
+---------
+- Fix compiler warnings.
+- Use Map instead of c-style array in ObjectManager
+- Move to using new c++11 style type safe enums.
+
 Local issues:
 -------------
-- new -> std::make_shared
 - Go over all TODO in code.
 - Remove all empty destructors for leaf node classes.
-- Fix compiler warnings.
 - Move to using Coord, Color etc objects instead of (x,y,xvel,yvel,r,g,b,a)
-- Rename object_manager -> objects ? (applies to all "managers")
-- Move to using new c++11 style type safe enums.
 - Recheck all UNUSED statements.
-- Use Map instead of c-style array in ObjectManager
 
 Architectural issues:
 ---------------------
@@ -22,7 +23,12 @@ Architectural issues:
   to pass it as argument everything we use it. Maybe when (if?) we change to
   shorter Manager names it will not be such a hassle?
 - Storing player data dynamically instead of C arrays.      <-- important
+
+Minor:
+------
 - Passing references by const, and make functions const.
+- new -> std::make_shared
+- Rename object_manager -> objects ? (applies to all "managers")
 
 Organisation of system classes:
 -------------------------------
@@ -32,7 +38,6 @@ Organisation of system classes:
   specific classes in ctor and system class to separate check_input(),
   run_logic(), draw() functions?
   Possbly the other way around.
-- An issue is that the Mixer class is used as extern inside SDLc.
 
 Subsystems overview:
 --------------------
@@ -66,7 +71,6 @@ Specific issues:
 
 Bugs:
 -----
-- Blinking of ship when hit seems off, is this due to precalc hit surface?
 - Window title is not set.
 - Hardcoded keycodes instead of using player_state.
 

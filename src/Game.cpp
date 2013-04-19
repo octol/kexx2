@@ -95,9 +95,9 @@ void Game::setup_environment(sdlc::Screen& screen, sdlc::Timer& timer,
     timer.delay(500);
 }
 
-void Game::start()
+void Game::start(sdlc::Mixer& mixer)
 {
-    game_state_ = std::unique_ptr<Menu>(new Menu(options));
+    game_state_ = std::unique_ptr<Menu>(new Menu(mixer, options));
 }
 
 void Game::run_logic(sdlc::Input& input, sdlc::Timer& timer, sdlc::Mixer& mixer)
@@ -108,13 +108,13 @@ void Game::run_logic(sdlc::Input& input, sdlc::Timer& timer, sdlc::Mixer& mixer)
         case ENV_MENU:
             current_level_ = 1;
             if (player_state.anyone_alive())
-                game_state_ = std::unique_ptr<World>(new World(timer, options, player_state, current_level_));
+                game_state_ = std::unique_ptr<World>(new World(mixer, timer, options, player_state, current_level_));
             else
                 set_done(true);
             break;
 
         case ENV_BUYSCREEN:
-            game_state_ = std::unique_ptr<World> (new World(timer, options, player_state, current_level_));
+            game_state_ = std::unique_ptr<World> (new World(mixer, timer, options, player_state, current_level_));
             break;
 
         case ENV_WORLD:
@@ -136,7 +136,7 @@ void Game::run_logic(sdlc::Input& input, sdlc::Timer& timer, sdlc::Mixer& mixer)
 
         default:
             player_state.kill_all();
-            game_state_ = std::unique_ptr<Menu>(new Menu(options));
+            game_state_ = std::unique_ptr<Menu>(new Menu(mixer, options));
             break;
         }
     }
@@ -145,7 +145,7 @@ void Game::run_logic(sdlc::Input& input, sdlc::Timer& timer, sdlc::Mixer& mixer)
     if (game_state_ && game_state_->type() == ENV_WORLD) {
         if (input.key_pressed(SDLK_ESCAPE, sdlc::NO_AUTOFIRE)) {
             player_state.kill_all();
-            game_state_ = std::unique_ptr<Menu>(new Menu(options));
+            game_state_ = std::unique_ptr<Menu>(new Menu(mixer, options));
         }
     }
 
@@ -155,7 +155,7 @@ void Game::run_logic(sdlc::Input& input, sdlc::Timer& timer, sdlc::Mixer& mixer)
     }
     if (input.key_pressed(SDLK_F3, sdlc::NO_AUTOFIRE)) {
         game_state_ = std::unique_ptr<World>
-            (new World(timer, options, player_state, current_level_ = 1));
+            (new World(mixer, timer, options, player_state, current_level_ = 1));
     }
     if (input.key_pressed(SDLK_F4, sdlc::NO_AUTOFIRE)) {
         game_state_ = std::unique_ptr<BuyScreen>

@@ -28,10 +28,15 @@
 // Construction/Destruction
 // -----------------------------------------------------------------------------
 
-World::World(sdlc::Timer& timer, Options& options, PlayerState& player_state, int level)
+World::World(sdlc::Mixer& mixer, sdlc::Timer& timer, Options& options, 
+             PlayerState& player_state, int level)
     : IGameState(ENV_WORLD),
       num_of_players_(options.num_of_players()),
       current_level_(level),
+      bg_music_(options.data_path + "music/bgmusic1.xm"),
+      //game_over_snd_(options.data_path + "soundfx/die.wav"),
+      level_complete_snd_(options.data_path + "soundfx/levelcomplete.wav"),
+      entering_level_snd_(options.data_path + "soundfx/newlevel.wav"),
       state_(State::ENTERING, timer)
 {
 #ifdef DEBUG_LOG
@@ -51,13 +56,10 @@ World::World(sdlc::Timer& timer, Options& options, PlayerState& player_state, in
     fx_manager_.load(particle_manager_, options.data_path);
 
     // bg_music_
-    bg_music_.load(options.data_path + "music/bgmusic1.xm");
+    mixer.set_music_volume(mixer.music_volume());
     bg_music_.play(-1);
 
     // sounds
-    level_complete_snd_.load(options.data_path + "soundfx/levelcomplete.wav");
-    //game_over_snd_.load(options.data_path + "soundfx/die.wav");
-    entering_level_snd_.load(options.data_path + "soundfx/newlevel.wav");
     entering_level_snd_.play(0);
 }
 

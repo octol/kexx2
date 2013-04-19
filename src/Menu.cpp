@@ -34,19 +34,21 @@
 // Construction/Destruction
 // -----------------------------------------------------------------------------
 
-Menu::Menu(Options& options) : IGameState(ENV_MENU), options_(options)
+Menu::Menu(sdlc::Mixer& mixer, Options& options) 
+    : IGameState(ENV_MENU), options_(options)
 {
-    load_data();
+    load_data(mixer);
 }
 
 // -----------------------------------------------------------------------------
 // Member Functions
 // -----------------------------------------------------------------------------
 
-void Menu::load_data()
+void Menu::load_data(sdlc::Mixer& mixer)
 {
     logo_.load(options_.data_path + "gfx/Menulogo.png");
     bg_music_.load(options_.data_path + "music/bgmusic1.xm");
+    mixer.set_music_volume(mixer.music_volume());
     bg_music_.play(-1);
     selector_.gfx.load(options_.data_path + "gfx/EnemySideways.png");
 

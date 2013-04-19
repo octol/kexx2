@@ -30,13 +30,13 @@ public:
 
 private:
     void draw_energy(int x, int y, int value, int max_value, 
-            sdlc::Font& font, sdlc::Screen& screen);
+                     sdlc::Font&, sdlc::Screen&);
     void draw_score(int x, int y, int value, 
-            sdlc::Font& font, sdlc::Screen& screen);
+                    sdlc::Font&, sdlc::Screen&);
     void draw_weapons(int x, int y, PlayerState& ps, int player, 
-            sdlc::Font& font, sdlc::Screen& screen);
+                      sdlc::Font&, sdlc::Screen&);
 
-    // TODO: switch to reference?
+    // TODO: switch to reference for PlayerState?
     PlayerState player_state_;
     int num_of_players_ = 0;
 };

@@ -29,10 +29,10 @@ class Options;
 
 class Menu final : public IGameState {
 public:
-    Menu(Options&);
+    Menu(sdlc::Mixer&, Options&);
     virtual ~Menu() {};
 
-    void load_data();
+    void load_data(sdlc::Mixer&);
 
     void run_logic(sdlc::Input&, sdlc::Timer&, sdlc::Mixer&, PlayerState&) override;
     void draw(sdlc::Screen&, sdlc::Font&) override;
