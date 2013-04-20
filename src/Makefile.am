@@ -1,8 +1,6 @@
-## For when libsdlc is included in source tree.
-#AM_CPPFLAGS = -I../libsdlc
-
-## For when libsdlc is installed on the system. This makes use of pkg-config.
-AM_CPPFLAGS = $(LIBSDLC_CFLAGS)
+AM_CPPFLAGS = $(LIBSDLC_CFLAGS) $(BOOST_CPPFLAGS)
+AM_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS)
+LDADD = $(LIBSDLC_LIBS) $(BOOST_PROGRAM_OPTIONS_LIBS)
 
 bin_PROGRAMS = kexx2
 
@@ -37,8 +35,3 @@ kexx2_SOURCES = \
 	WeaponRocket.cpp WeaponRocket.h \
 	World.cpp World.h
 	
-## For when libsdlc is included in source tree.
-#kexx2_LDADD = ../libsdlc/libsdlc-0.2.la
-
-## For when libsdlc is installed on the system. This makes use of pkg-config.
-kexx2_LDADD = $(LIBSDLC_LIBS)

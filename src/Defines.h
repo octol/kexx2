@@ -19,13 +19,12 @@
 #ifndef KEXX2_DEFINES_H
 #define KEXX2_DEFINES_H
 
-#ifndef VERSION
-#define VERSION "1.0.8"
-#endif
+#include <string>
 
 #define UNUSED(x) ((void)x)
 #define TESTING
 
+const std::string DEFAULT_DATA_PATH = "/usr/local/share/kexx2/";
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
 
