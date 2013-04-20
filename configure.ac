@@ -1,5 +1,6 @@
 m4_include(m4/ax_cxx_compile_stdcxx_11.m4)
 m4_include(m4/acx_pthread.m4)
+m4_include(m4/boost.m4)
 
 AC_PREREQ([2.69])
 AC_INIT([Kexx2],
@@ -25,10 +26,13 @@ AC_PROG_CXX
 #-------------------------------------------------------------------------------
 # Check for C++11
 #-------------------------------------------------------------------------------
-#AC_LANG([C++])
 AC_LANG_PUSH([C++])
 AX_CXX_COMPILE_STDCXX_11
 AC_LANG_POP([C++])
+
+BOOST_REQUIRE([1.49])
+BOOST_STRING_ALGO
+BOOST_PROGRAM_OPTIONS
 
 #-------------------------------------------------------------------------------
 # Add development flags.

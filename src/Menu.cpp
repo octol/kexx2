@@ -20,6 +20,8 @@
 
 #include "Menu.h"
 
+#include "config.h"
+
 #include "SDLc/Timer.h"
 #include "SDLc/Screen.h"
 #include "SDLc/Mixer.h"

@@ -29,7 +29,7 @@
 class Game final {
 public:
     // Initialisation functions.
-    void load_options();
+    void load_options(std::string data_path);
     void write_options();
     void setup_environment(sdlc::Screen&, sdlc::Timer&, sdlc::Mixer&);
     void close_environment(sdlc::Screen&, sdlc::Timer&, sdlc::Mixer&);

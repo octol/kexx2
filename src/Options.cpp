@@ -21,28 +21,42 @@
 #include <fstream>
 #include <iostream>
 #include <vector>
+#include <boost/algorithm/string.hpp>
 
 void Options::load(std::string path)
 {
-    int file_players, file_fullscreen, file_fps_counter;
+    int players;
+    int fullscreen;
+    int fps_counter;
+    std::string line;
 
-    std::ifstream options_file(path);
-    if (!options_file) {
-        std::cerr << "Error opening " << path << " for reading, ";
-        std::cerr << "using default options!" << std::endl;
+    std::ifstream file(path);
+    if (!file) {
+        std::cerr << path << " not found" << std::endl;
     } else {
-        options_file.ignore(80, '=');
-        options_file >> file_players;
-        options_file.ignore(80, '=');
-        options_file >> file_fullscreen;
-        options_file.ignore(80, '=');
-        options_file >> file_fps_counter;
-    }
-    options_file.close();
+        while (std::getline(file, line)) {
+            std::vector<std::string> strs;
+            boost::split(strs, line, boost::is_any_of("\t ="));
+            if (!(strs.size() == 2))
+                std::cerr << "Error reading file format: " << path << std::endl;
 
-    set_num_of_players(file_players);
-    set_fullscreen(file_fullscreen == 1);
-    set_fps_counter(file_fps_counter == 1);
+            if (strs.at(0) == "players") {
+                players = stoi(strs.at(1));
+            } else if (strs.at(0) == "fullscreen") {
+                fullscreen = stoi(strs.at(1));
+            } else if (strs.at(0) == "fps_counter") {
+                fps_counter = stoi(strs.at(1));
+            } else if (strs.at(0) == "data_path") {
+                data_path = strs.at(1);
+            } else {
+                std::cerr << "Uknown parameter in: " << path << std::endl;
+            }
+        }
+    }
+   
+    set_num_of_players(players);
+    set_fullscreen(fullscreen == 1);
+    set_fps_counter(fps_counter == 1);
 }
 
 void Options::write(std::string path)
@@ -57,9 +71,11 @@ void Options::write(std::string path)
     if (!options_file) {
         std::cerr << "Error writing to: " << path << std::endl;
     } else {
-        options_file << "NumPlayers=" << file_players << "\n";
-        options_file << "Fullscreen=" << file_fullscreen << "\n";
-        options_file << "FPSCounter=" << file_fps_counter << "\n";
+        options_file << "players=" << file_players << "\n";
+        options_file << "fullscreen=" << file_fullscreen << "\n";
+        options_file << "fps_counter=" << file_fps_counter << "\n";
+        if (data_path != DEFAULT_DATA_PATH) 
+            options_file << "data_path=" << data_path << "\n";
     }
     options_file.close();
 }

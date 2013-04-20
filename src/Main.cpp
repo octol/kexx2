@@ -24,6 +24,8 @@
 #include "Game.h"
 #include "Defines.h"
 
+#include "boost/program_options.hpp"
+
 // TODO: remove global system classes
 sdlc::Screen* screen;
 sdlc::Timer* timer;
@@ -34,8 +36,37 @@ void print_fps_counter(sdlc::Screen&, sdlc::Timer&);
 
 int main(int argc, char* argv[])
 {
-    UNUSED(argc);
-    UNUSED(argv);
+    std::string data_path = DEFAULT_DATA_PATH;
+
+    // Parse command line options
+    try {
+        namespace po = boost::program_options;
+        po::options_description desc("Allowed options");
+        desc.add_options()
+            ("help,h", "produce help message")
+            ("data,d", po::value<std::string>(&data_path), "path to data resources");
+        po::variables_map vm;
+
+        try {
+            po::store(po::parse_command_line(argc, argv, desc), vm);
+            if (vm.count("help")) {
+                std::cout << desc << std::endl;
+                return EXIT_SUCCESS;
+            }
+            // as this can throw, do it after -h
+            po::notify(vm);    
+
+        } catch (const boost::program_options::required_option& e) {
+            std::cerr << "Error: " << e.what() << std::endl;
+            return EXIT_FAILURE;
+        } catch (const boost::program_options::error& e) {
+            std::cerr << "Error: " << e.what() << std::endl;
+            return EXIT_FAILURE;
+        }
+    } catch(const std::exception& e) {
+        std::cerr << "Error parsing command line options." << std::endl;
+        return EXIT_FAILURE;
+    }
 
     // System subsystems
     sdlc::init();
@@ -45,7 +76,7 @@ int main(int argc, char* argv[])
     mixer = new sdlc::Mixer;
     
     auto kexx2 = std::unique_ptr<Game>(new Game);
-    kexx2->load_options();
+    kexx2->load_options(data_path);
     kexx2->setup_environment(*screen, *timer, *mixer);
     kexx2->start(*mixer);
 

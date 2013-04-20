@@ -16,10 +16,12 @@
 //    You should have received a copy of the GNU General Public License
 //    along with Kexx2.  If not, see <http://www.gnu.org/licenses/>.
 
+#include "Game.h"
+
 #include <fstream>
 #include <iostream>
 
-#include "Game.h"
+#include "config.h"
 
 #include "SDLc/Screen.h"
 #include "SDLc/Mixer.h"
@@ -34,41 +36,28 @@
 #include "GameOver.h"
 #include "Defines.h"
 
-void Game::load_options()
+void Game::load_options(std::string data_path)
 {
-    // TODO: Rewrite this to look in some standard locations first.
-    // This requires that we store options in .kexx2rc instead of kexx2.cfg
-    // TODO: Make this more robust to what the user enters.
 #ifndef WIN32
-    std::string settingsfile;
-    std::string filename = getenv("HOME");
-    filename = filename + "/.kexx2rc";
-
-    std::ifstream file(filename.c_str());
-    if (!file) {
-        std::cout << "What is the path to the data dir? ";
-        std::cout << "Example: [/home/user/kexx2/data/]" << std::endl;
-        std::cin >> settingsfile;
-
-        std::ofstream file2(filename.c_str());
-        file2 << settingsfile;
-        file2.close();
-    } else {
-        getline(file, settingsfile);
-    }
-    file.close();
-
-    options.data_path = settingsfile + "/";
+    options.load(std::string(getenv("HOME")) + "/.config/kexx2.conf");
+    options.data_path = data_path;
+    //if (options.data_path == "") 
+        //options.data_path = DEFAULT_DATA_PATH;
 #endif
 #ifdef WIN32
-    options.data_path = "../data/";
+    //options.data_path = "../data/";
+    assert(false);
 #endif
-    options.load(options.data_path + "kexx2.cfg");
 }
 
 void Game::write_options()
 {
-    options.write(options.data_path + "kexx2.cfg");
+#ifndef WIN32
+    options.write(std::string(getenv("HOME")) + "/.config/kexx2.conf");
+#endif
+#ifdef WIN32
+    assert(false);
+#endif
 }
 
 void Game::setup_environment(sdlc::Screen& screen, sdlc::Timer& timer, 
@@ -89,9 +78,14 @@ void Game::setup_environment(sdlc::Screen& screen, sdlc::Timer& timer,
     screen.open(SCREEN_WIDTH, SCREEN_HEIGHT, 16, video_type);
 
     srand(timer.ticks());
-    screen.set_caption(("Kexx 2 " + std::string(VERSION)).c_str());
+    screen.set_caption("Kexx 2 " + std::string(VERSION));
     screen.show_cursor(false);
-    main_font_.load(options.data_path + "fonts/font1.bmp");
+
+    // This is the first attempt to load from data_path. If it fail we exit.
+    if (main_font_.load(options.data_path + "fonts/font1.bmp") == -1) {
+        exit(1);
+    }
+
     timer.delay(500);
 }
 
