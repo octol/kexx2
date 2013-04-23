@@ -1,18 +1,14 @@
 TODO
 ====
 
-Priority:
----------
+High priority:
+--------------
+- Write settings file "in place" rather than overwrite.
+- Make load/init robust.
+- Try-catch for Surface/Sprite loading.
 - Fix compiler warnings.
 - Use Map instead of c-style array in ObjectManager
 - Move to using new c++11 style type safe enums.
-
-Local issues:
--------------
-- Go over all TODO in code.
-- Remove all empty destructors for leaf node classes.
-- Move to using Coord, Color etc objects instead of (x,y,xvel,yvel,r,g,b,a)
-- Recheck all UNUSED statements.
 
 Architectural issues:
 ---------------------
@@ -24,11 +20,16 @@ Architectural issues:
   shorter Manager names it will not be such a hassle?
 - Storing player data dynamically instead of C arrays.      <-- important
 
-Minor:
-------
+Low priority:
+-------------
 - Passing references by const, and make functions const.
-- new -> std::make_shared
+- new -> std::make_shared (no naked new).
 - Rename object_manager -> objects ? (applies to all "managers")
+- Implement Factory pattern for object creation.
+- Go over all TODO in code.
+- Remove all empty destructors for leaf node classes.
+- Move to using Coord, Color etc objects instead of (x,y,xvel,yvel,r,g,b,a)
+- Recheck all UNUSED statements.
 
 Organisation of system classes:
 -------------------------------
@@ -39,38 +40,10 @@ Organisation of system classes:
   run_logic(), draw() functions?
   Possbly the other way around.
 
-Subsystems overview:
---------------------
-
-PlayerState
-IGameState:
-    Menu, World, BuyScreen, Finished, GameOver
-ObjectManager
-IObject:
-    Object:
-        Shot: 
-            ShotRocket
-        EnemyBonus, EnemyRammer, EnemySideways
-        Ship
-FxManager
-ParticleManager: 
-    Starfield
-Weapon: 
-    WeaponBlaster, WeaponRocket.
-LevelManager
-
 Feature changes:
-----------------
-- Automatic detection of game data path.
-    This requires that we set configuration stuff in .kexx2rc instead of
-    kexx2.cfg, due to write permission.
-- Implement Factory pattern for object creation.
-
-Specific issues:
 ----------------
 
 Bugs:
 -----
-- Window title is not set.
 - Hardcoded keycodes instead of using player_state.
 
