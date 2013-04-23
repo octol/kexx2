@@ -6,7 +6,7 @@ High priority:
 - Write settings file "in place" rather than overwrite.
 - Make load/init robust.
 - Try-catch for Surface/Sprite loading.
-- Fix compiler warnings.
+- High resolution timer.
 - Use Map instead of c-style array in ObjectManager
 - Move to using new c++11 style type safe enums.
 
@@ -30,6 +30,7 @@ Low priority:
 - Remove all empty destructors for leaf node classes.
 - Move to using Coord, Color etc objects instead of (x,y,xvel,yvel,r,g,b,a)
 - Recheck all UNUSED statements.
+- Fix compiler warnings (most already done).
 
 Organisation of system classes:
 -------------------------------
