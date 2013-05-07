@@ -75,7 +75,7 @@ void BuyScreen::run_logic(sdlc::Input& input, sdlc::Timer& timer,
             } else if (input.key_pressed(keys.at(i).up, sdlc::NO_AUTOFIRE)) {
                 selectors_.pos.at(i)--;
             }
-            selectors_.pos.at(i) = sdlc::bound(selectors_.pos.at(i), 0, 2);
+            selectors_.pos.at(i) = std::min(std::max(selectors_.pos.at(i), 0), 2);
 
             if (input.key_pressed(keys.at(i).fire_main, sdlc::NO_AUTOFIRE)) {
                 press_enter(i, player_state);

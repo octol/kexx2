@@ -3,6 +3,7 @@ TODO
 
 High priority:
 --------------
+- make_independent_copy() is unnecessary.
 - Write settings file "in place" rather than overwrite.
 - Make load/init robust.
 - Try-catch for Surface/Sprite loading.
