@@ -51,8 +51,8 @@ void FxManager::load(ParticleManager& particle_manager, std::string data_path)
             int intensity = (rand() % 256);
             int degree = (rand() % 360);
 
-            float x_vel = (cos((double)degree) * intensity);
-            float y_vel = (sin((double)degree) * intensity);
+            float x_vel = (float)(cos((double)degree) * intensity);
+            float y_vel = (float)(sin((double)degree) * intensity);
 
             particle_data.intensity = intensity;
             particle_data.x_vel = x_vel;
@@ -87,8 +87,8 @@ void FxManager::explode_normal(int x, int y)
     std::unique_ptr<sdlc::Sprite> sprite(new sdlc::Sprite(expl_img_));
     //sprite->link(expl_img_.data);
     sprite->init_animation(5, 11, 1);
-    sprite->set_x(x - sprite->width() / 2);
-    sprite->set_y(y - sprite->height() / 2);
+    sprite->set_x((float)x - (float)sprite->width() / 2.0);
+    sprite->set_y((float)y - (float)sprite->height() / 2.0);
     explosion_list_.push_back(std::move(sprite));
 
     // choose one of the precomputed particles.
@@ -115,16 +115,16 @@ void FxManager::explode_tiny(int x, int y, float vel, float angle)
     play_hit_snd();
 
     angle = angle * (3.1415927f / 180.0f);
-    float x_vel_mod = cos(angle) * vel;
-    float y_vel_mod = -sin(angle) * vel;
+    float x_vel_mod = (float)cos(angle) * vel;
+    float y_vel_mod = (float)-sin(angle) * vel;
 
     for (int i = 0; i < PARTICLES; i++) {
         int intensity = (rand() % 256);
         int degree = (rand() % 360);
         int speed = intensity / 4;
 
-        float x_vel = (cos((double)degree) * speed) + x_vel_mod;
-        float y_vel = (sin((double)degree) * speed) + y_vel_mod;
+        float x_vel = (float)(cos((double)degree) * speed) + x_vel_mod;
+        float y_vel = (float)(sin((double)degree) * speed) + y_vel_mod;
 
         particle_manager_->create(x, y, x_vel, y_vel, 255, 255, 255, 
                                   intensity, 100.0f);
@@ -139,9 +139,10 @@ void FxManager::smokepuff(int x, int y)
     int amount = (int)((float)timer->frame_time() / 0.004f);
 
     for (int i = 0; i < amount; i++) {
-        float xVel = ((rand() % 50) - 25)/**0.001*/;
-        float yVel = ((rand() % 50) - 25)/**0.001*/ + 100.0f;
-        particle_manager_->create(x + (rand() % 10) - 5, y + (rand() % 10) - 5, 
+        float xVel = (float)((rand() % 50) - 25);
+        float yVel = (float)((rand() % 50) - 25);
+        particle_manager_->create((float)(x + (rand() % 10) - 5), 
+                                  (float)(y + (rand() % 10) - 5), 
                                   xVel, yVel, 255, 255, 255, 100, 30.0f);
     }
 }

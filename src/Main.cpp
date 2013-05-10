@@ -20,7 +20,6 @@
 #include "SDLc/Timer.h"
 #include "SDLc/Input.h"
 #include "SDLc/Mixer.h"
-#include "SDLc/Misc.h"
 #include "Game.h"
 #include "Defines.h"
 
@@ -85,7 +84,7 @@ int main(int argc, char* argv[])
 
 #ifdef TESTING
         // Developer mode escape key.
-        if (input->key_pressed(SDLK_F1, sdlc::NO_AUTOFIRE)) 
+        if (input->key_pressed(SDLK_F1, sdlc::AutofireKeystate::off)) 
             kexx2->set_done(true);
 #endif
 

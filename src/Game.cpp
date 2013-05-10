@@ -25,7 +25,6 @@
 
 #include "SDLc/Screen.h"
 #include "SDLc/Mixer.h"
-#include "SDLc/Misc.h"
 #include "SDLc/Timer.h"
 #include "SDLc/Input.h"
 
@@ -81,10 +80,7 @@ void Game::setup_environment(sdlc::Screen& screen, sdlc::Timer& timer,
     screen.set_caption("Kexx 2 " + std::string(VERSION));
     screen.show_cursor(false);
 
-    // This is the first attempt to load from data_path. If it fail we exit.
-    if (main_font_.load(options.data_path + "fonts/font1.bmp") == -1) {
-        exit(1);
-    }
+    main_font_.load(options.data_path + "fonts/font1.bmp");
 
     timer.delay(500);
 }
@@ -137,7 +133,7 @@ void Game::run_logic(sdlc::Input& input, sdlc::Timer& timer, sdlc::Mixer& mixer)
 
     // abort in world
     if (game_state_ && game_state_->type() == ENV_WORLD) {
-        if (input.key_pressed(SDLK_ESCAPE, sdlc::NO_AUTOFIRE)) {
+        if (input.key_pressed(SDLK_ESCAPE, sdlc::AutofireKeystate::off)) {
             player_state.kill_all();
             game_state_ = std::unique_ptr<Menu>(new Menu(mixer, options));
         }
@@ -145,13 +141,13 @@ void Game::run_logic(sdlc::Input& input, sdlc::Timer& timer, sdlc::Mixer& mixer)
 
 #ifdef TESTING
     // used for testing
-    if (input.key_pressed(SDLK_F2, sdlc::NO_AUTOFIRE)) {
+    if (input.key_pressed(SDLK_F2, sdlc::AutofireKeystate::off)) {
     }
-    if (input.key_pressed(SDLK_F3, sdlc::NO_AUTOFIRE)) {
+    if (input.key_pressed(SDLK_F3, sdlc::AutofireKeystate::off)) {
         game_state_ = std::unique_ptr<World>
             (new World(mixer, timer, options, player_state, current_level_ = 1));
     }
-    if (input.key_pressed(SDLK_F4, sdlc::NO_AUTOFIRE)) {
+    if (input.key_pressed(SDLK_F4, sdlc::AutofireKeystate::off)) {
         game_state_ = std::unique_ptr<BuyScreen>
             (new BuyScreen(options, player_state, current_level_));
     }

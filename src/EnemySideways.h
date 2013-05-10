@@ -23,7 +23,8 @@
 
 class EnemySideways final : public Object {
 public:
-    EnemySideways(std::string name, int energy, int score, sdlc::Surface& s);
+    EnemySideways(std::string name, int energy, int score, 
+                  sdlc::Surface& s, sdlc::Surface& hit_s);
     virtual ~EnemySideways() {};
 
     void activate(ObjectManager& object_manager) override;

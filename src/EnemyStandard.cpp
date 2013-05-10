@@ -25,10 +25,10 @@
 // -----------------------------------------------------------------------------
 
 EnemyStandard::EnemyStandard(std::string name, int energy, int score, 
-                             sdlc::Surface& s, int init_y_vel)
-    : Object(name, energy, score, s, OBJ_ENEMY, init_y_vel)
+                             sdlc::Surface& s, sdlc::Surface& hit_s, 
+                             int init_y_vel)
+    : Object(name, energy, score, s, hit_s, OBJ_ENEMY, init_y_vel)
 {
-    calculate_hit_img();
 }
 
 // -----------------------------------------------------------------------------

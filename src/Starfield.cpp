@@ -41,9 +41,9 @@ Starfield::Starfield()
             star.set_g(i_intensity);
             star.set_b(i_intensity);
 
-            star.set_x((rand() % (SCREEN_WIDTH - 2)) + 1);
-            star.set_y((rand() % (SCREEN_HEIGHT - 2)) + 1);
-            star.set_y_vel((star.r() * star.r() * star.r()) / 200000.0f);
+            star.set_x((float)((rand() % (SCREEN_WIDTH - 2)) + 1));
+            star.set_y((float)((rand() % (SCREEN_HEIGHT - 2)) + 1));
+            star.set_y_vel((float)(star.r() * star.r() * star.r()) / 200000.0f);
 
             particles_.push_back(star);
             ++current_star;

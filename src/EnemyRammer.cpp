@@ -25,11 +25,11 @@
 // Construction/Destruction
 // -----------------------------------------------------------------------------
 
-EnemyRammer::EnemyRammer(std::string name, int energy, int score, sdlc::Surface& s)
-    : Object(name, energy, s, OBJ_ENEMY)
+EnemyRammer::EnemyRammer(std::string name, int energy, int score, 
+                         sdlc::Surface& s, sdlc::Surface& hit_s)
+    : Object(name, energy, s, hit_s, OBJ_ENEMY)
 {
     set_score(score);
-    calculate_hit_img();
 }
 
 // -----------------------------------------------------------------------------

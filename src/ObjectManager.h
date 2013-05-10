@@ -46,10 +46,10 @@ public:
     int num_of_enemies();
     int num_of_players_alive();
 
-    std::list<std::shared_ptr<IObject>> list;        // object list
+    std::list<std::shared_ptr<IObject>> list;       // object list
     // TODO: replace c-style array
     sdlc::Surface obj[ENEMYSTD_V_FORMATION];        // object graphics
-    //std::vector<sdlc::Surface> obj;                 // object graphics
+    sdlc::Surface obj_hit[ENEMYSTD_V_FORMATION];    // object hit graphics
     sdlc::Sound snd[SND_SHOTROCKET + 1];            // object sound
 
 private:

@@ -30,7 +30,7 @@ public:
                 int r, int g, int b, int a, float fade_speed);
     virtual void update(sdlc::Timer& timer);
     virtual void draw(sdlc::Screen& screen);
-    int num_of_particles_active();
+    uint64_t num_of_particles_active();
 
 protected:
     std::vector<sdlc::Particle> particles_;

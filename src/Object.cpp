@@ -35,20 +35,40 @@ Object::Object(std::string n, int energy, ObjType t)
 }
 
 Object::Object(std::string n, int energy, sdlc::Surface& s, ObjType t)
-    : Object(n, energy, 0, s, t)
+    : Object(n, energy, 0, s, s, t)
 {
 }
 
-Object::Object(std::string n, int energy, int score, sdlc::Surface& s, 
-               ObjType t, float init_y_vel)
-    : Object(n, energy, score, s, t)
+Object::Object(std::string n, int energy, 
+               sdlc::Surface& s, sdlc::Surface& hit_s, ObjType t)
+    : Object(n, energy, 0, s, hit_s, t)
+{
+}
+
+Object::Object(std::string n, int energy, int score, 
+               sdlc::Surface& s, ObjType t, float init_y_vel)
+    : Object(n, energy, score, s, s, t, init_y_vel)
+{
+}
+
+Object::Object(std::string n, int energy, int score, 
+               sdlc::Surface& s, sdlc::Surface& hit_s, ObjType t, 
+               float init_y_vel)
+    : Object(n, energy, score, s, hit_s, t)
 {
     set_activation_y_vel(init_y_vel);
 }
 
-Object::Object(std::string n, int energy, int score, sdlc::Surface& s, ObjType t)
+Object::Object(std::string n, int energy, int score, 
+               sdlc::Surface& s, ObjType t)
+    : Object(n, energy, score, s, s, t)
+{
+}
+
+Object::Object(std::string n, int energy, int score, 
+               sdlc::Surface& s, sdlc::Surface& hit_s, ObjType t)
     : sprite_(s), 
-      hit_img_(s),
+      hit_img_(hit_s),
       name_(n), 
       type_(t),
       energy_(energy), 
@@ -115,8 +135,8 @@ void Object::kill(ObjectManager& object_manager, FxManager& fx_manager)
     UNUSED(object_manager);
 
     set_energy(0);
-    fx_manager.explode_normal((int)(x() + width() / 2), 
-                              (int)(y() + height() / 2));
+    fx_manager.explode_normal((int)(x() + (float)width() / 2.0f), 
+                              (int)(y() + (float)height() / 2.0f));
 }
 
 float Object::set_activation_y_vel(float value)
@@ -298,22 +318,25 @@ Owner Object::parse_owner(std::string player)
     return owner;
 }
 
+sdlc::Surface Object::create_hit_img(const sdlc::Surface& surface)
+{
+    sdlc::Surface hit_surface(surface);
+    hit_surface.make_unique();
+    hit_surface.lock();
+    for (int iy = 0; iy < surface.height(); ++iy) {
+        for (int ix = 0; ix < surface.width(); ++ix) {
+            uint8_t r = 0, g = 0, b = 0, a = 255;
+            surface.get_pix(ix, iy, &r, &g, &b);
+            if (false == ((r >= 248 && g == 0 && b >= 248) || (a != 255)))
+                hit_surface.set_pix(ix, iy, 255, 255, 255);
+        }
+    }    
+    hit_surface.unlock();
+    return hit_surface;
+}
+
 // -----------------------------------------------------------------------------
 // Private Functions
 // -----------------------------------------------------------------------------
 
-void Object::calculate_hit_img()
-{
-    hit_img_.make_independent_copy();
-    hit_img_.lock();
-    for (int iy = 0; iy < sprite_.height(); ++iy) {
-        for (int ix = 0; ix < sprite_.width(); ++ix) {
-            uint8_t r = 0, g = 0, b = 0, a = 255;
-            sprite_.get_pix(ix, iy, &r, &g, &b);
-            if (false == ((r >= 248 && g == 0 && b >= 248) || (a != 255)))
-                hit_img_.set_pix(ix, iy, 255, 255, 255);
-        }
-    }    
-    hit_img_.unlock();
-}
 

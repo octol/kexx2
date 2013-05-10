@@ -33,7 +33,7 @@ const int INPUT_LOCKED = 2;
 class Ship final : public Object {
     friend class ObjectManager;
 public:
-    Ship(std::string n, int energy, int score, sdlc::Surface& s, 
+    Ship(std::string n, int energy, int score, sdlc::Surface& s, sdlc::Surface& hit_s,
          std::unique_ptr<Weapon>& main, std::unique_ptr<Weapon>& extra, 
          KeySet keyset);
     virtual ~Ship() = default;
@@ -46,6 +46,8 @@ public:
 
     virtual const sdlc::Sprite& sprite() const override;
 
+    static sdlc::Surface create_hit_img(const sdlc::Surface&);
+
 private:
     void process_input(sdlc::Input&, ObjectManager&);
     void do_scripted_movement(sdlc::Timer&);
@@ -57,8 +59,6 @@ private:
 
     void update_smoketrail(ObjectManager&);
     void remove_smoketrail(ObjectManager&);
-
-    virtual void calculate_hit_img() override;
 
     std::unique_ptr<Weapon> main_weapon_;
     std::unique_ptr<Weapon> extra_weapon_;

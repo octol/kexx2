@@ -23,7 +23,8 @@
 
 class EnemyRammer final : public Object {
 public:
-    EnemyRammer(std::string name, int energy, int score, sdlc::Surface& s);
+    EnemyRammer(std::string name, int energy, int score, 
+                sdlc::Surface& s, sdlc::Surface& hit_s);
     virtual ~EnemyRammer() {};
 
     void activate(ObjectManager& object_manager) override;

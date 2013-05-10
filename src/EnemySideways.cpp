@@ -25,13 +25,13 @@
 // Construction/Destruction
 // -----------------------------------------------------------------------------
 
-EnemySideways::EnemySideways(std::string name, int energy, int score, sdlc::Surface& s)
-    : Object(name, energy, s, OBJ_ENEMY),
+EnemySideways::EnemySideways(std::string name, int energy, int score, 
+                             sdlc::Surface& s, sdlc::Surface& hit_s)
+    : Object(name, energy, s, hit_s, OBJ_ENEMY),
       left_(false), 
       time_when_last_shot_(0)
 {
     set_score(score);
-    calculate_hit_img();
 }
 
 // -----------------------------------------------------------------------------

@@ -27,7 +27,6 @@
 #include "SDLc/Mixer.h"
 #include "SDLc/Font.h"
 #include "SDLc/Input.h"
-#include "SDLc/Misc.h"
 
 #include "PlayerState.h"
 #include "Options.h"
@@ -64,9 +63,9 @@ void Menu::run_logic(sdlc::Input& input, sdlc::Timer& timer, sdlc::Mixer& mixer,
                      PlayerState& player_state)
 {
     // up/down
-    if (input.key_pressed(SDLK_UP, sdlc::NO_AUTOFIRE))
+    if (input.key_pressed(SDLK_UP, sdlc::AutofireKeystate::off))
         selector_.pos--;
-    else if (input.key_pressed(SDLK_DOWN, sdlc::NO_AUTOFIRE))
+    else if (input.key_pressed(SDLK_DOWN, sdlc::AutofireKeystate::off))
         selector_.pos++;
 
     // limits
@@ -78,7 +77,7 @@ void Menu::run_logic(sdlc::Input& input, sdlc::Timer& timer, sdlc::Mixer& mixer,
         selector_.pos = 3;
 
     // when return is pressed
-    if (input.key_pressed(SDLK_RETURN, sdlc::NO_AUTOFIRE)) {
+    if (input.key_pressed(SDLK_RETURN, sdlc::AutofireKeystate::off)) {
         if (which_menu_ == ROOT) 
             root_menu_logic(timer, mixer, player_state);
         else if (which_menu_ == OPTIONS)

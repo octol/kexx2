@@ -24,11 +24,11 @@
 // Construction/Destruction
 // -----------------------------------------------------------------------------
 
-EnemyBonus::EnemyBonus(std::string name, int energy, sdlc::Surface& s)
-    : Object(name, energy, s, OBJ_ENEMY)
+EnemyBonus::EnemyBonus(std::string name, int energy, 
+                       sdlc::Surface& s, sdlc::Surface& hit_s)
+    : Object(name, energy, s, hit_s, OBJ_ENEMY)
 {
     set_score(0);
-    calculate_hit_img();
 }
 
 // -----------------------------------------------------------------------------
@@ -44,8 +44,8 @@ void EnemyBonus::activate(ObjectManager& object_manager)
 void EnemyBonus::kill(ObjectManager& object_manager, FxManager& fx_manager)
 {
     set_energy(0);
-    int cx = x() + width() / 2;
-    int cy = y() + height() / 2;
+    int cx = (int)(x() + (float)width() / 2.0f);
+    int cy = (int)(y() + (float)height() / 2.0f);
 
     fx_manager.explode_normal(cx, cy);
 

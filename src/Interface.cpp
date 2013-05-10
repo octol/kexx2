@@ -98,9 +98,9 @@ void Interface::draw_score(int x, int y, int value,
 void Interface::draw_weapons(int x, int y, PlayerState& ps, int player, 
         sdlc::Font& font, sdlc::Screen& screen)
 {
-    int length1 = (ps.main_weapon(player)).length();
+    auto length1 = (ps.main_weapon(player)).length();
     std::string text1 = (ps.main_weapon(player)).substr(0, length1 - 7);
-    int length2 = (ps.extra_weapon(player)).length();
+    auto length2 = (ps.extra_weapon(player)).length();
     std::string text2 = (ps.extra_weapon(player)).substr(0, length2 - 7);
 
     screen.print(x, y, text1 + " level " 

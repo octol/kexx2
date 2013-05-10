@@ -32,11 +32,13 @@ class Object : public IObject {
 public:
     Object();
     Object(std::string n, int energy, ObjType);
-    Object(std::string n, int energy, sdlc::Surface&, ObjType);
-    Object(std::string n, int energy, int score, sdlc::Surface&, ObjType, 
-           float init_y_vel);
-    Object(std::string n, int energy, int score, sdlc::Surface&, ObjType);
-    virtual ~Object() {};
+    Object(std::string n, int energy, sdlc::Surface& s, ObjType);
+    Object(std::string n, int energy, sdlc::Surface& s, sdlc::Surface& hit_s, ObjType);
+    Object(std::string n, int energy, int score, sdlc::Surface& s, ObjType, float init_y_vel);
+    Object(std::string n, int energy, int score, sdlc::Surface& s, sdlc::Surface& hit_s, ObjType, float init_y_vel);
+    Object(std::string n, int energy, int score, sdlc::Surface& s, ObjType);
+    Object(std::string n, int energy, int score, sdlc::Surface& s, sdlc::Surface& hit_s, ObjType);
+    virtual ~Object() = default;
 
     // Main functions
     virtual void activate(ObjectManager&) override;
@@ -102,8 +104,9 @@ public:
     static ObjIndex parse_obj_index(std::string type);
     static Owner parse_owner(std::string type);
 
+    static sdlc::Surface create_hit_img(const sdlc::Surface&);
+
 protected:
-    virtual void calculate_hit_img();
 
     // The sprite object maintains position and velocity state.
     sdlc::Sprite sprite_;

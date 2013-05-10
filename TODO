@@ -3,13 +3,12 @@ TODO
 
 High priority:
 --------------
-- make_independent_copy() is unnecessary.
+- Use Map instead of c-style array in ObjectManager
+- Move to using new c++11 style type safe enums.
 - Write settings file "in place" rather than overwrite.
 - Make load/init robust.
 - Try-catch for Surface/Sprite loading.
 - High resolution timer.
-- Use Map instead of c-style array in ObjectManager
-- Move to using new c++11 style type safe enums.
 
 Architectural issues:
 ---------------------

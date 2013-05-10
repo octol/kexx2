@@ -18,7 +18,6 @@
 
 #include "SDLc/Screen.h"
 #include "SDLc/Font.h"
-#include "SDLc/Misc.h"
 #include "SDLc/Input.h"
 #include "Options.h"
 #include "PlayerState.h"
@@ -43,7 +42,7 @@ void GameOver::run_logic(sdlc::Input& input, sdlc::Timer& timer,
     UNUSED(mixer);
     UNUSED(player_state);
 
-    if (input.key_pressed(SDLK_RETURN, sdlc::NO_AUTOFIRE))
+    if (input.key_pressed(SDLK_RETURN, sdlc::AutofireKeystate::off))
         done_ = true;
 }
 

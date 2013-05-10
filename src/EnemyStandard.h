@@ -23,7 +23,8 @@
 
 class EnemyStandard final : public Object {
 public:
-    EnemyStandard(std::string name, int energy, int score, sdlc::Surface&, 
+    EnemyStandard(std::string name, int energy, int score, 
+                  sdlc::Surface& s, sdlc::Surface& hit_s,
                   int init_y_vel);
     virtual ~EnemyStandard() = default;
 };

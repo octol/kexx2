@@ -46,8 +46,7 @@
 
 void ObjectManager::load_data(std::string data_path)
 {
-    // load objects
-    //obj.reserve(SHOTENEMYSTD);
+    // Load objects
     obj[PLAYER1].load(data_path + "gfx/Ship1.png");
     obj[PLAYER2].load(data_path + "gfx/Ship2.png");
     obj[ENEMYSTD].load(data_path + "gfx/EnemyStd.png");
@@ -58,7 +57,7 @@ void ObjectManager::load_data(std::string data_path)
     obj[BONUSBLASTER].load(data_path + "gfx/BonusBlaster.png");
     obj[BONUSROCKET].load(data_path + "gfx/BonusRocket.png");
 
-    // shots (for the weapons)
+    // Shots (for the weapons)
     obj[SHOTBLASTER].load(data_path + "gfx/ShotBlaster.png");
     obj[SHOTBLASTERBIG].load(data_path + "gfx/ShotBlasterBig.png");
     obj[SHOTROCKET].load(data_path + "gfx/ShotRocket.png");
@@ -68,8 +67,14 @@ void ObjectManager::load_data(std::string data_path)
     snd[SND_SHOTBLASTER].load(data_path + "soundfx/shoot1.wav");
     snd[SND_SHOTROCKET].load(data_path + "soundfx/rocketshot.wav");
 
-    // misc
+    // Misc
     obj[SMOKETRAIL].load(data_path + "gfx/Flame.png");
+
+    // Create the gfx shown when object is hit.
+    for (int i = PLAYER1; i <= PLAYER2; ++i) 
+        obj_hit[i] = Ship::create_hit_img(obj[i]);
+    for (int i = ENEMYSTD; i <= ENEMYBONUS; ++i) 
+        obj_hit[i] = Object::create_hit_img(obj[i]);
 }
 
 void ObjectManager::update(sdlc::Timer& timer, FxManager& fx_manager, 
@@ -142,8 +147,8 @@ ObjectManager::create_object(int x, int y, float x_vel, float y_vel,
         //Object* new_obj = allocate_object(object, owner);
         new_obj = allocate_object(object, owner);
 
-        new_obj->set_x(x - new_obj->width() / 2);
-        new_obj->set_y(y - new_obj->height() / 2 + world_y_pos_);
+        new_obj->set_x((float)x - (float)new_obj->width() / 2.0f);
+        new_obj->set_y((float)y - (float)new_obj->height() / 2.0f + (float)world_y_pos_);
         new_obj->set_x_vel(x_vel);
         new_obj->set_y_vel(y_vel);
 
@@ -158,8 +163,8 @@ ObjectManager::create_object(int x, int y, ObjIndex object, float vel,
 {
     angle = angle * (3.1415927f / 180.0f);
 
-    float x_vel = cos(angle) * vel;
-    float y_vel = -sin(angle) * vel;
+    float x_vel = (float)(cos(angle) * vel);
+    float y_vel = (float)(-sin(angle) * vel);
     return create_object(x, y, x_vel, y_vel, object, owner);
 }
 
@@ -175,16 +180,17 @@ void ObjectManager::create_ships(PlayerState& player_state)
             player_state.set_energy(i, e);  // reset energy to max
 
             sdlc::Surface& gfx = obj[PLAYER1 + i - 1];
+            sdlc::Surface& hit_gfx = obj_hit[PLAYER1 + i - 1];
 
             auto w1 = create_main_weapon(i, player_state);
             auto w2 = create_extra_weapon(i, player_state);
 
             KeySet keyset(i);   // For now we dont set custom keys
 
-            auto new_ship = std::shared_ptr<Ship>(new Ship(name, e, s, gfx, w1, w2, keyset));
+            auto new_ship = std::shared_ptr<Ship>(new Ship(name, e, s, gfx, hit_gfx, w1, w2, keyset));
 
             new_ship->set_locked_to_screen(false);
-            new_ship->set_x(213 * i - new_ship->width());
+            new_ship->set_x((float)(213 * i - new_ship->width()));
             new_ship->set_y(480);
             new_ship->set_vel(0, -200.0f);
             queue.push_back(new_ship);
@@ -213,21 +219,22 @@ ObjectManager::allocate_object(ObjIndex object, Owner owner)
 {
     IObject* new_obj = nullptr;
     sdlc::Surface& gfx = obj[object];
+    sdlc::Surface& hit_gfx = obj_hit[object];
 
     switch (object) {
 
     // enemies
     case ENEMYSTD:
-        new_obj = new EnemyStandard("Standard Enemy", 5, 52, gfx, SCROLLING_SPEED);
+        new_obj = new EnemyStandard("Standard Enemy", 5, 52, gfx, hit_gfx, SCROLLING_SPEED);
         break;
     case ENEMYSIDEWAYS:
-        new_obj = new EnemySideways("Sideways Enemy", 3, 71, gfx);
+        new_obj = new EnemySideways("Sideways Enemy", 3, 71, gfx, hit_gfx);
         break;
     case ENEMYRAMMER:
-        new_obj = new EnemyRammer("Rammer Enemy", 2, 43, gfx);
+        new_obj = new EnemyRammer("Rammer Enemy", 2, 43, gfx, hit_gfx);
         break;
     case ENEMYBONUS:
-        new_obj = new EnemyBonus("Bonus Enemy", 10, gfx);
+        new_obj = new EnemyBonus("Bonus Enemy", 10, gfx, hit_gfx);
         new_obj->init_animation(50, 2, 0);
         break;
 
@@ -454,7 +461,7 @@ void ObjectManager::add_from_queue()
     // TODO: should use a sorted queue object instead.
     auto last = std::stable_partition(begin(queue),end(queue), 
     [this](std::shared_ptr<IObject>& o) {
-        return world_y_pos_ >= o->y() + o->height();
+        return world_y_pos_ >= o->y() + (float)o->height();
     });
 
     // Then they are activated and moved to the list object.

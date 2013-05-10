@@ -24,7 +24,6 @@
 
 #include "SDLc/Screen.h"
 #include "SDLc/Font.h"
-#include "SDLc/Misc.h"
 #include "SDLc/Input.h"
 
 #include "Options.h"
@@ -66,19 +65,19 @@ void BuyScreen::run_logic(sdlc::Input& input, sdlc::Timer& timer,
     keys.push_back(KeySet(1));
     keys.push_back(KeySet(2));
 
-    for (size_t i = 0; i < keys.size(); i++) {
-        if (player_state.energy_max(i + 1)) {
+    for (std::vector<KeySet>::size_type i = 0; i < keys.size(); i++) {
+        if (player_state.energy_max((int)i + 1)) {
 
             // Move selector up/down
-            if (input.key_pressed(keys.at(i).down, sdlc::NO_AUTOFIRE)) {
+            if (input.key_pressed(keys.at(i).down, sdlc::AutofireKeystate::off)) {
                 selectors_.pos.at(i)++;
-            } else if (input.key_pressed(keys.at(i).up, sdlc::NO_AUTOFIRE)) {
+            } else if (input.key_pressed(keys.at(i).up, sdlc::AutofireKeystate::off)) {
                 selectors_.pos.at(i)--;
             }
             selectors_.pos.at(i) = std::min(std::max(selectors_.pos.at(i), 0), 2);
 
-            if (input.key_pressed(keys.at(i).fire_main, sdlc::NO_AUTOFIRE)) {
-                press_enter(i, player_state);
+            if (input.key_pressed(keys.at(i).fire_main, sdlc::AutofireKeystate::off)) {
+                press_enter((int)i, player_state);
             }
         } else {
             player_done_.at(i) = true;
@@ -150,7 +149,7 @@ void BuyScreen::draw_player_info(int i, sdlc::Screen& screen, sdlc::Font& font)
 void BuyScreen::draw_extra_weapon(int i, sdlc::Screen& screen, sdlc::Font& font)
 {
     if (player_state_.extra_weapon(i) != "none") {
-        int length = (player_state_.extra_weapon(i)).length();
+        auto length = (player_state_.extra_weapon(i)).length();
         auto text = (player_state_.extra_weapon(i)).substr(0, length - 7);
         auto num_weapons = std::to_string(player_state_.extra_weapon_count(i));
         int x = 60 + 340*(i - 1);

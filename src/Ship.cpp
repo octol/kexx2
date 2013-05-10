@@ -27,10 +27,10 @@
 // Construction/Destruction
 // -----------------------------------------------------------------------------
 
-Ship::Ship(std::string n, int energy, int score, sdlc::Surface& s, 
+Ship::Ship(std::string n, int energy, int score, sdlc::Surface& s, sdlc::Surface& hit_s,
            std::unique_ptr<Weapon>& main, std::unique_ptr<Weapon>& extra, 
            KeySet keyset)
-    : Object(n, energy, s, OBJ_PLAYER),
+    : Object(n, energy, s, hit_s, OBJ_PLAYER),
       main_weapon_(std::move(main)),
       extra_weapon_(std::move(extra)),
       keyset_(keyset)
@@ -43,8 +43,6 @@ Ship::Ship(std::string n, int energy, int score, sdlc::Surface& s,
 
     set_locked_to_screen(false);
     set_active(true);
-
-    calculate_hit_img();
 }
 
 // -----------------------------------------------------------------------------
@@ -144,6 +142,18 @@ const sdlc::Sprite& Ship::sprite() const
 }
 
 // -----------------------------------------------------------------------------
+// Static Functions
+// -----------------------------------------------------------------------------
+
+sdlc::Surface Ship::create_hit_img(const sdlc::Surface& surface)
+{
+    sdlc::Surface hit(surface);
+    hit.make_unique();
+    hit.fill_rect(0, 0, hit.data->w, hit.data->h, 255, 0, 255);
+    return hit;
+}
+
+// -----------------------------------------------------------------------------
 // Private Functions
 // -----------------------------------------------------------------------------
 
@@ -154,21 +164,21 @@ void Ship::process_input(sdlc::Input& input, ObjectManager& object_manager)
     set_y_vel(0);
 
     // check keyboard
-    if (input.key_pressed(keyset_.left, sdlc::AUTOFIRE))
+    if (input.key_pressed(keyset_.left, sdlc::AutofireKeystate::on))
         set_x_vel(-100.0f);
-    else if (input.key_pressed(keyset_.right, sdlc::AUTOFIRE))
+    else if (input.key_pressed(keyset_.right, sdlc::AutofireKeystate::on))
         set_x_vel(100.0f);
-    if (input.key_pressed(keyset_.up, sdlc::AUTOFIRE))
+    if (input.key_pressed(keyset_.up, sdlc::AutofireKeystate::on))
         set_y_vel(-100.0f);
-    else if (input.key_pressed(keyset_.down, sdlc::AUTOFIRE))
+    else if (input.key_pressed(keyset_.down, sdlc::AutofireKeystate::on))
         set_y_vel(100.0f);
 
-    int sx = x() + width() / 2;
-    int sy = y() + 10;
+    int sx = (int)(x() + (float)width() / 2.0f);
+    int sy = (int)(y() + 10.0f);
 
-    if (input.key_pressed(keyset_.fire_main, sdlc::AUTOFIRE) && main_weapon_) 
+    if (input.key_pressed(keyset_.fire_main, sdlc::AutofireKeystate::on) && main_weapon_) 
         main_weapon_->shoot(sx, sy, object_manager);
-    if (input.key_pressed(keyset_.fire_extra, sdlc::NO_AUTOFIRE) && extra_weapon_) 
+    if (input.key_pressed(keyset_.fire_extra, sdlc::AutofireKeystate::off) && extra_weapon_) 
         extra_weapon_->shoot(sx, sy, object_manager);
 }
 
@@ -259,7 +269,7 @@ void Ship::update_smoketrail(ObjectManager& object_manager)
     for (auto obj : object_manager.list) {
         if (obj->name() == "Smoketrail" && obj->owner() == owner()) {
             auto set_trail_position = [this,obj](int xshift) {
-                obj->set_pos(x() + xshift, y() + height() - 2);
+                obj->set_pos(x() + (float)xshift, y() + (float)height() - 2);
                 obj->set_vel(x_vel(), y_vel());
 
                 obj->update(*timer);
@@ -286,8 +296,3 @@ void Ship::remove_smoketrail(ObjectManager& object_manager)
     }
 }
 
-void Ship::calculate_hit_img()
-{
-    hit_img_.make_independent_copy();
-    hit_img_.fill_rect(0, 0, hit_img_.data->w, hit_img_.data->h, 255, 0, 255);
-}

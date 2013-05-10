@@ -44,8 +44,8 @@ void ShotRocket::think(ObjectManager& object_manager, FxManager& fx_manager)
     extern sdlc::Timer* timer;
     set_y_vel(y_vel() - 500.0f * timer->frame_time());
 
-    fx_manager.smokepuff((int)(x() + width() / 2), 
-                         (int)(y() + height() / 2));
+    fx_manager.smokepuff((int)(x() + (float)width() / 2.0f), 
+                         (int)(y() + (float)height() / 2.0f));
 
     // TODO: remove raw SDL call.
     if (SDL_GetTicks() - time_when_shot_ > 1000)
@@ -55,14 +55,14 @@ void ShotRocket::think(ObjectManager& object_manager, FxManager& fx_manager)
 void ShotRocket::kill(ObjectManager& object_manager, FxManager& fx_manager)
 {
     set_energy(0);
-    fx_manager.explode_normal((int)(x() + width() / 2), 
-                              (int)(y() + height() / 2));
+    fx_manager.explode_normal((int)(x() + (float)width() / 2.0f), 
+                              (int)(y() + (float)height() / 2.0f));
 
     for (int i = 0; i < EXPLOSION_FRAGMENTS; i++) {
-        float vel = 500.0f + (rand() % 10 - 5) * 5.0f;
-        float angle = rand() % 360;
-        float center_x = x() + width() / 2;
-        float center_y = y() + height() / 2;
+        float vel = 500.0f + (float)(rand() % 10 - 5) * 5.0f;
+        float angle = (float)(rand() % 360);
+        float center_x = x() + (float)width() / 2.0f;
+        float center_y = y() + (float)height() / 2.0f;
         object_manager.create_object((int)center_x, (int)center_y, 
                 SHOTBOMBFRAGMENT, vel, angle, owner());
     }
