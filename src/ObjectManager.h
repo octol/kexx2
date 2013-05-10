@@ -30,6 +30,20 @@ class FxManager;
 class PlayerState;
 class Weapon;
 
+// Hash functions so that we can use enum classes as keys for
+// std::unordered_map<T>
+template<class T>
+struct enum_hash {
+    std::size_t operator() (T c) const {
+        return std::hash<int>()( int(c) );
+    }
+    bool operator() (T a, T b) const {
+        return int(a) == int(b);
+    };
+};
+typedef enum_hash<ObjIndex> OHash;
+typedef enum_hash<ObjSnd> SHash;
+
 class ObjectManager final {
 public:
     void load_data(std::string data_path);
@@ -46,11 +60,13 @@ public:
     int num_of_enemies();
     int num_of_players_alive();
 
+    // The main list of objects.
     std::list<std::shared_ptr<IObject>> list;       // object list
-    // TODO: replace c-style array
-    sdlc::Surface obj[(int)ObjIndex::enemystd_v_formation];        // object graphics
-    sdlc::Surface obj_hit[(int)ObjIndex::enemystd_v_formation];    // object hit graphics
-    sdlc::Sound snd[(int)ObjSnd::rocket + 1];            // object sound
+
+    // Holds the shared graphics/sound data for the objects
+    std::unordered_map<ObjIndex,sdlc::Surface,OHash,OHash> obj;    
+    std::unordered_map<ObjIndex,sdlc::Surface,OHash,OHash> obj_hit;
+    std::unordered_map<ObjSnd,sdlc::Sound,SHash,SHash> snd; 
 
 private:
     std::shared_ptr<IObject> allocate_object(ObjIndex object, Owner owner);

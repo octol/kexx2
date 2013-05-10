@@ -223,7 +223,7 @@ void Ship::collide_with_object(std::shared_ptr<IObject>& current,
             main_weapon_->upgrade();
         } else if (current->name() == "Blaster Bonus") {
             main_weapon_ = std::unique_ptr<Weapon>(new WeaponBlaster(
-                        object_manager.snd[(int)ObjSnd::blaster], owner()));
+                        object_manager.snd[ObjSnd::blaster], owner()));
         }
 
         // mute removal of the bonus object

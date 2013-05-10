@@ -25,9 +25,9 @@
 
 void Options::load(std::string path)
 {
-    int players;
-    int fullscreen;
-    int fps_counter;
+    int players = 1;
+    int fullscreen = false;
+    int fps_counter = false;
     std::string line;
 
     std::ifstream file(path);
@@ -101,7 +101,7 @@ int Options::num_of_levels()
     }
 
     levels_file.close();
-    return level_filename.size() - 1; // number of levels
+    return int(level_filename.size()) - 1; // number of levels
 }
 
 // -----------------------------------------------------------------------------

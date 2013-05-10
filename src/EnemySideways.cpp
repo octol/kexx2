@@ -71,8 +71,8 @@ void EnemySideways::think(ObjectManager& object_manager, FxManager& fx_manager)
 
         // shooting
         if (timer->ticks() - time_when_last_shot_ > 2000) {
-            int cx = x() + width() / 2;
-            int cy = y() + height() / 2;
+            int cx = int(x() + float(width()) / 2.0f);
+            int cy = int(y() + float(height()) / 2.0f);
             object_manager.create_object(cx, cy, 0, 200.0f, 
                                          ObjIndex::shotenemystd, 
                                          Owner::enemy);

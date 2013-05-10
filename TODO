@@ -3,8 +3,6 @@ TODO
 
 High priority:
 --------------
-- Use Map instead of c-style array in ObjectManager
-    * Remove all casts on enums
 - Write settings file "in place" rather than overwrite.
 - Make load/init robust.
 - Try-catch for Surface/Sprite loading.
@@ -23,7 +21,6 @@ Architectural issues:
 Low priority:
 -------------
 - Passing references by const, and make functions const.
-- new -> std::make_shared (no naked new).
 - Rename object_manager -> objects ? (applies to all "managers")
 - Implement Factory pattern for object creation.
 - Go over all TODO in code.
@@ -39,7 +36,7 @@ Organisation of system classes:
 - Pass SDLc classes in constructors only? Or Maybe pass references to game
   specific classes in ctor and system class to separate check_input(),
   run_logic(), draw() functions?
-  Possbly the other way around.
+  Possibly the other way around.
 
 Feature changes:
 ----------------

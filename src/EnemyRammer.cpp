@@ -49,12 +49,12 @@ void EnemyRammer::activate(ObjectManager& object_manager)
     }
 
     if (!player_vector.empty()) {
-        int pos = rand() % player_vector.size();
-        int px = (int)player_vector[pos]->x();
-        int py = (int)player_vector[pos]->y();
+        int pos = rand() % int(player_vector.size());
+        int px = int(player_vector[pos]->x());
+        int py = int(player_vector[pos]->y());
 
-        float dx = px - x();
-        float dy = py - y();
+        float dx = float(px) - x();
+        float dy = float(py) - y();
 
         set_x_vel(((dx / 2) * 1.3f));
         set_y_vel(50.0f + (dy / 2));

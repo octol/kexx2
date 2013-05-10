@@ -102,6 +102,7 @@ public:
                              const std::shared_ptr<IObject>& o2);
 
     static ObjIndex parse_obj_index(std::string type);
+    static ObjIndex parse_player_index(int);
     static Owner parse_owner(int);
     static Owner parse_owner(std::string type);
 

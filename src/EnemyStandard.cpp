@@ -26,7 +26,7 @@
 
 EnemyStandard::EnemyStandard(std::string name, int energy, int score, 
                              sdlc::Surface& s, sdlc::Surface& hit_s, 
-                             int init_y_vel)
+                             float init_y_vel)
     : Object(name, energy, score, s, hit_s, ObjType::enemy, init_y_vel)
 {
 }

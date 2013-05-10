@@ -306,6 +306,11 @@ ObjIndex Object::parse_obj_index(std::string type)
     return object;
 }
 
+ObjIndex Object::parse_player_index(int player_index)
+{
+    return ObjIndex(int(ObjIndex::player1) + player_index - 1);
+}
+
 Owner Object::parse_owner(int player)
 {
     return static_cast<Owner>((int)Owner::player1 + player - 1);
@@ -318,7 +323,6 @@ Owner Object::parse_owner(std::string player)
         owner = Owner::player1;
     else if (player == "Player 2")
         owner = Owner::player2;
-    else throw std::invalid_argument("Object::parse_owner(" + player + ")");
 
     return owner;
 }

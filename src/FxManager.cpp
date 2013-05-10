@@ -87,8 +87,8 @@ void FxManager::explode_normal(int x, int y)
     std::unique_ptr<sdlc::Sprite> sprite(new sdlc::Sprite(expl_img_));
     //sprite->link(expl_img_.data);
     sprite->init_animation(5, 11, 1);
-    sprite->set_x((float)x - (float)sprite->width() / 2.0);
-    sprite->set_y((float)y - (float)sprite->height() / 2.0);
+    sprite->set_x((float)x - (float)sprite->width() / 2.0f);
+    sprite->set_y((float)y - (float)sprite->height() / 2.0f);
     explosion_list_.push_back(std::move(sprite));
 
     // choose one of the precomputed particles.
@@ -98,7 +98,7 @@ void FxManager::explode_normal(int x, int y)
         int intensity = precalc_norm_expl_[i_expl][i].intensity;
         float x_vel = precalc_norm_expl_[i_expl][i].x_vel;
         float y_vel = precalc_norm_expl_[i_expl][i].y_vel;
-        particle_manager_->create(x, y, x_vel, y_vel, 
+        particle_manager_->create(float(x), float(y), x_vel, y_vel, 
                                   255, 255, 255, intensity, 100.0f);
     }
 }
@@ -126,7 +126,7 @@ void FxManager::explode_tiny(int x, int y, float vel, float angle)
         float x_vel = (float)(cos((double)degree) * speed) + x_vel_mod;
         float y_vel = (float)(sin((double)degree) * speed) + y_vel_mod;
 
-        particle_manager_->create(x, y, x_vel, y_vel, 255, 255, 255, 
+        particle_manager_->create(float(x), float(y), x_vel, y_vel, 255, 255, 255, 
                                   intensity, 100.0f);
     }
 }

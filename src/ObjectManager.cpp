@@ -47,34 +47,34 @@
 void ObjectManager::load_data(std::string data_path)
 {
     // Load objects
-    obj[(int)ObjIndex::player1].load(data_path + "gfx/Ship1.png");
-    obj[(int)ObjIndex::player2].load(data_path + "gfx/Ship2.png");
-    obj[(int)ObjIndex::enemystd].load(data_path + "gfx/EnemyStd.png");
-    obj[(int)ObjIndex::enemysideways].load(data_path + "gfx/EnemySideways.png");
-    obj[(int)ObjIndex::enemyrammer].load(data_path + "gfx/EnemyRammer.png");
-    obj[(int)ObjIndex::enemybonus].load(data_path + "gfx/EnemyBonus.png");
-    obj[(int)ObjIndex::objectbigship].load(data_path + "gfx/ObjectBigship.png");
-    obj[(int)ObjIndex::bonusblaster].load(data_path + "gfx/BonusBlaster.png");
-    obj[(int)ObjIndex::bonusrocket].load(data_path + "gfx/BonusRocket.png");
+    obj[ObjIndex::player1].load(data_path + "gfx/Ship1.png");
+    obj[ObjIndex::player2].load(data_path + "gfx/Ship2.png");
+    obj[ObjIndex::enemystd].load(data_path + "gfx/EnemyStd.png");
+    obj[ObjIndex::enemysideways].load(data_path + "gfx/EnemySideways.png");
+    obj[ObjIndex::enemyrammer].load(data_path + "gfx/EnemyRammer.png");
+    obj[ObjIndex::enemybonus].load(data_path + "gfx/EnemyBonus.png");
+    obj[ObjIndex::objectbigship].load(data_path + "gfx/ObjectBigship.png");
+    obj[ObjIndex::bonusblaster].load(data_path + "gfx/BonusBlaster.png");
+    obj[ObjIndex::bonusrocket].load(data_path + "gfx/BonusRocket.png");
 
     // Shots (for the weapons)
-    obj[(int)ObjIndex::shotblaster].load(data_path + "gfx/ShotBlaster.png");
-    obj[(int)ObjIndex::shotblasterbig].load(data_path + "gfx/ShotBlasterBig.png");
-    obj[(int)ObjIndex::shotrocket].load(data_path + "gfx/ShotRocket.png");
-    obj[(int)ObjIndex::shotbombfragment].alloc(2, 2);
-    obj[(int)ObjIndex::shotbombfragment].fill_rect(0, 0, 2, 2, 100, 100, 255);
-    obj[(int)ObjIndex::shotenemystd].load(data_path + "gfx/ShotStd2.png");
-    snd[(int)ObjSnd::blaster].load(data_path + "soundfx/shoot1.wav");
-    snd[(int)ObjSnd::rocket].load(data_path + "soundfx/rocketshot.wav");
+    obj[ObjIndex::shotblaster].load(data_path + "gfx/ShotBlaster.png");
+    obj[ObjIndex::shotblasterbig].load(data_path + "gfx/ShotBlasterBig.png");
+    obj[ObjIndex::shotrocket].load(data_path + "gfx/ShotRocket.png");
+    obj[ObjIndex::shotbombfragment].alloc(2, 2);
+    obj[ObjIndex::shotbombfragment].fill_rect(0, 0, 2, 2, 100, 100, 255);
+    obj[ObjIndex::shotenemystd].load(data_path + "gfx/ShotStd2.png");
+    snd[ObjSnd::blaster].load(data_path + "soundfx/shoot1.wav");
+    snd[ObjSnd::rocket].load(data_path + "soundfx/rocketshot.wav");
 
     // Misc
-    obj[(int)ObjIndex::smoketrail].load(data_path + "gfx/Flame.png");
+    obj[ObjIndex::smoketrail].load(data_path + "gfx/Flame.png");
 
     // Create the gfx shown when object is hit.
     for (int i = (int)ObjIndex::player1; i <= (int)ObjIndex::player2; ++i) 
-        obj_hit[i] = Ship::create_hit_img(obj[i]);
+        obj_hit[ObjIndex(i)] = Ship::create_hit_img(obj[ObjIndex(i)]);
     for (int i = (int)ObjIndex::enemystd; i <= (int)ObjIndex::enemybonus; ++i) 
-        obj_hit[i] = Object::create_hit_img(obj[i]);
+        obj_hit[ObjIndex(i)] = Object::create_hit_img(obj[ObjIndex(i)]);
 }
 
 void ObjectManager::update(sdlc::Timer& timer, FxManager& fx_manager, 
@@ -179,15 +179,16 @@ void ObjectManager::create_ships(PlayerState& player_state)
             int e = player_state.energy_max(i);
             player_state.set_energy(i, e);  // reset energy to max
 
-            sdlc::Surface& gfx = obj[(int)ObjIndex::player1 + i - 1];
-            sdlc::Surface& hit_gfx = obj_hit[(int)ObjIndex::player1 + i - 1];
+            ObjIndex player_index = Object::parse_player_index(i);
+            sdlc::Surface& gfx = obj[player_index];
+            sdlc::Surface& hit_gfx = obj_hit[player_index];
 
             auto w1 = create_main_weapon(i, player_state);
             auto w2 = create_extra_weapon(i, player_state);
 
-            KeySet keyset(i);   // For now we dont set custom keys
+            KeySet keyset(i);   // For now we don't set custom keys
 
-            auto new_ship = std::shared_ptr<Ship>(new Ship(name, e, s, gfx, hit_gfx, w1, w2, keyset));
+            auto new_ship = std::make_shared<Ship>(name, e, s, gfx, hit_gfx, w1, w2, keyset);
 
             new_ship->set_locked_to_screen(false);
             new_ship->set_x((float)(213 * i - new_ship->width()));
@@ -218,8 +219,8 @@ std::shared_ptr<IObject>
 ObjectManager::allocate_object(ObjIndex object, Owner owner)
 {
     IObject* new_obj = nullptr;
-    sdlc::Surface& gfx = obj[(int)object];
-    sdlc::Surface& hit_gfx = obj_hit[(int)object];
+    sdlc::Surface& gfx = obj[object];
+    sdlc::Surface& hit_gfx = obj_hit[object];
 
     switch (object) {
 
@@ -386,7 +387,7 @@ ObjectManager::create_main_weapon(int player, PlayerState player_state)
     std::unique_ptr<Weapon> w;
 
     if (player_state.main_weapon(player) == "Blaster Weapon") {
-        sdlc::Sound& sfx = snd[(int)ObjSnd::blaster];
+        sdlc::Sound& sfx = snd[ObjSnd::blaster];
         Owner own = Object::parse_owner(player);
         w = std::unique_ptr<Weapon>(new WeaponBlaster(sfx, own));
     }
@@ -403,7 +404,7 @@ ObjectManager::create_extra_weapon(int player, PlayerState player_state)
     std::unique_ptr<Weapon> w;
 
     if (player_state.extra_weapon(player) == "Rocket Weapon") {
-        sdlc::Sound& sfx = snd[(int)ObjSnd::rocket];
+        sdlc::Sound& sfx = snd[ObjSnd::rocket];
         Owner own = Object::parse_owner(player);
         w = std::unique_ptr<Weapon>(new WeaponRocket(sfx, own));
         w->set_count(player_state.extra_weapon_count(player));
