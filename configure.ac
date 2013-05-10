@@ -4,7 +4,7 @@ m4_include(m4/boost.m4)
 
 AC_PREREQ([2.69])
 AC_INIT([Kexx2],
-        [1.0.8],
+        [1.0.9],
         [jon@haeggblad.com],
         [kexx2],
         [http://github.com/octol/kexx2])
@@ -15,7 +15,7 @@ AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE
 LT_INIT
 
-AC_SUBST([KEXX2_VERSION],[1.0.8])
+AC_SUBST([KEXX2_VERSION],[1.0.9])
 
 #-------------------------------------------------------------------------------
 # Checks for programs.
@@ -37,16 +37,10 @@ BOOST_PROGRAM_OPTIONS
 #-------------------------------------------------------------------------------
 # Add development flags.
 #-------------------------------------------------------------------------------
-#CXXFLAGS="-g -Og -std=gnu++11"
-#CXXFLAGS="$CXXFLAGS -Wpedantic -Wall -W -Wextra"
-#CXXFLAGS="$CXXFLAGS -Wcast-qual -Wwrite-strings"
+CXXFLAGS="-g -Og -std=gnu++11 \
+    -Wall -W -Wextra -Wpedantic -Wcast-qual -Wwrite-strings -Wconversion \
+    -Wfatal-errors -fno-omit-frame-pointer -fno-inline -fdiagnostics-color=auto"
 #CXXFLAGS="$CXXFLAGS -Weffc++"
-#CXXFLAGS="$CXXFLAGS -Wshadow"
-#CXXFLAGS="$CXXFLAGS -Wconversion" 
-#CXXFLAGS="$CXXFLAGS -fno-omit-frame-pointer"
-#CXXFLAGS="$CXXFLAGS -fsanitize=address"
-#CXXFLAGS="$CXXFLAGS -fno-inline"
-#CXXFLAGS="$CXXFLAGS -fdiagnostics-color=auto"
 
 #-------------------------------------------------------------------------------
 # Configure pthreads.
@@ -107,7 +101,7 @@ LIBS="$LIBS -lSDL_image"
 #-------------------------------------------------------------------------------
 # Check for SDLc
 #-------------------------------------------------------------------------------
-PKG_CHECK_MODULES([LIBSDLC], [libsdlc-0.4.1 >= 0.4.1])
+PKG_CHECK_MODULES([LIBSDLC], [libsdlc-0.5.1 >= 0.5.1])
 
 #-------------------------------------------------------------------------------
 # Finally create all the generated files
