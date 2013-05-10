@@ -47,33 +47,33 @@
 void ObjectManager::load_data(std::string data_path)
 {
     // Load objects
-    obj[PLAYER1].load(data_path + "gfx/Ship1.png");
-    obj[PLAYER2].load(data_path + "gfx/Ship2.png");
-    obj[ENEMYSTD].load(data_path + "gfx/EnemyStd.png");
-    obj[ENEMYSIDEWAYS].load(data_path + "gfx/EnemySideways.png");
-    obj[ENEMYRAMMER].load(data_path + "gfx/EnemyRammer.png");
-    obj[ENEMYBONUS].load(data_path + "gfx/EnemyBonus.png");
-    obj[OBJECTBIGSHIP].load(data_path + "gfx/ObjectBigship.png");
-    obj[BONUSBLASTER].load(data_path + "gfx/BonusBlaster.png");
-    obj[BONUSROCKET].load(data_path + "gfx/BonusRocket.png");
+    obj[(int)ObjIndex::player1].load(data_path + "gfx/Ship1.png");
+    obj[(int)ObjIndex::player2].load(data_path + "gfx/Ship2.png");
+    obj[(int)ObjIndex::enemystd].load(data_path + "gfx/EnemyStd.png");
+    obj[(int)ObjIndex::enemysideways].load(data_path + "gfx/EnemySideways.png");
+    obj[(int)ObjIndex::enemyrammer].load(data_path + "gfx/EnemyRammer.png");
+    obj[(int)ObjIndex::enemybonus].load(data_path + "gfx/EnemyBonus.png");
+    obj[(int)ObjIndex::objectbigship].load(data_path + "gfx/ObjectBigship.png");
+    obj[(int)ObjIndex::bonusblaster].load(data_path + "gfx/BonusBlaster.png");
+    obj[(int)ObjIndex::bonusrocket].load(data_path + "gfx/BonusRocket.png");
 
     // Shots (for the weapons)
-    obj[SHOTBLASTER].load(data_path + "gfx/ShotBlaster.png");
-    obj[SHOTBLASTERBIG].load(data_path + "gfx/ShotBlasterBig.png");
-    obj[SHOTROCKET].load(data_path + "gfx/ShotRocket.png");
-    obj[SHOTBOMBFRAGMENT].alloc(2, 2);
-    obj[SHOTBOMBFRAGMENT].fill_rect(0, 0, 2, 2, 100, 100, 255);
-    obj[SHOTENEMYSTD].load(data_path + "gfx/ShotStd2.png");
-    snd[SND_SHOTBLASTER].load(data_path + "soundfx/shoot1.wav");
-    snd[SND_SHOTROCKET].load(data_path + "soundfx/rocketshot.wav");
+    obj[(int)ObjIndex::shotblaster].load(data_path + "gfx/ShotBlaster.png");
+    obj[(int)ObjIndex::shotblasterbig].load(data_path + "gfx/ShotBlasterBig.png");
+    obj[(int)ObjIndex::shotrocket].load(data_path + "gfx/ShotRocket.png");
+    obj[(int)ObjIndex::shotbombfragment].alloc(2, 2);
+    obj[(int)ObjIndex::shotbombfragment].fill_rect(0, 0, 2, 2, 100, 100, 255);
+    obj[(int)ObjIndex::shotenemystd].load(data_path + "gfx/ShotStd2.png");
+    snd[(int)ObjSnd::blaster].load(data_path + "soundfx/shoot1.wav");
+    snd[(int)ObjSnd::rocket].load(data_path + "soundfx/rocketshot.wav");
 
     // Misc
-    obj[SMOKETRAIL].load(data_path + "gfx/Flame.png");
+    obj[(int)ObjIndex::smoketrail].load(data_path + "gfx/Flame.png");
 
     // Create the gfx shown when object is hit.
-    for (int i = PLAYER1; i <= PLAYER2; ++i) 
+    for (int i = (int)ObjIndex::player1; i <= (int)ObjIndex::player2; ++i) 
         obj_hit[i] = Ship::create_hit_img(obj[i]);
-    for (int i = ENEMYSTD; i <= ENEMYBONUS; ++i) 
+    for (int i = (int)ObjIndex::enemystd; i <= (int)ObjIndex::enemybonus; ++i) 
         obj_hit[i] = Object::create_hit_img(obj[i]);
 }
 
@@ -93,11 +93,11 @@ void ObjectManager::update(sdlc::Timer& timer, FxManager& fx_manager,
             // kill objects who move outside their allowed area
             if (current->y() > 480) {
                 ObjType t = current->type();
-                if (t == OBJ_ENEMY || t == OBJ_PASSIVE 
-                        || t == OBJ_BONUS || t == OBJ_SHOT) {
+                if (t == ObjType::enemy || t == ObjType::passive 
+                        || t == ObjType::bonus || t == ObjType::shot) {
                     current->set_energy(0);
                 }
-            } else if (current->type() == OBJ_SHOT) {
+            } else if (current->type() == ObjType::shot) {
                 if (current->y() < 0 - current->height() 
                         || current->x() > 640 
                         || current->x() < 0 - current->width()) {
@@ -105,7 +105,7 @@ void ObjectManager::update(sdlc::Timer& timer, FxManager& fx_manager,
                 }
             }
             // debug
-            if (current->type() == OBJ_UNDEFINED) {
+            if (current->type() == ObjType::undefined) {
                 std::cout << "warning: object with undefined " 
                     << "type detected!" << std::endl;
             }
@@ -139,7 +139,7 @@ ObjectManager::create_object(int x, int y, float x_vel, float y_vel,
     std::shared_ptr<IObject> new_obj;
 
     // Create formation
-    if (object >= ENEMYSTD_V_FORMATION)
+    if (object >= ObjIndex::enemystd_v_formation)
         create_formation(x, y, x_vel, y_vel, object);
 
     // Create single entity
@@ -179,8 +179,8 @@ void ObjectManager::create_ships(PlayerState& player_state)
             int e = player_state.energy_max(i);
             player_state.set_energy(i, e);  // reset energy to max
 
-            sdlc::Surface& gfx = obj[PLAYER1 + i - 1];
-            sdlc::Surface& hit_gfx = obj_hit[PLAYER1 + i - 1];
+            sdlc::Surface& gfx = obj[(int)ObjIndex::player1 + i - 1];
+            sdlc::Surface& hit_gfx = obj_hit[(int)ObjIndex::player1 + i - 1];
 
             auto w1 = create_main_weapon(i, player_state);
             auto w2 = create_extra_weapon(i, player_state);
@@ -218,68 +218,68 @@ std::shared_ptr<IObject>
 ObjectManager::allocate_object(ObjIndex object, Owner owner)
 {
     IObject* new_obj = nullptr;
-    sdlc::Surface& gfx = obj[object];
-    sdlc::Surface& hit_gfx = obj_hit[object];
+    sdlc::Surface& gfx = obj[(int)object];
+    sdlc::Surface& hit_gfx = obj_hit[(int)object];
 
     switch (object) {
 
     // enemies
-    case ENEMYSTD:
+    case ObjIndex::enemystd:
         new_obj = new EnemyStandard("Standard Enemy", 5, 52, gfx, hit_gfx, SCROLLING_SPEED);
         break;
-    case ENEMYSIDEWAYS:
+    case ObjIndex::enemysideways:
         new_obj = new EnemySideways("Sideways Enemy", 3, 71, gfx, hit_gfx);
         break;
-    case ENEMYRAMMER:
+    case ObjIndex::enemyrammer:
         new_obj = new EnemyRammer("Rammer Enemy", 2, 43, gfx, hit_gfx);
         break;
-    case ENEMYBONUS:
+    case ObjIndex::enemybonus:
         new_obj = new EnemyBonus("Bonus Enemy", 10, gfx, hit_gfx);
         new_obj->init_animation(50, 2, 0);
         break;
 
     // passive objects
-    case OBJECTBIGSHIP:
-        new_obj = new Object("Object Bigship", 5, 0, gfx, OBJ_PASSIVE,  10.0f);
+    case ObjIndex::objectbigship:
+        new_obj = new Object("Object Bigship", 5, 0, gfx, ObjType::passive,  10.0f);
         new_obj->init_animation(40, 2, 0);
         break;
 
     // bonuses
-    case BONUSBLASTER:
-        new_obj = new Object("Blaster Bonus", 1, 0, gfx, OBJ_BONUS,  20.0f);
+    case ObjIndex::bonusblaster:
+        new_obj = new Object("Blaster Bonus", 1, 0, gfx, ObjType::bonus,  20.0f);
         new_obj->init_animation(40, 3, 0);
         break;
-    case BONUSROCKET:
-        new_obj = new Object("Rocket Bonus", 1, 0, gfx, OBJ_BONUS,  20.0f);
+    case ObjIndex::bonusrocket:
+        new_obj = new Object("Rocket Bonus", 1, 0, gfx, ObjType::bonus,  20.0f);
         new_obj->init_animation(40, 3, 0);
         break;
 
     // shots
-    case SHOTBLASTER:
+    case ObjIndex::shotblaster:
         new_obj = new Shot("Blaster Shot", 1, gfx, owner);
         break;
-    case SHOTBLASTERBIG:
+    case ObjIndex::shotblasterbig:
         new_obj = new Shot("Big Blaster Shot", 1, gfx, owner);
         break;
-    case SHOTROCKET:
+    case ObjIndex::shotrocket:
         new_obj = new ShotRocket("Rocket Shot", 10, gfx, owner);
         break;
-    case SHOTBOMBFRAGMENT:
+    case ObjIndex::shotbombfragment:
         new_obj = new Shot("Bomb Fragment Shot", 4, gfx, owner);
         break;
-    case SHOTENEMYSTD:
+    case ObjIndex::shotenemystd:
         new_obj = new Shot("Standard Enemy Shot", 1, gfx, owner);
         break;
 
     // misc
-    case SMOKETRAIL:
-        new_obj = new Object("Smoketrail", 1, 0, gfx, OBJ_PLAYERPASSIVE, 0);
+    case ObjIndex::smoketrail:
+        new_obj = new Object("Smoketrail", 1, 0, gfx, ObjType::playerpassive, 0);
         new_obj->set_owner(owner);
         new_obj->init_animation(40, 2, 0);
         break;
 
     default:
-        std::cout << "Warning: undefined object." << std::endl;
+        throw std::invalid_argument("ObjectManager::allocate_object");
         break;
     }
 
@@ -287,94 +287,96 @@ ObjectManager::allocate_object(ObjIndex object, Owner owner)
 }
 
 void ObjectManager::create_formation(int x, int y, float x_vel, float y_vel, 
-                                     enum ObjIndex object)
+                                     ObjIndex object)
 {
-    if (object == ENEMYSTD_V_FORMATION) {
-        create_object(x - 80, y - 40, x_vel, y_vel, ENEMYSTD, OWNER_NONE);
-        create_object(x - 40, y - 20, x_vel, y_vel, ENEMYSTD, OWNER_NONE);
-        create_object(x     , y     , x_vel, y_vel, ENEMYSTD, OWNER_NONE);
-        create_object(x + 40, y - 20, x_vel, y_vel, ENEMYSTD, OWNER_NONE);
-        create_object(x + 80, y - 40, x_vel, y_vel, ENEMYSTD, OWNER_NONE);
-    } else if (object == ENEMYSTD_3V_FORMATION) {
-        create_object(300 - 80, y - 40, x_vel, y_vel, ENEMYSTD, OWNER_NONE);
-        create_object(300 - 40, y - 20, x_vel, y_vel, ENEMYSTD, OWNER_NONE);
-        create_object(300     , y     , x_vel, y_vel, ENEMYSTD, OWNER_NONE);
-        create_object(300 + 40, y - 20, x_vel, y_vel, ENEMYSTD, OWNER_NONE);
-        create_object(300 + 80, y - 40, x_vel, y_vel, ENEMYSTD, OWNER_NONE);
+    if (object == ObjIndex::enemystd_v_formation) {
+        create_object(x - 80, y - 40, x_vel, y_vel, ObjIndex::enemystd, Owner::none);
+        create_object(x - 40, y - 20, x_vel, y_vel, ObjIndex::enemystd, Owner::none);
+        create_object(x     , y     , x_vel, y_vel, ObjIndex::enemystd, Owner::none);
+        create_object(x + 40, y - 20, x_vel, y_vel, ObjIndex::enemystd, Owner::none);
+        create_object(x + 80, y - 40, x_vel, y_vel, ObjIndex::enemystd, Owner::none);
+    } else if (object == ObjIndex::enemystd_3v_formation) {
+        create_object(300 - 80, y - 40, x_vel, y_vel, ObjIndex::enemystd, Owner::none);
+        create_object(300 - 40, y - 20, x_vel, y_vel, ObjIndex::enemystd, Owner::none);
+        create_object(300     , y     , x_vel, y_vel, ObjIndex::enemystd, Owner::none);
+        create_object(300 + 40, y - 20, x_vel, y_vel, ObjIndex::enemystd, Owner::none);
+        create_object(300 + 80, y - 40, x_vel, y_vel, ObjIndex::enemystd, Owner::none);
 
-        create_object(300 - 260, y - 140, x_vel, y_vel, ENEMYSTD, OWNER_NONE);
-        create_object(300 - 220, y - 120, x_vel, y_vel, ENEMYSTD, OWNER_NONE);
-        create_object(300 - 180, y - 100, x_vel, y_vel, ENEMYSTD, OWNER_NONE);
-        create_object(300 - 140, y - 120, x_vel, y_vel, ENEMYSTD, OWNER_NONE);
-        create_object(300 - 100, y - 140, x_vel, y_vel, ENEMYSTD, OWNER_NONE);
+        create_object(300 - 260, y - 140, x_vel, y_vel, ObjIndex::enemystd, Owner::none);
+        create_object(300 - 220, y - 120, x_vel, y_vel, ObjIndex::enemystd, Owner::none);
+        create_object(300 - 180, y - 100, x_vel, y_vel, ObjIndex::enemystd, Owner::none);
+        create_object(300 - 140, y - 120, x_vel, y_vel, ObjIndex::enemystd, Owner::none);
+        create_object(300 - 100, y - 140, x_vel, y_vel, ObjIndex::enemystd, Owner::none);
 
-        create_object(300 + 100, y - 140, x_vel, y_vel, ENEMYSTD, OWNER_NONE);
-        create_object(300 + 140, y - 120, x_vel, y_vel, ENEMYSTD, OWNER_NONE);
-        create_object(300 + 180, y - 100, x_vel, y_vel, ENEMYSTD, OWNER_NONE);
-        create_object(300 + 220, y - 120, x_vel, y_vel, ENEMYSTD, OWNER_NONE);
-        create_object(300 + 260, y - 140, x_vel, y_vel, ENEMYSTD, OWNER_NONE);
-    } else if (object == ENEMYSTD_DIAGONAL_FORMATION) {
-        create_object(0  , y    , x_vel, y_vel, ENEMYSTD, OWNER_NONE);
-        create_object(50 , y - 10 , x_vel, y_vel, ENEMYSTD, OWNER_NONE);
-        create_object(100, y - 20 , x_vel, y_vel, ENEMYSTD, OWNER_NONE);
-        create_object(150, y - 30 , x_vel, y_vel, ENEMYSTD, OWNER_NONE);
-        create_object(200, y - 40 , x_vel, y_vel, ENEMYSTD, OWNER_NONE);
-        create_object(250, y - 50 , x_vel, y_vel, ENEMYSTD, OWNER_NONE);
-        create_object(300, y - 60 , x_vel, y_vel, ENEMYSTD, OWNER_NONE);
-        create_object(350, y - 70 , x_vel, y_vel, ENEMYSTD, OWNER_NONE);
-        create_object(400, y - 80 , x_vel, y_vel, ENEMYSTD, OWNER_NONE);
-        create_object(450, y - 90 , x_vel, y_vel, ENEMYSTD, OWNER_NONE);
-        create_object(500, y - 100, x_vel, y_vel, ENEMYSTD, OWNER_NONE);
-        create_object(550, y - 110, x_vel, y_vel, ENEMYSTD, OWNER_NONE);
-        create_object(600, y - 120, x_vel, y_vel, ENEMYSTD, OWNER_NONE);
-    } else if (object == ENEMYSTD_MASSIVE_FORMATION) {
+        create_object(300 + 100, y - 140, x_vel, y_vel, ObjIndex::enemystd, Owner::none);
+        create_object(300 + 140, y - 120, x_vel, y_vel, ObjIndex::enemystd, Owner::none);
+        create_object(300 + 180, y - 100, x_vel, y_vel, ObjIndex::enemystd, Owner::none);
+        create_object(300 + 220, y - 120, x_vel, y_vel, ObjIndex::enemystd, Owner::none);
+        create_object(300 + 260, y - 140, x_vel, y_vel, ObjIndex::enemystd, Owner::none);
+    } else if (object == ObjIndex::enemystd_diagonal_formation) {
+        create_object(0  , y      , x_vel, y_vel, ObjIndex::enemystd, Owner::none);
+        create_object(50 , y - 10 , x_vel, y_vel, ObjIndex::enemystd, Owner::none);
+        create_object(100, y - 20 , x_vel, y_vel, ObjIndex::enemystd, Owner::none);
+        create_object(150, y - 30 , x_vel, y_vel, ObjIndex::enemystd, Owner::none);
+        create_object(200, y - 40 , x_vel, y_vel, ObjIndex::enemystd, Owner::none);
+        create_object(250, y - 50 , x_vel, y_vel, ObjIndex::enemystd, Owner::none);
+        create_object(300, y - 60 , x_vel, y_vel, ObjIndex::enemystd, Owner::none);
+        create_object(350, y - 70 , x_vel, y_vel, ObjIndex::enemystd, Owner::none);
+        create_object(400, y - 80 , x_vel, y_vel, ObjIndex::enemystd, Owner::none);
+        create_object(450, y - 90 , x_vel, y_vel, ObjIndex::enemystd, Owner::none);
+        create_object(500, y - 100, x_vel, y_vel, ObjIndex::enemystd, Owner::none);
+        create_object(550, y - 110, x_vel, y_vel, ObjIndex::enemystd, Owner::none);
+        create_object(600, y - 120, x_vel, y_vel, ObjIndex::enemystd, Owner::none);
+    } else if (object == ObjIndex::enemystd_massive_formation) {
         int i;
         for (i = 0; i < 20; i++)
             create_object((rand() % 560) + 40 , y - (rand() % 200), x_vel, 
-                    y_vel, ENEMYSTD, OWNER_NONE);
-    } else if (object == ENEMYSIDEWAYS_VLINE_FORMATION) {
-        create_object(x     , y     , x_vel, y_vel, ENEMYSIDEWAYS, OWNER_NONE);
-        create_object(x + 5 , y - 20, x_vel, y_vel, ENEMYSIDEWAYS, OWNER_NONE);
-        create_object(x + 10, y - 40, x_vel, y_vel, ENEMYSIDEWAYS, OWNER_NONE);
-        create_object(x + 15, y - 60, x_vel, y_vel, ENEMYSIDEWAYS, OWNER_NONE);
-        create_object(x + 20, y - 80, x_vel, y_vel, ENEMYSIDEWAYS, OWNER_NONE);
-    } else if (object == ENEMYSIDEWAYS_HLINE_FORMATION) {
-        create_object(x - 160, y, x_vel, y_vel, ENEMYSIDEWAYS, OWNER_NONE);
-        create_object(x - 80 , y, x_vel, y_vel, ENEMYSIDEWAYS, OWNER_NONE);
-        create_object(x      , y, x_vel, y_vel, ENEMYSIDEWAYS, OWNER_NONE);
-        create_object(x + 80 , y, x_vel, y_vel, ENEMYSIDEWAYS, OWNER_NONE);
-        create_object(x + 160, y, x_vel, y_vel, ENEMYSIDEWAYS, OWNER_NONE);
-    } else if (object == ENEMYSIDEWAYS_V_FORMATION) {
-        create_object(x - 80, y - 40, x_vel, y_vel, ENEMYSIDEWAYS, OWNER_NONE);
-        create_object(x - 40, y - 20, x_vel, y_vel, ENEMYSIDEWAYS, OWNER_NONE);
-        create_object(x     , y     , x_vel, y_vel, ENEMYSIDEWAYS, OWNER_NONE);
-        create_object(x + 40, y - 20, x_vel, y_vel, ENEMYSIDEWAYS, OWNER_NONE);
-        create_object(x + 80, y - 40, x_vel, y_vel, ENEMYSIDEWAYS, OWNER_NONE);
-    } else if (object == ENEMYSIDEWAYS_MASSIVE_FORMATION) {
+                    y_vel, ObjIndex::enemystd, Owner::none);
+    } else if (object == ObjIndex::enemysideways_vline_formation) {
+        create_object(x     , y     , x_vel, y_vel, ObjIndex::enemysideways, Owner::none);
+        create_object(x + 5 , y - 20, x_vel, y_vel, ObjIndex::enemysideways, Owner::none);
+        create_object(x + 10, y - 40, x_vel, y_vel, ObjIndex::enemysideways, Owner::none);
+        create_object(x + 15, y - 60, x_vel, y_vel, ObjIndex::enemysideways, Owner::none);
+        create_object(x + 20, y - 80, x_vel, y_vel, ObjIndex::enemysideways, Owner::none);
+    } else if (object == ObjIndex::enemysideways_hline_formation) {
+        create_object(x - 160, y, x_vel, y_vel, ObjIndex::enemysideways, Owner::none);
+        create_object(x - 80 , y, x_vel, y_vel, ObjIndex::enemysideways, Owner::none);
+        create_object(x      , y, x_vel, y_vel, ObjIndex::enemysideways, Owner::none);
+        create_object(x + 80 , y, x_vel, y_vel, ObjIndex::enemysideways, Owner::none);
+        create_object(x + 160, y, x_vel, y_vel, ObjIndex::enemysideways, Owner::none);
+    } else if (object == ObjIndex::enemysideways_v_formation) {
+        create_object(x - 80, y - 40, x_vel, y_vel, ObjIndex::enemysideways, Owner::none);
+        create_object(x - 40, y - 20, x_vel, y_vel, ObjIndex::enemysideways, Owner::none);
+        create_object(x     , y     , x_vel, y_vel, ObjIndex::enemysideways, Owner::none);
+        create_object(x + 40, y - 20, x_vel, y_vel, ObjIndex::enemysideways, Owner::none);
+        create_object(x + 80, y - 40, x_vel, y_vel, ObjIndex::enemysideways, Owner::none);
+    } else if (object == ObjIndex::enemysideways_massive_formation) {
         for (int i = 0; i < 20; i++) {
             create_object((rand() % 560) + 40 , y - (rand() % 200), x_vel, 
-                    y_vel, ENEMYSIDEWAYS, OWNER_NONE);
+                    y_vel, ObjIndex::enemysideways, Owner::none);
         }
-    } else if (object == ENEMYRAMMER_VLINE_FORMATION) {
-        create_object(x, y     , x_vel, y_vel, ENEMYRAMMER, OWNER_NONE);
-        create_object(x, y - 20, x_vel, y_vel, ENEMYRAMMER, OWNER_NONE);
-        create_object(x, y - 40, x_vel, y_vel, ENEMYRAMMER, OWNER_NONE);
-        create_object(x, y - 60, x_vel, y_vel, ENEMYRAMMER, OWNER_NONE);
-        create_object(x, y - 80, x_vel, y_vel, ENEMYRAMMER, OWNER_NONE);
-    } else if (object == ENEMYRAMMER_DIAGONAL_FORMATION) {
-        create_object(x - 80, y   , x_vel, y_vel, ENEMYRAMMER, OWNER_NONE);
-        create_object(x - 40, y - 20, x_vel, y_vel, ENEMYRAMMER, OWNER_NONE);
-        create_object(x     , y - 40, x_vel, y_vel, ENEMYRAMMER, OWNER_NONE);
-        create_object(x + 40, y - 60, x_vel, y_vel, ENEMYRAMMER, OWNER_NONE);
-        create_object(x + 80, y - 80, x_vel, y_vel, ENEMYRAMMER, OWNER_NONE);
-    } else if (object == ENEMYRAMMER_FULLDIAGONAL_FORMATION) {
-        create_object(10 , y - 120, x_vel, y_vel, ENEMYRAMMER, OWNER_NONE);
-        create_object(110, y - 100, x_vel, y_vel, ENEMYRAMMER, OWNER_NONE);
-        create_object(210, y - 80 , x_vel, y_vel, ENEMYRAMMER, OWNER_NONE);
-        create_object(310, y - 60 , x_vel, y_vel, ENEMYRAMMER, OWNER_NONE);
-        create_object(410, y - 40 , x_vel, y_vel, ENEMYRAMMER, OWNER_NONE);
-        create_object(510, y - 20 , x_vel, y_vel, ENEMYRAMMER, OWNER_NONE);
-        create_object(610, y      , x_vel, y_vel, ENEMYRAMMER, OWNER_NONE);
+    } else if (object == ObjIndex::enemyrammer_vline_formation) {
+        create_object(x, y     , x_vel, y_vel, ObjIndex::enemyrammer, Owner::none);
+        create_object(x, y - 20, x_vel, y_vel, ObjIndex::enemyrammer, Owner::none);
+        create_object(x, y - 40, x_vel, y_vel, ObjIndex::enemyrammer, Owner::none);
+        create_object(x, y - 60, x_vel, y_vel, ObjIndex::enemyrammer, Owner::none);
+        create_object(x, y - 80, x_vel, y_vel, ObjIndex::enemyrammer, Owner::none);
+    } else if (object == ObjIndex::enemyrammer_diagonal_formation) {
+        create_object(x - 80, y   , x_vel, y_vel, ObjIndex::enemyrammer, Owner::none);
+        create_object(x - 40, y - 20, x_vel, y_vel, ObjIndex::enemyrammer, Owner::none);
+        create_object(x     , y - 40, x_vel, y_vel, ObjIndex::enemyrammer, Owner::none);
+        create_object(x + 40, y - 60, x_vel, y_vel, ObjIndex::enemyrammer, Owner::none);
+        create_object(x + 80, y - 80, x_vel, y_vel, ObjIndex::enemyrammer, Owner::none);
+    } else if (object == ObjIndex::enemyrammer_fulldiagonal_formation) {
+        create_object(10 , y - 120, x_vel, y_vel, ObjIndex::enemyrammer, Owner::none);
+        create_object(110, y - 100, x_vel, y_vel, ObjIndex::enemyrammer, Owner::none);
+        create_object(210, y - 80 , x_vel, y_vel, ObjIndex::enemyrammer, Owner::none);
+        create_object(310, y - 60 , x_vel, y_vel, ObjIndex::enemyrammer, Owner::none);
+        create_object(410, y - 40 , x_vel, y_vel, ObjIndex::enemyrammer, Owner::none);
+        create_object(510, y - 20 , x_vel, y_vel, ObjIndex::enemyrammer, Owner::none);
+        create_object(610, y      , x_vel, y_vel, ObjIndex::enemyrammer, Owner::none);
+    } else {
+        throw std::invalid_argument("ObjectManager::create_formation");
     }
 }
 
@@ -384,8 +386,8 @@ ObjectManager::create_main_weapon(int player, PlayerState player_state)
     std::unique_ptr<Weapon> w;
 
     if (player_state.main_weapon(player) == "Blaster Weapon") {
-        sdlc::Sound& sfx = snd[SND_SHOTBLASTER];
-        Owner own = static_cast<Owner>(OWNER_PLAYER1 + player - 1);
+        sdlc::Sound& sfx = snd[(int)ObjSnd::blaster];
+        Owner own = Object::parse_owner(player);
         w = std::unique_ptr<Weapon>(new WeaponBlaster(sfx, own));
     }
 
@@ -401,8 +403,8 @@ ObjectManager::create_extra_weapon(int player, PlayerState player_state)
     std::unique_ptr<Weapon> w;
 
     if (player_state.extra_weapon(player) == "Rocket Weapon") {
-        sdlc::Sound& sfx = snd[SND_SHOTROCKET];
-        Owner own = static_cast<Owner>(OWNER_PLAYER1 + player - 1);
+        sdlc::Sound& sfx = snd[(int)ObjSnd::rocket];
+        Owner own = Object::parse_owner(player);
         w = std::unique_ptr<Weapon>(new WeaponRocket(sfx, own));
         w->set_count(player_state.extra_weapon_count(player));
     }
@@ -414,14 +416,14 @@ ObjectManager::create_extra_weapon(int player, PlayerState player_state)
 void ObjectManager::update_all_player_state(PlayerState& player_state)
 {
     for (auto object : list) 
-        if (object->type() == OBJ_PLAYER) 
+        if (object->type() == ObjType::player) 
             update_player_state(object, player_state);
 }
 
 void ObjectManager::update_player_state(std::shared_ptr<IObject>& object, 
                                         PlayerState& player_state)
 {
-    assert(object->type() == OBJ_PLAYER);
+    assert(object->type() == ObjType::player);
 
     // Get the player number from the name
     std::string name = object->name();
@@ -484,7 +486,7 @@ void ObjectManager::add_from_queue()
 void ObjectManager::update_enemy_count()
 {
     auto add_other = [](int n, std::shared_ptr<IObject> o) {
-        return (o->type() == OBJ_ENEMY || o->type() == OBJ_BONUS) ? n + 1 : n;
+        return (o->type() == ObjType::enemy || o->type() == ObjType::bonus) ? n + 1 : n;
     };
 
     enemies_in_list_ = std::accumulate(begin(list), end(list), 0, add_other);
@@ -492,7 +494,7 @@ void ObjectManager::update_enemy_count()
                                        enemies_in_list_, add_other);
 
     auto add_player = [](int n, std::shared_ptr<IObject> o) {
-        return o->type() == OBJ_PLAYER ? n + 1 : n;
+        return o->type() == ObjType::player ? n + 1 : n;
     };
 
     players_alive_ = std::accumulate(begin(list), end(list), 0, add_player);

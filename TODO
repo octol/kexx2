@@ -4,7 +4,7 @@ TODO
 High priority:
 --------------
 - Use Map instead of c-style array in ObjectManager
-- Move to using new c++11 style type safe enums.
+    * Remove all casts on enums
 - Write settings file "in place" rather than overwrite.
 - Make load/init robust.
 - Try-catch for Surface/Sprite loading.

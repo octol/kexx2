@@ -30,7 +30,7 @@
 Ship::Ship(std::string n, int energy, int score, sdlc::Surface& s, sdlc::Surface& hit_s,
            std::unique_ptr<Weapon>& main, std::unique_ptr<Weapon>& extra, 
            KeySet keyset)
-    : Object(n, energy, s, hit_s, OBJ_PLAYER),
+    : Object(n, energy, s, hit_s, ObjType::player),
       main_weapon_(std::move(main)),
       extra_weapon_(std::move(extra)),
       keyset_(keyset)
@@ -39,7 +39,7 @@ Ship::Ship(std::string n, int energy, int score, sdlc::Surface& s, sdlc::Surface
 
     // Parse the player number from the name.
     int player_number = n[n.length() - 1] - (int)'0';
-    set_owner((Owner)(OWNER_PLAYER1 + player_number - 1));
+    set_owner(Object::parse_owner(player_number));
 
     set_locked_to_screen(false);
     set_active(true);
@@ -209,21 +209,21 @@ void Ship::collide_with_object(std::shared_ptr<IObject>& current,
                                FxManager& fx_manager) 
 {
     switch (current->type()) {
-    case OBJ_ENEMY:
+    case ObjType::enemy:
         if (!invincible_) {
             // kill both objects
             kill(object_manager, fx_manager);
             current->kill(object_manager, fx_manager);
         }
         break;
-    case OBJ_BONUS:
+    case ObjType::bonus:
         // blaster
         if (current->name() == "Blaster Bonus" && 
                 main_weapon_->name == "Blaster Weapon") {
             main_weapon_->upgrade();
         } else if (current->name() == "Blaster Bonus") {
             main_weapon_ = std::unique_ptr<Weapon>(new WeaponBlaster(
-                        object_manager.snd[SND_SHOTBLASTER], owner()));
+                        object_manager.snd[(int)ObjSnd::blaster], owner()));
         }
 
         // mute removal of the bonus object
@@ -260,8 +260,8 @@ void Ship::update_smoketrail(ObjectManager& object_manager)
     if (!smoke_found) {
         float sx = x() + 60;
         float sy = y() + 60;
-        object_manager.create_object((int)sx, (int)sy, 0, 0, SMOKETRAIL, owner());
-        object_manager.create_object((int)(sx + 40), (int)sy, 0, 0, SMOKETRAIL, owner());
+        object_manager.create_object((int)sx, (int)sy, 0, 0, ObjIndex::smoketrail, owner());
+        object_manager.create_object((int)(sx + 40), (int)sy, 0, 0, ObjIndex::smoketrail, owner());
     }
 
     // Actually update the smokee trail

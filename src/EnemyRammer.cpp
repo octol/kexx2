@@ -27,7 +27,7 @@
 
 EnemyRammer::EnemyRammer(std::string name, int energy, int score, 
                          sdlc::Surface& s, sdlc::Surface& hit_s)
-    : Object(name, energy, s, hit_s, OBJ_ENEMY)
+    : Object(name, energy, s, hit_s, ObjType::enemy)
 {
     set_score(score);
 }
@@ -44,7 +44,7 @@ void EnemyRammer::activate(ObjectManager& object_manager)
 
     // Fetch the player ship objects
     for (auto obj : object_manager.list) {
-        if (obj->type() == OBJ_PLAYER && obj->energy() > 0)
+        if (obj->type() == ObjType::player && obj->energy() > 0)
             player_vector.push_back(obj);
     }
 

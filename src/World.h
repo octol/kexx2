@@ -40,7 +40,7 @@ const int SHOW_TEXT = TEXT_PERIOD_TIME;
 
 class State {
 public:
-    enum Transition { ENTERING, IN_GAME, COMPLETE, DEAD };
+    enum class Transition { entering, in_game, complete, dead };
 
     State() = default;
     State(State::Transition current, sdlc::Timer& timer);
@@ -53,7 +53,7 @@ public:
 
 private:
     sdlc::Timer* timer_;
-    Transition current_ = ENTERING;
+    Transition current_ = Transition::entering;
     int transition_time_ = 0; 
 }; 
 

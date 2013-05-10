@@ -27,7 +27,7 @@
 // Construction/Destruction
 // -----------------------------------------------------------------------------
 
-GameOver::GameOver() : IGameState(ENV_GAMEOVER)
+GameOver::GameOver() : IGameState(EnvironmentType::gameover)
 {
 }
 

@@ -40,10 +40,10 @@ void FxManager::load(ParticleManager& particle_manager, std::string data_path)
     expl_snd_player_.load(data_path + "soundfx/playerhit.wav");
     alarm_snd_.load(data_path + "soundfx/alarm.wav");
 
-    expl_snd_small_.set_channel((int)SND_EXPL_SMALL);
-    expl_snd_big_.set_channel((int)SND_EXPL_BIG);
-    expl_snd_player_.set_channel((int)SND_EXPL_PLAYER);
-    alarm_snd_.set_channel((int)SND_ALARM);
+    expl_snd_small_.set_channel((int)SoundChannel::expl_small);
+    expl_snd_big_.set_channel((int)SoundChannel::expl_big);
+    expl_snd_player_.set_channel((int)SoundChannel::expl_player);
+    alarm_snd_.set_channel((int)SoundChannel::alarm);
 
     // pre-calculate explosion data for speed
     for (auto& expl : precalc_norm_expl_) {

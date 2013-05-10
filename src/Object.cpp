@@ -257,63 +257,68 @@ const sdlc::Sprite& Object::sprite() const
 // Static Functions
 // -----------------------------------------------------------------------------
 
-ObjIndex Object::parse_obj_index(std::string type)
-{
-    ObjIndex object = NONE; 
-
-    if (type == "ENEMYSTD")      
-        object = ENEMYSTD;
-    else if (type == "ENEMYSIDEWAYS") 
-        object = ENEMYSIDEWAYS;
-    else if (type == "ENEMYRAMMER")   
-        object = ENEMYRAMMER;
-    else if (type == "ENEMYBONUS")    
-        object = ENEMYBONUS;
-    else if (type == "OBJECTBIGSHIP") 
-        object = OBJECTBIGSHIP;
-
-    // formations
-    else if (type == "ENEMYSTD_V_FORMATION")
-        object = ENEMYSTD_V_FORMATION;
-    else if (type == "ENEMYSTD_3V_FORMATION")
-        object = ENEMYSTD_3V_FORMATION;
-    else if (type == "ENEMYSTD_DIAGONAL_FORMATION")
-        object = ENEMYSTD_DIAGONAL_FORMATION;
-    else if (type == "ENEMYSTD_MASSIVE_FORMATION")
-        object = ENEMYSTD_MASSIVE_FORMATION;
-    else if (type == "ENEMYSIDEWAYS_VLINE_FORMATION")
-        object = ENEMYSIDEWAYS_VLINE_FORMATION;
-    else if (type == "ENEMYSIDEWAYS_HLINE_FORMATION")
-        object = ENEMYSIDEWAYS_HLINE_FORMATION;
-    else if (type == "ENEMYSIDEWAYS_V_FORMATION")
-        object = ENEMYSIDEWAYS_V_FORMATION;
-    else if (type == "ENEMYSIDEWAYS_MASSIVE_FORMATION")
-        object = ENEMYSIDEWAYS_MASSIVE_FORMATION;
-    else if (type == "ENEMYRAMMER_VLINE_FORMATION")
-        object = ENEMYRAMMER_VLINE_FORMATION;
-    else if (type == "ENEMYRAMMER_DIAGONAL_FORMATION")
-        object = ENEMYRAMMER_DIAGONAL_FORMATION;
-    else if (type == "ENEMYRAMMER_FULLDIAGONAL_FORMATION")
-        object = ENEMYRAMMER_FULLDIAGONAL_FORMATION;
-
-    assert(object != NONE);
-
-    return object;
-}
-
 bool Object::compare_type(const std::shared_ptr<IObject>& o1, 
                           const std::shared_ptr<IObject>& o2)
 {
     return o1->type() < o2->type();
 }
 
+ObjIndex Object::parse_obj_index(std::string type)
+{
+    ObjIndex object = ObjIndex::none; 
+
+    if (type == "ENEMYSTD")      
+        object = ObjIndex::enemystd;
+    else if (type == "ENEMYSIDEWAYS") 
+        object = ObjIndex::enemysideways;
+    else if (type == "ENEMYRAMMER")   
+        object = ObjIndex::enemyrammer;
+    else if (type == "ENEMYBONUS")    
+        object = ObjIndex::enemybonus;
+    else if (type == "OBJECTBIGSHIP") 
+        object = ObjIndex::objectbigship;
+
+    // formations
+    else if (type == "ENEMYSTD_V_FORMATION")
+        object = ObjIndex::enemystd_v_formation;
+    else if (type == "ENEMYSTD_3V_FORMATION")
+        object = ObjIndex::enemystd_3v_formation;
+    else if (type == "ENEMYSTD_DIAGONAL_FORMATION")
+        object = ObjIndex::enemystd_diagonal_formation;
+    else if (type == "ENEMYSTD_MASSIVE_FORMATION")
+        object = ObjIndex::enemystd_massive_formation;
+    else if (type == "ENEMYSIDEWAYS_VLINE_FORMATION")
+        object = ObjIndex::enemysideways_vline_formation;
+    else if (type == "ENEMYSIDEWAYS_HLINE_FORMATION")
+        object = ObjIndex::enemysideways_hline_formation;
+    else if (type == "ENEMYSIDEWAYS_V_FORMATION")
+        object = ObjIndex::enemysideways_v_formation;
+    else if (type == "ENEMYSIDEWAYS_MASSIVE_FORMATION")
+        object = ObjIndex::enemysideways_massive_formation;
+    else if (type == "ENEMYRAMMER_VLINE_FORMATION")
+        object = ObjIndex::enemyrammer_vline_formation;
+    else if (type == "ENEMYRAMMER_DIAGONAL_FORMATION")
+        object = ObjIndex::enemyrammer_diagonal_formation;
+    else if (type == "ENEMYRAMMER_FULLDIAGONAL_FORMATION")
+        object = ObjIndex::enemyrammer_fulldiagonal_formation;
+    else throw std::invalid_argument("Object::parse_obj_index(" + type + ")");
+
+    return object;
+}
+
+Owner Object::parse_owner(int player)
+{
+    return static_cast<Owner>((int)Owner::player1 + player - 1);
+}
+
 Owner Object::parse_owner(std::string player)
 {
-    Owner owner = OWNER_NONE;
+    Owner owner = Owner::none;
     if (player == "Player 1")
-        owner = OWNER_PLAYER1;
+        owner = Owner::player1;
     else if (player == "Player 2")
-        owner = OWNER_PLAYER2;
+        owner = Owner::player2;
+    else throw std::invalid_argument("Object::parse_owner(" + player + ")");
 
     return owner;
 }

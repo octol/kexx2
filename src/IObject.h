@@ -21,74 +21,58 @@
 
 #include "SDLc/Timer.h"
 
-enum Owner { 
-    OWNER_NONE,
-    OWNER_PLAYER1,
-    OWNER_PLAYER2,
-    OWNER_ENEMY 
+enum class Owner { 
+    none, player1, player2, enemy 
 };
 
-enum ObjType { 
-    OBJ_UNDEFINED, 
-    OBJ_PASSIVE,
-    OBJ_ENEMY,
-    OBJ_BONUS,
-    OBJ_PLAYER,
-    OBJ_PLAYERPASSIVE,
-    OBJ_SHOT 
+enum class ObjType { 
+    undefined, passive, enemy, bonus, player, playerpassive, shot 
 };
 
-enum ObjIndex {
-    NONE,
-    PLAYER1,
-    PLAYER2,
-    ENEMYSTD,
-    ENEMYSIDEWAYS,
-    ENEMYRAMMER,
-    ENEMYBONUS,
-    OBJECTBIGSHIP,
-    BONUSBLASTER,
-    BONUSROCKET,
+enum class ObjIndex {
+    none,
+    player1,
+    player2,
+    enemystd,
+    enemysideways,
+    enemyrammer,
+    enemybonus,
+    objectbigship,
+    bonusblaster,
+    bonusrocket,
 
     // shots
-    SHOTBLASTER,
-    SHOTBLASTERBIG,
-    SHOTROCKET,
-    SHOTBOMBFRAGMENT,
-    SHOTENEMYSTD,
+    shotblaster,
+    shotblasterbig,
+    shotrocket,
+    shotbombfragment,
+    shotenemystd,
 
     // misc
-    SMOKETRAIL,
+    smoketrail,
 
     // formations
-    ENEMYSTD_V_FORMATION,
-    ENEMYSTD_3V_FORMATION,
-    ENEMYSTD_DIAGONAL_FORMATION,
-    ENEMYSTD_MASSIVE_FORMATION,
+    enemystd_v_formation,
+    enemystd_3v_formation,
+    enemystd_diagonal_formation,
+    enemystd_massive_formation,
 
-    ENEMYSIDEWAYS_VLINE_FORMATION,
-    ENEMYSIDEWAYS_HLINE_FORMATION,
-    ENEMYSIDEWAYS_V_FORMATION,
-    ENEMYSIDEWAYS_MASSIVE_FORMATION,
+    enemysideways_vline_formation,
+    enemysideways_hline_formation,
+    enemysideways_v_formation,
+    enemysideways_massive_formation,
 
-    ENEMYRAMMER_VLINE_FORMATION,
-    ENEMYRAMMER_DIAGONAL_FORMATION,
-    ENEMYRAMMER_FULLDIAGONAL_FORMATION
+    enemyrammer_vline_formation,
+    enemyrammer_diagonal_formation,
+    enemyrammer_fulldiagonal_formation
 };
 
-enum ObjSnd {
-    SND_SHOTBLASTER,
-    SND_SHOTROCKET
+enum class ObjSnd {
+    blaster, rocket
 };
 
-enum SoundChannel { 
-    SND_DIV,
-    SND_W_BLASTER,
-    SND_W_ROCKET,
-    SND_EXPL_SMALL,
-    SND_EXPL_BIG,
-    SND_EXPL_PLAYER,
-    SND_ALARM 
+enum class SoundChannel { 
+    div, w_blaster, w_rocket, expl_small, expl_big, expl_player, alarm 
 };
 
 class ObjectManager;

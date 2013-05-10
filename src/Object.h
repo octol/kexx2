@@ -102,6 +102,7 @@ public:
                              const std::shared_ptr<IObject>& o2);
 
     static ObjIndex parse_obj_index(std::string type);
+    static Owner parse_owner(int);
     static Owner parse_owner(std::string type);
 
     static sdlc::Surface create_hit_img(const sdlc::Surface&);
@@ -117,7 +118,7 @@ protected:
 
 private:
     std::string name_ = "Generic object";
-    ObjType type_ = OBJ_UNDEFINED;
+    ObjType type_ = ObjType::undefined;
     bool active_ = false;
     int energy_ = 0;
     int energy_max_ = 0;
@@ -126,7 +127,7 @@ private:
     float activation_y_vel_ = 0;
 
     int score_ = 0;
-    Owner owner_ = OWNER_NONE;
+    Owner owner_ = Owner::none;
 };
 
 // -----------------------------------------------------------------------------

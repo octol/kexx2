@@ -53,9 +53,9 @@ private:
     std::array<sdlc::Surface,10> bg_data_;
     sdlc::Music bg_music_;
 
-    enum State { ROOT, OPTIONS, EXIT };
+    enum class State { root, options, exit };
 
-    State which_menu_ = ROOT;
+    State which_menu_ = State::root;
 
     struct Selector {
         sdlc::Surface gfx;

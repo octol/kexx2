@@ -26,7 +26,7 @@
 
 EnemyBonus::EnemyBonus(std::string name, int energy, 
                        sdlc::Surface& s, sdlc::Surface& hit_s)
-    : Object(name, energy, s, hit_s, OBJ_ENEMY)
+    : Object(name, energy, s, hit_s, ObjType::enemy)
 {
     set_score(0);
 }
@@ -49,7 +49,7 @@ void EnemyBonus::kill(ObjectManager& object_manager, FxManager& fx_manager)
 
     fx_manager.explode_normal(cx, cy);
 
-    int type = (rand() % 1) + BONUSBLASTER;
-    object_manager.create_object(cx, cy, 0, 0, (ObjIndex)type, OWNER_NONE);
+    int type = (rand() % 1) + (int)ObjIndex::bonusblaster;
+    object_manager.create_object(cx, cy, 0, 0, (ObjIndex)type, Owner::none);
 }
 

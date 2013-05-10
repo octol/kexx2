@@ -71,7 +71,7 @@ bool LevelManager::parse_level(std::string level_name,
             level_file >> x;
             level_file >> y;
 
-            object_manager.create_object(x, -y, 0.0f, 0.0f, obj, OWNER_NONE);
+            object_manager.create_object(x, -y, 0.0f, 0.0f, obj, Owner::none);
         }
     }
 

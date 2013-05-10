@@ -48,13 +48,13 @@ public:
 
     std::list<std::shared_ptr<IObject>> list;       // object list
     // TODO: replace c-style array
-    sdlc::Surface obj[ENEMYSTD_V_FORMATION];        // object graphics
-    sdlc::Surface obj_hit[ENEMYSTD_V_FORMATION];    // object hit graphics
-    sdlc::Sound snd[SND_SHOTROCKET + 1];            // object sound
+    sdlc::Surface obj[(int)ObjIndex::enemystd_v_formation];        // object graphics
+    sdlc::Surface obj_hit[(int)ObjIndex::enemystd_v_formation];    // object hit graphics
+    sdlc::Sound snd[(int)ObjSnd::rocket + 1];            // object sound
 
 private:
     std::shared_ptr<IObject> allocate_object(ObjIndex object, Owner owner);
-    void create_formation(int x, int y, float x_vel, float y_vel, enum ObjIndex);
+    void create_formation(int x, int y, float x_vel, float y_vel, ObjIndex);
 
     std::unique_ptr<Weapon> create_main_weapon(int player, PlayerState);
     std::unique_ptr<Weapon> create_extra_weapon(int player, PlayerState);

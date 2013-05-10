@@ -34,7 +34,7 @@
 // -----------------------------------------------------------------------------
 
 BuyScreen::BuyScreen(Options& options, PlayerState& player_state, int current_level)
-    : IGameState(ENV_BUYSCREEN),
+    : IGameState(EnvironmentType::buyscreen),
       player_state_(player_state),
       current_level_(current_level),
       num_of_players_(options.num_of_players())

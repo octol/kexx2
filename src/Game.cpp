@@ -95,7 +95,7 @@ void Game::run_logic(sdlc::Input& input, sdlc::Timer& timer, sdlc::Mixer& mixer)
     // here we decide which Game state that should be used
     if (game_state_ && game_state_->done()) {
         switch (game_state_->type()) {
-        case ENV_MENU:
+        case EnvironmentType::menu:
             current_level_ = 1;
             if (player_state.anyone_alive())
                 game_state_ = std::unique_ptr<World>(new World(mixer, timer, options, player_state, current_level_));
@@ -103,11 +103,11 @@ void Game::run_logic(sdlc::Input& input, sdlc::Timer& timer, sdlc::Mixer& mixer)
                 set_done(true);
             break;
 
-        case ENV_BUYSCREEN:
+        case EnvironmentType::buyscreen:
             game_state_ = std::unique_ptr<World> (new World(mixer, timer, options, player_state, current_level_));
             break;
 
-        case ENV_WORLD:
+        case EnvironmentType::world:
             current_level_++;
 
             // game complete
@@ -132,7 +132,7 @@ void Game::run_logic(sdlc::Input& input, sdlc::Timer& timer, sdlc::Mixer& mixer)
     }
 
     // abort in world
-    if (game_state_ && game_state_->type() == ENV_WORLD) {
+    if (game_state_ && game_state_->type() == EnvironmentType::world) {
         if (input.key_pressed(SDLK_ESCAPE, sdlc::AutofireKeystate::off)) {
             player_state.kill_all();
             game_state_ = std::unique_ptr<Menu>(new Menu(mixer, options));

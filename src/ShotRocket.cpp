@@ -64,7 +64,7 @@ void ShotRocket::kill(ObjectManager& object_manager, FxManager& fx_manager)
         float center_x = x() + (float)width() / 2.0f;
         float center_y = y() + (float)height() / 2.0f;
         object_manager.create_object((int)center_x, (int)center_y, 
-                SHOTBOMBFRAGMENT, vel, angle, owner());
+                ObjIndex::shotbombfragment, vel, angle, owner());
     }
 }
 

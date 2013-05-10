@@ -27,7 +27,7 @@
 WeaponBlaster::WeaponBlaster(sdlc::Sound& sound, Owner owner) : Weapon(sound)
 {
     //shot_snd_.link(&sound);
-    shot_snd_.set_channel((int)SND_W_BLASTER);
+    shot_snd_.set_channel((int)SoundChannel::w_blaster);
     set_owner(owner);
 
     set_level(1);
@@ -46,31 +46,31 @@ void WeaponBlaster::shoot(int x, int y, ObjectManager& object_manager)
         switch (level()) {
         case 1:
             object_manager.create_object(x, y, 0, -500.0f, 
-                    SHOTBLASTER, owner());
+                    ObjIndex::shotblaster, owner());
             break;
         case 2:
             object_manager.create_object(x - 7, y + 7, 0, -500.0f, 
-                    SHOTBLASTER, owner());
+                    ObjIndex::shotblaster, owner());
             object_manager.create_object(x + 7, y + 7, 0, -500.0f, 
-                    SHOTBLASTER, owner());
+                    ObjIndex::shotblaster, owner());
             break;
         case 3:
             object_manager.create_object(x - 10, y + 7, -10.0f, -500.0f, 
-                    SHOTBLASTER, owner());
+                    ObjIndex::shotblaster, owner());
             object_manager.create_object(x, y, 0, -500.0f, 
-                    SHOTBLASTERBIG, owner());
+                    ObjIndex::shotblasterbig, owner());
             object_manager.create_object(x + 10, y + 7,  10.0f, -500.0f, 
-                    SHOTBLASTER, owner());
+                    ObjIndex::shotblaster, owner());
             break;
         case 4:
             object_manager.create_object(x - 14, y + 7, -50.0f, -500.0f, 
-                    SHOTBLASTER, owner());
+                    ObjIndex::shotblaster, owner());
             object_manager.create_object(x + 14, y + 7,  50.0f, -500.0f, 
-                    SHOTBLASTER, owner());
+                    ObjIndex::shotblaster, owner());
             object_manager.create_object(x - 10, y, 0, -500.0f, 
-                    SHOTBLASTERBIG, owner());
+                    ObjIndex::shotblasterbig, owner());
             object_manager.create_object(x + 10, y, 0, -500.0f, 
-                    SHOTBLASTERBIG, owner());
+                    ObjIndex::shotblasterbig, owner());
             break;
         default:
             break;

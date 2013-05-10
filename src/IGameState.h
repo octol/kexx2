@@ -29,14 +29,8 @@
 
 class PlayerState;
 
-enum EnvironmentType { 
-    ENV_NONE, 
-    ENV_INTRO, 
-    ENV_FINISHED, 
-    ENV_MENU, 
-    ENV_WORLD, 
-    ENV_BUYSCREEN, 
-    ENV_GAMEOVER 
+enum class EnvironmentType { 
+    none, intro, finished, menu, world, buyscreen, gameover 
 };
 
 class IGameState {
@@ -53,7 +47,7 @@ public:
     virtual bool done() const;
 
 protected:
-    const EnvironmentType env_type_ = ENV_NONE;
+    const EnvironmentType env_type_ = EnvironmentType::none;
     bool done_ = false;
 };
 

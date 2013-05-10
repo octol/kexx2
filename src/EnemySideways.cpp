@@ -27,7 +27,7 @@
 
 EnemySideways::EnemySideways(std::string name, int energy, int score, 
                              sdlc::Surface& s, sdlc::Surface& hit_s)
-    : Object(name, energy, s, hit_s, OBJ_ENEMY),
+    : Object(name, energy, s, hit_s, ObjType::enemy),
       left_(false), 
       time_when_last_shot_(0)
 {
@@ -73,8 +73,9 @@ void EnemySideways::think(ObjectManager& object_manager, FxManager& fx_manager)
         if (timer->ticks() - time_when_last_shot_ > 2000) {
             int cx = x() + width() / 2;
             int cy = y() + height() / 2;
-            object_manager.create_object(cx, cy, 0, 200.0f, SHOTENEMYSTD, 
-                                         OWNER_ENEMY);
+            object_manager.create_object(cx, cy, 0, 200.0f, 
+                                         ObjIndex::shotenemystd, 
+                                         Owner::enemy);
             time_when_last_shot_ = timer->ticks();
         }
     }

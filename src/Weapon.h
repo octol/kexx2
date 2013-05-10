@@ -54,7 +54,7 @@ private:
     int count_ = 0;
     int level_ = 0;
     unsigned time_when_last_shot_ = 0;
-    Owner owner_ = OWNER_NONE;
+    Owner owner_ = Owner::none;
 };
 
 // -----------------------------------------------------------------------------

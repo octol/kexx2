@@ -36,7 +36,7 @@
 // -----------------------------------------------------------------------------
 
 Menu::Menu(sdlc::Mixer& mixer, Options& options) 
-    : IGameState(ENV_MENU), options_(options)
+    : IGameState(EnvironmentType::menu), options_(options)
 {
     load_data(mixer);
 }
@@ -71,21 +71,21 @@ void Menu::run_logic(sdlc::Input& input, sdlc::Timer& timer, sdlc::Mixer& mixer,
     // limits
     if (selector_.pos < 0) 
         selector_.pos = 0;
-    if (which_menu_ == ROOT && selector_.pos > 2)
+    if (which_menu_ == State::root && selector_.pos > 2)
         selector_.pos = 2;
-    else if (which_menu_ == OPTIONS && selector_.pos > 3)
+    else if (which_menu_ == State::options && selector_.pos > 3)
         selector_.pos = 3;
 
     // when return is pressed
     if (input.key_pressed(SDLK_RETURN, sdlc::AutofireKeystate::off)) {
-        if (which_menu_ == ROOT) 
+        if (which_menu_ == State::root) 
             root_menu_logic(timer, mixer, player_state);
-        else if (which_menu_ == OPTIONS)
+        else if (which_menu_ == State::options)
             options_menu_logic();
     }
 
     // exit screen
-    if (which_menu_ == EXIT && timer.ticks() - exit_timer_ > 3000)
+    if (which_menu_ == State::exit && timer.ticks() - exit_timer_ > 3000)
         done_ = true;
 
     // set option strings
@@ -103,16 +103,16 @@ void Menu::draw(sdlc::Screen& screen, sdlc::Font& font)
 
     screen.blit(0, 0, bg_data_[rand() % 10]);
 
-    if (which_menu_ != EXIT) {
+    if (which_menu_ != State::exit) {
         screen.blit(150, 60, logo_);
         screen.blit(230, 200 + selector_.pos * 30, selector_.gfx);
     }
 
-    if (which_menu_ == ROOT) {
+    if (which_menu_ == State::root) {
         draw_root_screen(screen, font);
-    } else if (which_menu_ == OPTIONS) {
+    } else if (which_menu_ == State::options) {
         draw_options_screen(screen, font);
-    } else if (which_menu_ == EXIT) {
+    } else if (which_menu_ == State::exit) {
         draw_exit_screen(screen, font);
     } else {
         std::cout << "Menu::draw() undefined 'which_menu'" << std::endl;
@@ -141,11 +141,11 @@ void Menu::root_menu_logic(sdlc::Timer& timer, sdlc::Mixer& mixer,
 
         done_ = true;
     } else if (selector_.pos == 1) {
-        which_menu_ = OPTIONS;
+        which_menu_ = State::options;
         selector_.pos = 0;
     } else if (selector_.pos == 2) {
         player_state.kill_all();
-        which_menu_ = EXIT;
+        which_menu_ = State::exit;
         exit_timer_ = timer.ticks();
         mixer.fade_out_music(3000);
     }
@@ -177,7 +177,7 @@ void Menu::options_menu_logic()
     } else if (selector_.pos == 2) {
         options_.set_fps_counter(!options_.fps_counter());
     } else if (selector_.pos == 3) {
-        which_menu_ = ROOT;
+        which_menu_ = State::root;
         selector_.pos = 1;
     }
 }

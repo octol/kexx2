@@ -25,7 +25,7 @@
 // -----------------------------------------------------------------------------
 
 Finished::Finished(Options& options, PlayerState& player_state)
-    : IGameState(ENV_FINISHED)
+    : IGameState(EnvironmentType::finished)
 {
     UNUSED(player_state);
     finished_snd_.load(options.data_path + "soundfx/gamecomplete.wav");

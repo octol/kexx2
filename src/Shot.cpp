@@ -28,12 +28,12 @@
 // Construction/Destruction
 // -----------------------------------------------------------------------------
 
-Shot::Shot() : Object("Generic Shot", 1, OBJ_SHOT)
+Shot::Shot() : Object("Generic Shot", 1, ObjType::shot)
 {
 }
 
 Shot::Shot(std::string n, int _energy, sdlc::Surface& s, Owner _owner)
-   : Object(n, _energy, s, OBJ_SHOT)
+   : Object(n, _energy, s, ObjType::shot)
 {
     set_owner(_owner);
 }
@@ -45,8 +45,9 @@ Shot::Shot(std::string n, int _energy, sdlc::Surface& s, Owner _owner)
 void Shot::check_collisions(ObjectManager& object_manager, 
                             FxManager& fx_manager)
 {
-    if (owner() >= OWNER_PLAYER1 
-            && owner() <= OWNER_PLAYER1 + NUM_OF_POSSIBLE_PLAYERS - 1) {
+    if (owner() >= Owner::player1 
+            && static_cast<int>(owner()) < 
+               static_cast<int>(Owner::player1) + NUM_OF_POSSIBLE_PLAYERS) {
 
         // 1) Check collision:  friendly fire <-> enemies 
         
@@ -62,7 +63,7 @@ void Shot::check_collisions(ObjectManager& object_manager,
             SDL_Rect shot_rect = reduced_rect();
             SDL_Rect object_rect = object->rect();
 
-            if (object->type() == OBJ_ENEMY && object->energy() && 
+            if (object->type() == ObjType::enemy && object->energy() && 
                     sdlc::overlap(shot_rect, object_rect)) {
                 object->hurt(energy(), object_manager, fx_manager);
                 if (!object->energy() && owner_player)
@@ -70,7 +71,7 @@ void Shot::check_collisions(ObjectManager& object_manager,
 
                 // let the shot kill itself
                 kill(object_manager, fx_manager);
-            } else if (object->type() == OBJ_SHOT) // optimization
+            } else if (object->type() == ObjType::shot) // optimization
                 break;
         }
     } else {
@@ -81,13 +82,13 @@ void Shot::check_collisions(ObjectManager& object_manager,
             SDL_Rect shot_rect = reduced_rect();
             SDL_Rect object_rect = current->rect();
 
-            if (current->type() == OBJ_PLAYER && current->energy() && 
+            if (current->type() == ObjType::player && current->energy() && 
                     sdlc::overlap(shot_rect, object_rect)) {
                 current->hurt(energy(), object_manager, fx_manager);
 
                 // left the shot kill itself
                 kill(object_manager, fx_manager);
-            } else if (current->type() == OBJ_SHOT) // optimization
+            } else if (current->type() == ObjType::shot) // optimization
                 break;
         }
     }

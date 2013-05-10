@@ -30,14 +30,14 @@
 
 World::World(sdlc::Mixer& mixer, sdlc::Timer& timer, Options& options, 
              PlayerState& player_state, int level)
-    : IGameState(ENV_WORLD),
+    : IGameState(EnvironmentType::world),
       num_of_players_(options.num_of_players()),
       current_level_(level),
       bg_music_(options.data_path + "music/bgmusic1.xm"),
       //game_over_snd_(options.data_path + "soundfx/die.wav"),
       level_complete_snd_(options.data_path + "soundfx/levelcomplete.wav"),
       entering_level_snd_(options.data_path + "soundfx/newlevel.wav"),
-      state_(State::ENTERING, timer)
+      state_(State::Transition::entering, timer)
 {
 #ifdef DEBUG_LOG
     std::cerr << "World::World()" << std::endl;
@@ -86,21 +86,21 @@ void World::run_logic(sdlc::Input& input, sdlc::Timer& timer,
     state_ = transition_state(state_);
 
     // Run state dependent logic
-    if (state_ == State::ENTERING) {
+    if (state_ == State::Transition::entering) {
         show_text_ = SHOW_TEXT;  
-    } else if (state_ == State::IN_GAME) {
+    } else if (state_ == State::Transition::in_game) {
         if (state_.time_since_transition() < 2000) {
             show_text_ = state_.time_since_transition() % TEXT_PERIOD_TIME; 
         } else { 
             show_text_ = 0; 
         }
-    } else if (state_ == State::COMPLETE) {
+    } else if (state_ == State::Transition::complete) {
         show_text_ = state_.time_since_transition() % TEXT_PERIOD_TIME; 
         if (state_.time_since_transition() > 3500)
            done_ = true;
         else if (state_.time_since_transition() > 2000)
             show_text_ = SHOW_TEXT;
-    } else if (state_ == State::DEAD) {
+    } else if (state_ == State::Transition::dead) {
         show_text_ = state_.time_since_transition() % TEXT_PERIOD_TIME; 
         if (state_.time_since_transition() > 4000)
            done_ = true;
@@ -120,13 +120,13 @@ void World::draw(sdlc::Screen& screen, sdlc::Font& font)
 
     std::string lvl = std::to_string(current_level_);
 
-    if ((state_ == State::ENTERING || state_ == State::IN_GAME) && show_text) {
+    if ((state_ == State::Transition::entering || state_ == State::Transition::in_game) && show_text) {
         screen.print(200, 200, "entering level " + lvl, font);
         screen.print(200, 235, "ctrl for blaster", font);
         screen.print(200, 255, "shift for rockets", font);
-    } else if (state_ == State::COMPLETE && show_text) {
+    } else if (state_ == State::Transition::complete && show_text) {
         screen.print(220, 200, "level complete!", font);
-    } else if (state_ == State::DEAD && show_text) {
+    } else if (state_ == State::Transition::dead && show_text) {
         screen.print(250, 200, "terminated!", font);
     }
 }
@@ -140,16 +140,16 @@ State World::transition_state(State state)
     bool all_players_dead = object_manager_.num_of_players_alive() == 0;
 
     // Transition state
-    if (state == State::ENTERING) {
+    if (state == State::Transition::entering) {
         if (state.time_since_transition() > 1000) {
-            state.transition_to(State::IN_GAME);
+            state.transition_to(State::Transition::in_game);
         }
-    } else if (state == State::IN_GAME) {
+    } else if (state == State::Transition::in_game) {
         if (object_manager_.num_of_enemies() == 0 && !all_players_dead) {
-            state.transition_to(State::COMPLETE);
+            state.transition_to(State::Transition::complete);
             level_complete_snd_.play(0);
         } else if (all_players_dead) {
-            state.transition_to(State::DEAD);
+            state.transition_to(State::Transition::dead);
             //game_over_snd_.play(0);
         }
     }
