@@ -7,7 +7,7 @@ AC_INIT([Kexx2],
         [1.0.9],
         [jon@haeggblad.com],
         [kexx2],
-        [http://github.com/octol/kexx2])
+        [http://www.haeggblad.com/kexx2])
 AC_CONFIG_AUX_DIR([.])
 AC_CONFIG_SRCDIR([README])
 AC_CONFIG_MACRO_DIR([m4])
@@ -33,6 +33,7 @@ AC_LANG_POP([C++])
 BOOST_REQUIRE([1.49])
 BOOST_STRING_ALGO
 BOOST_PROGRAM_OPTIONS
+BOOST_FILESYSTEM
 
 #-------------------------------------------------------------------------------
 # Add development flags.
@@ -101,7 +102,7 @@ LIBS="$LIBS -lSDL_image"
 #-------------------------------------------------------------------------------
 # Check for SDLc
 #-------------------------------------------------------------------------------
-PKG_CHECK_MODULES([LIBSDLC], [libsdlc-0.5.1 >= 0.5.1])
+PKG_CHECK_MODULES([LIBSDLC], [libsdlc-0.5.2 >= 0.5.2])
 
 #-------------------------------------------------------------------------------
 # Finally create all the generated files

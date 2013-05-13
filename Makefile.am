@@ -2,8 +2,8 @@ ACLOCAL_AMFLAGS = -I m4
 SUBDIRS = src
 #SUBDIRS = src tests
 
-kexx2dir = $(datadir)/kexx2
-dist_kexx2_DATA = data/kexx2.cfg
+#kexx2dir = $(datadir)/kexx2
+#dist_kexx2_DATA = data/kexx2.cfg
 
 fontdir = $(datadir)/kexx2/fonts
 dist_font_DATA = data/fonts/font1.bmp

@@ -23,6 +23,8 @@
 #include "Game.h"
 #include "Defines.h"
 
+#include "config.h"
+
 #include "boost/program_options.hpp"
 
 // TODO: remove global system classes
@@ -32,10 +34,11 @@ sdlc::Input* input;
 sdlc::Mixer* mixer;
 
 void print_fps_counter(sdlc::Screen&, sdlc::Timer&);
+std::string version_info();
 
 int main(int argc, char* argv[])
 {
-    std::string data_path = DEFAULT_DATA_PATH;
+    std::string data_path;
 
     // Parse command line options
     try {
@@ -43,11 +46,13 @@ int main(int argc, char* argv[])
         po::options_description desc("Allowed options");
         desc.add_options()
             ("help,h", "produce help message")
+            ("version,v", "print version number")
             ("data,d", po::value<std::string>(&data_path), "path to data resources");
         po::variables_map vm;
 
         try {
             po::store(po::parse_command_line(argc, argv, desc), vm);
+            // --help
             if (vm.count("help")) {
                 std::cout << desc << std::endl;
                 return EXIT_SUCCESS;
@@ -62,10 +67,21 @@ int main(int argc, char* argv[])
             std::cerr << "Error: " << e.what() << std::endl;
             return EXIT_FAILURE;
         }
+
+        // --version
+        if (vm.count("version")) {
+            std::cout << version_info();
+            return EXIT_SUCCESS;
+        }
+
     } catch(const std::exception& e) {
         std::cerr << "Error parsing command line options." << std::endl;
         return EXIT_FAILURE;
     }
+
+    // add a trailing slash if needed.
+    if (data_path != "" && *(--end(data_path)) != '/') 
+        data_path += "/";
 
     // System subsystems
     sdlc::init();
@@ -75,9 +91,20 @@ int main(int argc, char* argv[])
     mixer = new sdlc::Mixer;
     
     auto kexx2 = std::unique_ptr<Game>(new Game);
-    kexx2->load_options(data_path);
-    kexx2->setup_environment(*screen, *timer, *mixer);
-    kexx2->start(*mixer);
+    try {
+        kexx2->load_options(data_path);
+        kexx2->setup_environment(*screen, *timer, *mixer);
+        kexx2->start(*mixer);
+    } catch (const std::exception& e) {
+        std::cerr << "Failed to initialize, quitting..." << std::endl;
+        kexx2.reset();
+        delete mixer;
+        delete input;
+        delete timer;
+        delete screen;
+        sdlc::quit();
+        return EXIT_FAILURE;
+    }
 
     while (!kexx2->done()) {
         input->update();
@@ -107,7 +134,7 @@ int main(int argc, char* argv[])
     delete timer;
     delete screen;
     sdlc::quit();
-    return 0;
+    return EXIT_SUCCESS;
 }
 
 void print_fps_counter(sdlc::Screen& screen_, sdlc::Timer& timer_)
@@ -120,3 +147,16 @@ void print_fps_counter(sdlc::Screen& screen_, sdlc::Timer& timer_)
     }
     screen_.print(5, 5, "FPS: " + std::to_string(FPS), 255, 255, 255);
 }
+
+std::string version_info() 
+{
+    std::string str(PACKAGE_STRING);
+    str += "\nCopyright (C) Jon Haggblad 2001, 2013 <";
+    str += std::string(PACKAGE_BUGREPORT) + ">\n";
+    str += std::string(PACKAGE_URL) + "\n\n";
+    str += "License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\n";
+    str += "This is free software; you are free to change and redistribute it.\n";
+    str += "There is NO WARRANTY, to the extent permitted by law.\n";
+    return str;
+}
+

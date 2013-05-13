@@ -16,21 +16,17 @@
 //    You should have received a copy of the GNU General Public License
 //    along with Kexx2.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef KEXX2_DEFINES_H
-#define KEXX2_DEFINES_H
+#ifndef KEXX2_ENUMHASH_H
+#define KEXX2_ENUMHASH_H
 
-#include <string>
+template<class T>
+struct EnumHash {
+    std::size_t operator() (T c) const {
+        return std::hash<int>()( int(c) );
+    }
+    bool operator() (T a, T b) const {
+        return int(a) == int(b);
+    };
+};
 
-#define UNUSED(x) ((void)x)
-#define TESTING
-
-//const std::string DEFAULT_DATA_PATH = "/usr/local/share/kexx2/";
-const std::string DATA_PATH = std::string(DATADIR) + "/kexx2/";
-const std::string CONFIG_FILE = std::string(getenv("HOME")) + "/.config/kexx2.conf";
-const int SCREEN_WIDTH = 640;
-const int SCREEN_HEIGHT = 480;
-
-const float SCROLLING_SPEED = 50.0f; 
-const int NUM_OF_POSSIBLE_PLAYERS = 2;
-
-#endif // KEXX2_DEFINES_H
+#endif // KEXX2_ENUMHASH_H

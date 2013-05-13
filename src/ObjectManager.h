@@ -25,6 +25,7 @@
 #include "SDLc.h"
 #include "Defines.h"
 #include "IObject.h"
+#include "EnumHash.h"
 
 class FxManager;
 class PlayerState;
@@ -32,17 +33,8 @@ class Weapon;
 
 // Hash functions so that we can use enum classes as keys for
 // std::unordered_map<T>
-template<class T>
-struct enum_hash {
-    std::size_t operator() (T c) const {
-        return std::hash<int>()( int(c) );
-    }
-    bool operator() (T a, T b) const {
-        return int(a) == int(b);
-    };
-};
-typedef enum_hash<ObjIndex> OHash;
-typedef enum_hash<ObjSnd> SHash;
+typedef EnumHash<ObjIndex> OHash;
+typedef EnumHash<ObjSnd> SHash;
 
 class ObjectManager final {
 public:

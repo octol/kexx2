@@ -22,6 +22,7 @@
 #include <iostream>
 #include <vector>
 #include <boost/algorithm/string.hpp>
+#include <boost/filesystem.hpp>
 
 void Options::load(std::string path)
 {
@@ -32,7 +33,7 @@ void Options::load(std::string path)
 
     std::ifstream file(path);
     if (!file) {
-        std::cerr << path << " not found" << std::endl;
+        std::clog << "Note: " << path << " not found, using defaults." << std::endl;
     } else {
         while (std::getline(file, line)) {
             std::vector<std::string> strs;
@@ -67,6 +68,9 @@ void Options::write(std::string path)
     int file_fps_counter = fps_counter() ? 1 : 0; 
 
     // write the information to disk
+    if (!boost::filesystem::exists(path)) {
+        std::clog << "Creating new using default values: " << path << std::endl;
+    }
     std::ofstream options_file(path.c_str());
     if (!options_file) {
         std::cerr << "Error writing to: " << path << std::endl;
@@ -74,7 +78,7 @@ void Options::write(std::string path)
         options_file << "players=" << file_players << "\n";
         options_file << "fullscreen=" << file_fullscreen << "\n";
         options_file << "fps_counter=" << file_fps_counter << "\n";
-        if (data_path != DEFAULT_DATA_PATH) 
+        if (data_path != DATA_PATH) 
             options_file << "data_path=" << data_path << "\n";
     }
     options_file.close();

@@ -38,13 +38,21 @@
 void Game::load_options(std::string data_path)
 {
 #ifndef WIN32
-    options.load(std::string(getenv("HOME")) + "/.config/kexx2.conf");
-    options.data_path = data_path;
-    //if (options.data_path == "") 
-        //options.data_path = DEFAULT_DATA_PATH;
+    //options.load(std::string(getenv("HOME")) + "/.config/kexx2.conf");
+    options.load(CONFIG_FILE);
+
+    // If data_path was specified on the commandline we use that one
+    // instead.
+    if (!data_path.empty())
+        options.data_path = data_path;
+
+    // If data_path still is empty, then use compile time path.
+    if (options.data_path.empty()) 
+        options.data_path = DATA_PATH;
+
 #endif
 #ifdef WIN32
-    //options.data_path = "../data/";
+    // TODO: Windows support not yet implemented.
     assert(false);
 #endif
 }
@@ -52,9 +60,11 @@ void Game::load_options(std::string data_path)
 void Game::write_options()
 {
 #ifndef WIN32
-    options.write(std::string(getenv("HOME")) + "/.config/kexx2.conf");
+    //options.write(std::string(getenv("HOME")) + "/.config/kexx2.conf");
+    options.write(CONFIG_FILE);
 #endif
 #ifdef WIN32
+    // TODO: Windows support not yet implemented.
     assert(false);
 #endif
 }
@@ -80,7 +90,17 @@ void Game::setup_environment(sdlc::Screen& screen, sdlc::Timer& timer,
     screen.set_caption("Kexx 2 " + std::string(VERSION));
     screen.show_cursor(false);
 
-    main_font_.load(options.data_path + "fonts/font1.bmp");
+    try {
+        main_font_.load(options.data_path + "fonts/font1.bmp");
+    } catch (const std::runtime_error& e) {
+        std::cerr << e.what() << std::endl << std::endl;
+        std::cerr << "If the game data is not found in the default location";
+        std::cerr << " you need to specify the data path on the command line";
+        std::cerr << " with --data." << std::endl;
+        std::cerr << "If you are running Kexx2 without installing you probably want to run:" << std::endl;
+        std::cerr << "  src/kexx2 --data \"data/\"" << std::endl << std::endl;
+        throw;
+    }
 
     timer.delay(500);
 }

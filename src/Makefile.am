@@ -1,6 +1,6 @@
-AM_CPPFLAGS = $(LIBSDLC_CFLAGS) $(BOOST_CPPFLAGS)
-AM_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS)
-LDADD = $(LIBSDLC_LIBS) $(BOOST_PROGRAM_OPTIONS_LIBS)
+AM_CPPFLAGS = $(LIBSDLC_CFLAGS) $(BOOST_CPPFLAGS) -DDATADIR='"$(datadir)"'
+AM_LDFLAGS = $(BOOST_PROGRAM_OPTIONS_LDFLAGS) $(BOOST_FILESYSTEM_LDFLAGS) $(BOOST_SYSTEM_LDFLAGS)
+LDADD = $(LIBSDLC_LIBS) $(BOOST_PROGRAM_OPTIONS_LIBS) $(BOOST_FILESYSTEM_LIBS) $(BOOST_SYSTEM_LIBS)
 
 bin_PROGRAMS = kexx2
 
@@ -11,6 +11,7 @@ kexx2_SOURCES = \
 	EnemyRammer.cpp EnemyRammer.h \
 	EnemySideways.cpp EnemySideways.h \
 	EnemyStandard.cpp EnemyStandard.h \
+	EnumHash.h \
 	Finished.cpp Finished.h \
 	FxManager.cpp FxManager.h \
 	Game.cpp Game.h \

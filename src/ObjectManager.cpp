@@ -213,12 +213,10 @@ int ObjectManager::num_of_players_alive()
 // Private Functions
 // -----------------------------------------------------------------------------
 
-// TODO: remove naked new.
-
 std::shared_ptr<IObject> 
 ObjectManager::allocate_object(ObjIndex object, Owner owner)
 {
-    IObject* new_obj = nullptr;
+    std::shared_ptr<IObject> new_obj;
     sdlc::Surface& gfx = obj[object];
     sdlc::Surface& hit_gfx = obj_hit[object];
 
@@ -226,55 +224,55 @@ ObjectManager::allocate_object(ObjIndex object, Owner owner)
 
     // enemies
     case ObjIndex::enemystd:
-        new_obj = new EnemyStandard("Standard Enemy", 5, 52, gfx, hit_gfx, SCROLLING_SPEED);
+        new_obj = std::make_shared<EnemyStandard>("Standard Enemy", 5, 52, gfx, hit_gfx, SCROLLING_SPEED);
         break;
     case ObjIndex::enemysideways:
-        new_obj = new EnemySideways("Sideways Enemy", 3, 71, gfx, hit_gfx);
+        new_obj = std::make_shared<EnemySideways>("Sideways Enemy", 3, 71, gfx, hit_gfx);
         break;
     case ObjIndex::enemyrammer:
-        new_obj = new EnemyRammer("Rammer Enemy", 2, 43, gfx, hit_gfx);
+        new_obj = std::make_shared<EnemyRammer>("Rammer Enemy", 2, 43, gfx, hit_gfx);
         break;
     case ObjIndex::enemybonus:
-        new_obj = new EnemyBonus("Bonus Enemy", 10, gfx, hit_gfx);
+        new_obj = std::make_shared<EnemyBonus>("Bonus Enemy", 10, gfx, hit_gfx);
         new_obj->init_animation(50, 2, 0);
         break;
 
     // passive objects
     case ObjIndex::objectbigship:
-        new_obj = new Object("Object Bigship", 5, 0, gfx, ObjType::passive,  10.0f);
+        new_obj = std::make_shared<Object>("Object Bigship", 5, 0, gfx, ObjType::passive,  10.0f);
         new_obj->init_animation(40, 2, 0);
         break;
 
     // bonuses
     case ObjIndex::bonusblaster:
-        new_obj = new Object("Blaster Bonus", 1, 0, gfx, ObjType::bonus,  20.0f);
+        new_obj = std::make_shared<Object>("Blaster Bonus", 1, 0, gfx, ObjType::bonus,  20.0f);
         new_obj->init_animation(40, 3, 0);
         break;
     case ObjIndex::bonusrocket:
-        new_obj = new Object("Rocket Bonus", 1, 0, gfx, ObjType::bonus,  20.0f);
+        new_obj = std::make_shared<Object>("Rocket Bonus", 1, 0, gfx, ObjType::bonus,  20.0f);
         new_obj->init_animation(40, 3, 0);
         break;
 
     // shots
     case ObjIndex::shotblaster:
-        new_obj = new Shot("Blaster Shot", 1, gfx, owner);
+        new_obj = std::make_shared<Shot>("Blaster Shot", 1, gfx, owner);
         break;
     case ObjIndex::shotblasterbig:
-        new_obj = new Shot("Big Blaster Shot", 1, gfx, owner);
+        new_obj = std::make_shared<Shot>("Big Blaster Shot", 1, gfx, owner);
         break;
     case ObjIndex::shotrocket:
-        new_obj = new ShotRocket("Rocket Shot", 10, gfx, owner);
+        new_obj = std::make_shared<ShotRocket>("Rocket Shot", 10, gfx, owner);
         break;
     case ObjIndex::shotbombfragment:
-        new_obj = new Shot("Bomb Fragment Shot", 4, gfx, owner);
+        new_obj = std::make_shared<Shot>("Bomb Fragment Shot", 4, gfx, owner);
         break;
     case ObjIndex::shotenemystd:
-        new_obj = new Shot("Standard Enemy Shot", 1, gfx, owner);
+        new_obj = std::make_shared<Shot>("Standard Enemy Shot", 1, gfx, owner);
         break;
 
     // misc
     case ObjIndex::smoketrail:
-        new_obj = new Object("Smoketrail", 1, 0, gfx, ObjType::playerpassive, 0);
+        new_obj = std::make_shared<Object>("Smoketrail", 1, 0, gfx, ObjType::playerpassive, 0);
         new_obj->set_owner(owner);
         new_obj->init_animation(40, 2, 0);
         break;
@@ -284,7 +282,7 @@ ObjectManager::allocate_object(ObjIndex object, Owner owner)
         break;
     }
 
-    return std::shared_ptr<IObject>(new_obj);
+    return new_obj;
 }
 
 void ObjectManager::create_formation(int x, int y, float x_vel, float y_vel, 
