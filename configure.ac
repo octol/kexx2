@@ -113,7 +113,4 @@ PKG_CHECK_MODULES([LIBSDLC], [libsdlc-0.5.2 >= 0.5.2])
 AC_CONFIG_FILES([Makefile
                  src/Makefile
                  ])
-                 #tests/gtest/Makefile
-                 #tests/Makefile
-#AC_CONFIG_SUBDIRS([libsdlc])
 AC_OUTPUT
