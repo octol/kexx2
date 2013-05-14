@@ -26,7 +26,7 @@
 
 //const std::string DEFAULT_DATA_PATH = "/usr/local/share/kexx2/";
 const std::string DATA_PATH = std::string(DATADIR) + "/kexx2/";
-const std::string CONFIG_FILE = std::string(getenv("HOME")) + "/.config/kexx2.conf";
+const std::string CONFIG_FILE = std::string(getenv("HOME")) + "/.kexx2.conf";
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
 

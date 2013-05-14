@@ -38,7 +38,6 @@
 void Game::load_options(std::string data_path)
 {
 #ifndef WIN32
-    //options.load(std::string(getenv("HOME")) + "/.config/kexx2.conf");
     options.load(CONFIG_FILE);
 
     // If data_path was specified on the commandline we use that one
@@ -60,7 +59,6 @@ void Game::load_options(std::string data_path)
 void Game::write_options()
 {
 #ifndef WIN32
-    //options.write(std::string(getenv("HOME")) + "/.config/kexx2.conf");
     options.write(CONFIG_FILE);
 #endif
 #ifdef WIN32

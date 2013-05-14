@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+v1.0.9 released on 14-may-2013
+    * Data directory can now be specified at compile time and commandline.
+    * Data directory is now stored in configuration file.
+    * Added --version commandline flag.
+    * Fixed bug with image memory overuse.
+    * Resource loading made more robust.
+
 v1.0.8 released on 19-apr-2013
     * Switched to the new reference counted classes in SDLc 0.4.1.
     * Memory leaks fixed.

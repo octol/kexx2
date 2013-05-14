@@ -38,9 +38,9 @@ BOOST_FILESYSTEM
 #-------------------------------------------------------------------------------
 # Add development flags.
 #-------------------------------------------------------------------------------
-CXXFLAGS="-g -Og -std=gnu++11 \
-    -Wall -W -Wextra -Wpedantic -Wcast-qual -Wwrite-strings -Wconversion \
-    -Wfatal-errors -fno-omit-frame-pointer -fno-inline -fdiagnostics-color=auto"
+#CXXFLAGS="-g -Og -std=gnu++11 \
+#    -Wall -W -Wextra -Wpedantic -Wcast-qual -Wwrite-strings -Wconversion \
+#    -Wfatal-errors -fno-omit-frame-pointer -fno-inline -fdiagnostics-color=auto"
 #CXXFLAGS="$CXXFLAGS -Weffc++"
 
 #-------------------------------------------------------------------------------

@@ -1,6 +1,15 @@
 NEWS
 ====
 
+2013-05-14  Jon Haggblad  <jon@haeggblad.com>
+
+    The loading of game resources has now been made robust, with an
+    informative message if the data could not be found at runtime.
+    Furthermore, the compile time path can be changed by specifying path
+    using the --data argument at runtime. This directory will then be
+    saved in the configuration file, which is now called
+    $HOME/.kexx2.conf
+
 2013-04-19  Jon Haggblad  <jon@haeggblad.com>
 
     Removal of most (all?) memory leaks by switching to the new
