@@ -22,9 +22,8 @@
 #include <string>
 
 #define UNUSED(x) ((void)x)
-#define TESTING
+//#define TESTING
 
-//const std::string DEFAULT_DATA_PATH = "/usr/local/share/kexx2/";
 const std::string DATA_PATH = std::string(DATADIR) + "/kexx2/";
 const std::string CONFIG_FILE = std::string(getenv("HOME")) + "/.kexx2.conf";
 const int SCREEN_WIDTH = 640;
