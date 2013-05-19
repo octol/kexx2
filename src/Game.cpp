@@ -60,7 +60,8 @@ void Game::setup_environment(sdlc::Screen& screen, sdlc::Timer& timer,
     UNUSED(mixer);
 #ifdef WIN32
     int video_type = options.fullscreen() 
-                        ? SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_FULLSCREEN 
+                        //? SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_FULLSCREEN 
+                        ? SDL_SWSURFACE | SDL_FULLSCREEN 
                         : SDL_SWSURFACE;
 #endif
 #ifndef WIN32

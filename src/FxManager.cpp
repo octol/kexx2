@@ -137,6 +137,8 @@ void FxManager::smokepuff(int x, int y)
     extern sdlc::Timer* timer;
 
     int amount = (int)((float)timer->frame_time() / 0.004f);
+    if (amount <= 0)
+        amount = 1;
 
     for (int i = 0; i < amount; i++) {
         float xVel = (float)((rand() % 50) - 25);

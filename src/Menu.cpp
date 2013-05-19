@@ -162,7 +162,8 @@ void Menu::options_menu_logic()
 
 #ifdef WIN32
         screen_type_ = options_.fullscreen() 
-            ? SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_FULLSCREEN 
+            //? SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_FULLSCREEN 
+            ? SDL_SWSURFACE | SDL_FULLSCREEN 
             : SDL_SWSURFACE;
 
         // no reinit of screen here for win32, they need to restart
