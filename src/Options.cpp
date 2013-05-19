@@ -20,6 +20,7 @@
 
 #include <fstream>
 #include <iostream>
+#include <string>
 #include <vector>
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem.hpp>
@@ -42,7 +43,8 @@ void Options::load(std::string path)
                 std::cerr << "Error reading file format: " << path << std::endl;
 
             if (strs.at(0) == "players") {
-                players = stoi(strs.at(1));
+                //players = stoi(strs.at(1));
+                players = std::stoi(strs.at(1));
             } else if (strs.at(0) == "fullscreen") {
                 fullscreen = stoi(strs.at(1));
             } else if (strs.at(0) == "fps_counter") {

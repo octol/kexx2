@@ -20,6 +20,7 @@
 #include "SDLc.h"
 #include "Object.h"
 #include "PlayerState.h"
+#include "Defines.h"
 
 // -----------------------------------------------------------------------------
 // Construction/Destruction
@@ -92,7 +93,8 @@ void Interface::draw_energy(int x, int y, int value, int max_value,
 void Interface::draw_score(int x, int y, int value, 
         sdlc::Font& font, sdlc::Screen& screen)
 {
-    screen.print(x, y, "score: " + std::to_string(value), font);
+    //screen.print(x, y, "score: " + std::to_string(value), font);
+    screen.print(x, y, "score: " + SSTR(value), font);
 }
 
 void Interface::draw_weapons(int x, int y, PlayerState& ps, int player, 
@@ -104,9 +106,11 @@ void Interface::draw_weapons(int x, int y, PlayerState& ps, int player,
     std::string text2 = (ps.extra_weapon(player)).substr(0, length2 - 7);
 
     screen.print(x, y, text1 + " level " 
-            + std::to_string(ps.main_weapon_level(player)), font);
+            //+ std::to_string(ps.main_weapon_level(player)), font);
+            + SSTR(ps.main_weapon_level(player)), font);
     if (ps.extra_weapon(player) != "none") {
         screen.print(x, y + 20, text2 + " count: " 
-                + std::to_string(ps.extra_weapon_count(player)), font);
+                //+ std::to_string(ps.extra_weapon_count(player)), font);
+                + SSTR(ps.extra_weapon_count(player)), font);
     }
 }

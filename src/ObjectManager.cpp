@@ -173,7 +173,8 @@ void ObjectManager::create_ships(PlayerState& player_state)
     for (int i = 1; i <= NUM_OF_POSSIBLE_PLAYERS; i++) {
         if (player_state.energy_max(i)) {
 
-            std::string name = "Player " + std::to_string(i);
+            //std::string name = "Player " + std::to_string(i);
+            std::string name = "Player " + SSTR(i);
 
             int s = player_state.score(i);
             int e = player_state.energy_max(i);

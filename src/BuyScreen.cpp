@@ -96,8 +96,10 @@ void BuyScreen::run_logic(sdlc::Input& input, sdlc::Timer& timer,
 
 void BuyScreen::draw(sdlc::Screen& screen, sdlc::Font& font)
 {
-    auto lvl = std::to_string(current_level_ - 1);
-    auto rocket_cost = std::to_string(ROCKET_COST);
+    //auto lvl = std::to_string(current_level_ - 1);
+    //auto rocket_cost = std::to_string(ROCKET_COST);
+    std::string lvl = SSTR(current_level_ - 1);
+    std::string rocket_cost = SSTR(ROCKET_COST);
     screen.print(200, 50, "level " + lvl + " complete!", font);
     screen.print(150, 200, "buy rockets (cost: " + rocket_cost + ")", font);
     screen.print(150, 220, "buy megavapen (not avail)", font);
@@ -133,8 +135,10 @@ void BuyScreen::press_enter(int i, PlayerState& player_state)
 
 void BuyScreen::draw_player_info(int i, sdlc::Screen& screen, sdlc::Font& font)
 {
-    screen.print(30 + (i-1)*340, 100, "player " + std::to_string(i), font);
-    screen.print(60 + (i-1)*340, 120, "score: " + std::to_string(player_state_.score(i)), font);
+    //screen.print(30 + (i-1)*340, 100, "player " + std::to_string(i), font);
+    //screen.print(60 + (i-1)*340, 120, "score: " + std::to_string(player_state_.score(i)), font);
+    screen.print(30 + (i-1)*340, 100, "player " + SSTR(i), font);
+    screen.print(60 + (i-1)*340, 120, "score: " + SSTR(player_state_.score(i)), font);
 
     draw_extra_weapon(i, screen, font);
 
@@ -151,7 +155,8 @@ void BuyScreen::draw_extra_weapon(int i, sdlc::Screen& screen, sdlc::Font& font)
     if (player_state_.extra_weapon(i) != "none") {
         auto length = (player_state_.extra_weapon(i)).length();
         auto text = (player_state_.extra_weapon(i)).substr(0, length - 7);
-        auto num_weapons = std::to_string(player_state_.extra_weapon_count(i));
+        //auto num_weapons = std::to_string(player_state_.extra_weapon_count(i));
+        auto num_weapons = SSTR(player_state_.extra_weapon_count(i));
         int x = 60 + 340*(i - 1);
         screen.print(x, 140, text + " count: " + num_weapons, font);
     }
