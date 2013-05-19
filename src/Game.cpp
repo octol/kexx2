@@ -51,8 +51,7 @@ void Game::load_options(std::string data_path)
 
 #endif
 #ifdef WIN32
-    // TODO: Windows support not yet implemented.
-    assert(false);
+    options.data_path = DATA_PATH;
 #endif
 }
 
@@ -63,7 +62,6 @@ void Game::write_options()
 #endif
 #ifdef WIN32
     // TODO: Windows support not yet implemented.
-    assert(false);
 #endif
 }
 

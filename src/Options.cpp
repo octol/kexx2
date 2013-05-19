@@ -28,9 +28,15 @@
 void Options::load(std::string path)
 {
     int players = 1;
-    int fullscreen = false;
-    int fps_counter = false;
+    int fullscreen = 0;
+    int fps_counter = 1;
     std::string line;
+
+#ifdef WIN32
+    // Since we (so far) don't store settings in Windows, always assue
+    // fullscreen as default.
+    fullscreen = 1;
+#endif
 
     std::ifstream file(path);
     if (!file) {
@@ -43,8 +49,7 @@ void Options::load(std::string path)
                 std::cerr << "Error reading file format: " << path << std::endl;
 
             if (strs.at(0) == "players") {
-                //players = stoi(strs.at(1));
-                players = std::stoi(strs.at(1));
+                players = stoi(strs.at(1));
             } else if (strs.at(0) == "fullscreen") {
                 fullscreen = stoi(strs.at(1));
             } else if (strs.at(0) == "fps_counter") {
