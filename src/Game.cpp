@@ -37,7 +37,6 @@
 
 void Game::load_options(std::string data_path)
 {
-#ifndef WIN32
     options.load(CONFIG_FILE);
 
     // If data_path was specified on the commandline we use that one
@@ -48,21 +47,11 @@ void Game::load_options(std::string data_path)
     // If data_path still is empty, then use compile time path.
     if (options.data_path.empty()) 
         options.data_path = DATA_PATH;
-
-#endif
-#ifdef WIN32
-    options.data_path = DATA_PATH;
-#endif
 }
 
 void Game::write_options()
 {
-#ifndef WIN32
     options.write(CONFIG_FILE);
-#endif
-#ifdef WIN32
-    // TODO: Windows support not yet implemented.
-#endif
 }
 
 void Game::setup_environment(sdlc::Screen& screen, sdlc::Timer& timer, 

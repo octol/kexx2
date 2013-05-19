@@ -145,8 +145,7 @@ void print_fps_counter(sdlc::Screen& screen_, sdlc::Timer& timer_)
         FPS = static_cast<int>(timer_.fps() + 0.5f);
         ticks = timer_.ticks();
     }
-    //screen_.print(5, 5, "FPS: " + std::to_string(FPS), 255, 255, 255);
-    screen_.print(5, 5, "FPS: " + SSTR(FPS), 255, 255, 255);
+    screen_.print(5, 5, "FPS: " + std::to_string(FPS), 255, 255, 255);
 }
 
 std::string version_info() 

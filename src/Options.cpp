@@ -29,7 +29,7 @@ void Options::load(std::string path)
 {
     int players = 1;
     int fullscreen = 0;
-    int fps_counter = 1;
+    int fps_counter = 0;
     std::string line;
 
 #ifdef WIN32

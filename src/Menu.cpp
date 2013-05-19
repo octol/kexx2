@@ -89,8 +89,7 @@ void Menu::run_logic(sdlc::Input& input, sdlc::Timer& timer, sdlc::Mixer& mixer,
         done_ = true;
 
     // set option strings
-    //players_ = std::to_string(options_.num_of_players());
-    players_ = SSTR(options_.num_of_players());
+    players_ = std::to_string(options_.num_of_players());
     display_ = options_.fullscreen() ? "fullscreen" : "windowed";
     fps_ = options_.fps_counter() ? "yes" : "no";
 }
@@ -235,5 +234,5 @@ void Menu::precalc_bg_surface(sdlc::Surface& surface)
 void Menu::draw_group(int x, int y, sdlc::Surface& surface)
 {
     for (int i = 0; i < 9; i++) 
-        surface.print(x + (i * 8), y, SSTR((rand() % 10)), 80, 80, 80);
+        surface.print(x + (i * 8), y, std::to_string((rand() % 10)), 80, 80, 80);
 }

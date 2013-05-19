@@ -34,8 +34,8 @@ const std::string DATA_PATH = std::string(DATADIR) + "/kexx2/";
 const std::string CONFIG_FILE = std::string(getenv("HOME")) + "/.kexx2.conf";
 #endif
 #ifdef WIN32
-const std::string DATA_PATH = "../data/";
-const std::string CONFIG_FILE = ".kexx2.conf";
+const std::string DATA_PATH = "data/";
+const std::string CONFIG_FILE = "kexx2.conf";
 #endif
 
 const int SCREEN_WIDTH = 640;
