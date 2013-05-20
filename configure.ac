@@ -3,11 +3,7 @@ m4_include(m4/acx_pthread.m4)
 m4_include(m4/boost.m4)
 
 AC_PREREQ([2.69])
-AC_INIT([Kexx2],
-        [1.0.9],
-        [jon@haeggblad.com],
-        [kexx2],
-        [http://www.haeggblad.com/kexx2])
+AC_INIT([Kexx2],[1.0.9],[jon@haeggblad.com],[kexx2],[http://www.haeggblad.com/kexx2])
 AC_CONFIG_AUX_DIR([.])
 AC_CONFIG_SRCDIR([README])
 AC_CONFIG_MACRO_DIR([m4])
@@ -16,6 +12,11 @@ AM_INIT_AUTOMAKE
 LT_INIT
 
 AC_SUBST([KEXX2_VERSION],[1.0.9])
+
+DEBUG_CXXFLAGS="-g -Og -std=gnu++11 \
+-Wall -W -Wextra -Wpedantic -Wcast-qual -Wwrite-strings -Wconversion \
+-fno-omit-frame-pointer -fno-inline -fdiagnostics-color=auto"
+#DEBUG_CXXFLAGS="$DEBUG_CXXFLAGS -Weffc++"
 
 #-------------------------------------------------------------------------------
 # Checks for programs.
@@ -34,14 +35,6 @@ BOOST_REQUIRE([1.49])
 BOOST_STRING_ALGO
 BOOST_PROGRAM_OPTIONS
 BOOST_FILESYSTEM
-
-#-------------------------------------------------------------------------------
-# Add development flags.
-#-------------------------------------------------------------------------------
-#CXXFLAGS="-g -Og -std=gnu++11 \
-#    -Wall -W -Wextra -Wpedantic -Wcast-qual -Wwrite-strings -Wconversion \
-#    -Wfatal-errors -fno-omit-frame-pointer -fno-inline -fdiagnostics-color=auto"
-#CXXFLAGS="$CXXFLAGS -Weffc++"
 
 #-------------------------------------------------------------------------------
 # Configure pthreads.
@@ -68,41 +61,38 @@ AC_SUBST(PTHREAD_LIBS)
 # Check for SDL
 #-------------------------------------------------------------------------------
 SDL_VERSION=1.2.0
-AM_PATH_SDL($SDL_VERSION,:,
-	    AC_MSG_ERROR([*** SDL version $SDL_VERSION not found!])
-)
-CFLAGS="$CFLAGS $SDL_CFLAGS"
-CXXFLAGS="$CXXFLAGS $SDL_CFLAGS"
-LIBS="$LIBS $SDL_LIBS"
+PKG_CHECK_MODULES(SDL,sdl >= $SDL_VERSION, [], 
+                  AC_MSG_ERROR([SDL library >= $SDL_VERSION not found!]))
 
-#-------------------------------------------------------------------------------
-# Check for SDL_mixer
-#-------------------------------------------------------------------------------
-have_SDLmixer=no
-AC_CHECK_LIB(SDL_mixer, Mix_OpenAudio, have_SDLmixer=yes)
-if test x$have_SDLmixer != xyes; then
-    AC_MSG_ERROR([*** Can not find the SDL_mixer library
-Try: http://www.libsdl.org/projects/SDL_mixer/
-])
-fi
-LIBS="$LIBS -lSDL_mixer"
+PKG_CHECK_MODULES(SDL_mixer, SDL_mixer >= $SDL_VERSION ,[],
+	          AC_MSG_ERROR([SDL_mixer library >= $SDL_VERSION not found]))
 
-#-------------------------------------------------------------------------------
-# Check for SDL_image
-#-------------------------------------------------------------------------------
-have_SDLimage=no
-AC_CHECK_LIB(SDL_image, IMG_Load_RW, have_SDLimage=yes)
-if test x$have_SDLimage != xyes; then
-    AC_MSG_ERROR([*** Can not find the SDL_image library
-Try: http://www.libsdl.org/projects/SDL_image/
-])
-fi
-LIBS="$LIBS -lSDL_image"
+PKG_CHECK_MODULES(SDL_image, SDL_image >= $SDL_VERSION ,[],
+	          AC_MSG_ERROR([SDL_image library >= $SDL_VERSION not found]))
 
 #-------------------------------------------------------------------------------
 # Check for SDLc
 #-------------------------------------------------------------------------------
 PKG_CHECK_MODULES([LIBSDLC], [libsdlc-0.5.2 >= 0.5.2])
+
+#-------------------------------------------------------------------------------
+# Debug build switch
+# from http://www.bioinf.uni-freiburg.de/~mmann/HowTo/automake.html#debug
+#-------------------------------------------------------------------------------
+AC_MSG_CHECKING([whether to enable the debug build])
+AC_ARG_ENABLE([debug],
+    [AS_HELP_STRING([--enable-debug],
+        [enable debug build (def=no)])],
+    [enable_debug="$enableval"],
+    [enable_debug=no])
+AC_MSG_RESULT([$enable_debug])
+
+if test x"$enable_debug" = x"yes"; then
+    AC_DEFINE([DEBUG],[],[Debug Mode])
+    CXXFLAGS="$DEBUG_CXXFLAGS"
+else
+    AC_DEFINE([NDEBUG],[],[Release Mode])
+fi
 
 #-------------------------------------------------------------------------------
 # Finally create all the generated files
@@ -111,6 +101,5 @@ PKG_CHECK_MODULES([LIBSDLC], [libsdlc-0.5.2 >= 0.5.2])
 # be used to generate any number of automatically generated files.
 #-------------------------------------------------------------------------------
 AC_CONFIG_FILES([Makefile
-                 src/Makefile
-                 ])
+                 src/Makefile])
 AC_OUTPUT
