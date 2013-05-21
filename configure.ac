@@ -104,7 +104,7 @@ AC_CONFIG_FILES([Makefile
                  src/Makefile])
 AC_OUTPUT
 AC_MSG_RESULT([
-    SDLc $VERSION is now configured
+    Kexx2 $VERSION is now configured
 
     Source directory: $srcdir
     Installation prefix: $prefix

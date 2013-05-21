@@ -123,6 +123,14 @@ int main(int argc, char* argv[])
 
         screen->flip_all();
         screen->fill_rect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0, 0);
+
+        // Rather than to cap the frame rate we just go to sleep for 2ms, at
+        // least ensuring that the frame rate wont get ridiculously high on
+        // modern machines. Hopefully 2ms is short enough that old machines
+        // will be able to handle it. The long term fix is to use the high
+        // resolution timer in SDL2.
+        timer->delay(2); 
+
         timer->update();
     }
 

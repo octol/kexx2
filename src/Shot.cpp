@@ -51,13 +51,14 @@ void Shot::check_collisions(ObjectManager& object_manager,
 
         // 1) Check collision:  friendly fire <-> enemies 
         
-        // start by getting pointer to the player
-        std::shared_ptr<IObject> owner_player = *std::find_if(
+        // start by getting pointer to the player (owner), if such exists
+        auto ow = owner();
+        auto player_it = std::find_if(
             begin(object_manager.list), 
             end(object_manager.list), 
-            [this](std::shared_ptr<IObject> o) {
-                return Object::parse_owner(o->name()) == this->owner();
-            });
+            [&ow](const std::shared_ptr<IObject>& o) {
+                return Object::parse_owner(o->name()) == ow;
+        });
 
         for (auto& object : object_manager.list) {
             SDL_Rect shot_rect = reduced_rect();
@@ -66,8 +67,13 @@ void Shot::check_collisions(ObjectManager& object_manager,
             if (object->type() == ObjType::enemy && object->energy() && 
                     sdlc::overlap(shot_rect, object_rect)) {
                 object->hurt(energy(), object_manager, fx_manager);
-                if (!object->energy() && owner_player)
-                    owner_player->adjust_score(object->score());
+
+                // if player is still alive
+                if (player_it != end(object_manager.list)) {
+                    std::shared_ptr<IObject> owner_player(*player_it);
+                    if (!object->energy())
+                        owner_player->adjust_score(object->score());
+                }
 
                 // let the shot kill itself
                 kill(object_manager, fx_manager);
