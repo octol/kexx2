@@ -136,7 +136,7 @@ void FxManager::smokepuff(int x, int y)
     // TODO: remove extern timer.
     extern sdlc::Timer* timer;
 
-    int amount = (int)((float)timer->frame_time() / 0.004f);
+    int amount = (int)((float)timer->frame_time() / 0.003f);
     if (amount <= 0)
         amount = 1;
 
