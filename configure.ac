@@ -103,3 +103,11 @@ fi
 AC_CONFIG_FILES([Makefile
                  src/Makefile])
 AC_OUTPUT
+AC_MSG_RESULT([
+    SDLc $VERSION is now configured
+
+    Source directory: $srcdir
+    Installation prefix: $prefix
+    C++ compiler: $CXX $CXXFLAGS
+    Debug build: $enable_debug
+])
