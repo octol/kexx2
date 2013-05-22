@@ -33,7 +33,7 @@ Weapon::Weapon(sdlc::Sound& sound) : shot_snd_(sound)
 
 int Weapon::upgrade()
 {
-    return std::min(++level_,4);
+    return level_ = std::min(++level_,4);
 }
 
 // -----------------------------------------------------------------------------

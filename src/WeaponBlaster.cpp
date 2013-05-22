@@ -40,8 +40,9 @@ WeaponBlaster::WeaponBlaster(sdlc::Sound& sound, Owner owner) : Weapon(sound)
 
 void WeaponBlaster::shoot(int x, int y, ObjectManager& object_manager)
 {
-    // TODO: use Timer class instead of raw SDL call.
-    if (SDL_GetTicks() > time_when_last_shot() + 150) {
+    // TODO: replace extern Timer object.
+    extern sdlc::Timer* timer;
+    if (timer->ticks() > time_when_last_shot() + 150) {
         shot_snd_.play(0);
         switch (level()) {
         case 1:
@@ -73,7 +74,7 @@ void WeaponBlaster::shoot(int x, int y, ObjectManager& object_manager)
                     ObjIndex::shotblasterbig, owner());
             break;
         default:
-            break;
+            throw std::out_of_range("Blaster level not in allowed range");
         }
         set_time_when_last_shot();
     }
