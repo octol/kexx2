@@ -3,7 +3,7 @@ m4_include(m4/acx_pthread.m4)
 m4_include(m4/boost.m4)
 
 AC_PREREQ([2.69])
-AC_INIT([Kexx2],[1.0.9],[jon@haeggblad.com],[kexx2],[http://www.haeggblad.com/kexx2])
+AC_INIT([Kexx2],[1.1.0],[jon@haeggblad.com],[kexx2],[http://www.haeggblad.com/kexx2])
 AC_CONFIG_AUX_DIR([.])
 AC_CONFIG_SRCDIR([README])
 AC_CONFIG_MACRO_DIR([m4])
@@ -11,7 +11,7 @@ AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE
 LT_INIT
 
-AC_SUBST([KEXX2_VERSION],[1.0.9])
+AC_SUBST([KEXX2_VERSION],[1.1.0])
 
 DEBUG_CXXFLAGS="-g -Og -std=gnu++11 \
 -Wall -W -Wextra -Wpedantic -Wcast-qual -Wwrite-strings -Wconversion \
@@ -73,7 +73,7 @@ PKG_CHECK_MODULES(SDL_image, SDL_image >= $SDL_VERSION ,[],
 #-------------------------------------------------------------------------------
 # Check for SDLc
 #-------------------------------------------------------------------------------
-PKG_CHECK_MODULES([LIBSDLC], [libsdlc-0.5.2 >= 0.5.2])
+PKG_CHECK_MODULES([LIBSDLC], [libsdlc-0.5.3 >= 0.5.3])
 
 #-------------------------------------------------------------------------------
 # Debug build switch
