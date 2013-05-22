@@ -136,8 +136,11 @@ void Menu::root_menu_logic(sdlc::Timer& timer, sdlc::Mixer& mixer,
         player_state.set_extra_weapon(1, "Rocket Weapon");
         player_state.set_extra_weapon_count(1, 10);
 
-        if (options_.num_of_players() >= 2)
+        if (options_.num_of_players() >= 2) {
             player_state.set_energy_max(2, 3);
+            player_state.set_extra_weapon(2, "Rocket Weapon");
+            player_state.set_extra_weapon_count(2, 10);
+        }
 
         done_ = true;
     } else if (selector_.pos == 1) {

@@ -41,7 +41,8 @@ struct KeySet {
             down = SDLK_s;
             right = SDLK_d;
             fire_main = SDLK_LSHIFT;
-            fire_extra = SDLK_GREATER;
+            fire_extra = SDLK_LCTRL;
+            //fire_extra = SDLK_GREATER;
         } else {
             std::cout << "Warning: keys not set" << std::endl;
         }
