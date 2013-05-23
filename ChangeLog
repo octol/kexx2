@@ -1,6 +1,15 @@
 Change Log
 ==========
 
+v1.1.0 released on 23-may-2013
+    * Player 2 now starts with rockets.
+    * Player 2 keybinding changed.
+    * Updated README to include gameplay control.
+    * Cross compiled version for Windows.
+    * 50% more smoke from rockets.
+    * Added --enable-debug option to build script.
+    * Various bug fixes.
+
 v1.0.9 released on 14-may-2013
     * Data directory can now be specified at compile time and commandline.
     * Data directory is now stored in configuration file.

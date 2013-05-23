@@ -1,6 +1,13 @@
 NEWS
 ====
 
+2013-05-23  Jon Haggblad  <jon@haeggblad.com>
+
+    As all bugs introduced due to the partial modernisation have now been
+    fixed, I've decided to bump the version number to 1.1.0. Starting with this
+    version I've also created pre-compiled binaries for Windows. These are
+    statically linked so it should be just a matter of running the executable.
+
 2013-05-14  Jon Haggblad  <jon@haeggblad.com>
 
     The loading of game resources has now been made robust, with an
