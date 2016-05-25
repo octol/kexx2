@@ -22,6 +22,7 @@
 #include <cassert>
 #include <list>
 #include <iostream>
+#include <numeric>
 #include <algorithm>
 
 #include "SDLc.h"

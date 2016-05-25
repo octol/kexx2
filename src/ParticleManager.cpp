@@ -19,6 +19,7 @@
 #include "ParticleManager.h"
 #include <cassert>
 #include <iostream>
+#include <numeric>
 #include <algorithm>
 #include "Defines.h"
 
