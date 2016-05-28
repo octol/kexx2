@@ -59,7 +59,7 @@ depends on the following libraries:
 - SDL 1.2
 - SDL_mixer
 - SDL_image
-
+- libsdlc
 
 Building
 --------
