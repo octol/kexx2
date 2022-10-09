@@ -1,0 +1,21 @@
+CURRENT:
+
+$HOME/.kexx2rc
+    path to configuration and data
+
+/usr/local/share/kexx2
+    configuration
+    data
+
+FUTURE:
+
+$HOME/.config/kexx2.conf
+    configuration
+        NumPlayers=1
+        Fullscreen=0
+        FPSCounter=1
+    path to data
+        DataDir=/usr/local/share/kexx2
+
+/usr/local/share/kexx2
+    data

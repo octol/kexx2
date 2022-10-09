@@ -28,7 +28,7 @@ AC_PROG_CXX
 # Check for C++11
 #-------------------------------------------------------------------------------
 AC_LANG_PUSH([C++])
-AX_CXX_COMPILE_STDCXX_11
+AX_CXX_COMPILE_STDCXX_11([noext])
 AC_LANG_POP([C++])
 
 BOOST_REQUIRE([1.49])
