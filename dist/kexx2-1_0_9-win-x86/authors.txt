@@ -1,0 +1,20 @@
+AUTHORS
+=======
+
+Programming: 
+
+  Jon Haggblad <jon@haeggblad.com>
+
+Additional work:
+
+  Birger Hedman 
+  Petter Ulfberg 
+
+Special thanks to:
+
+  Jesper Rojestal for most of the music
+  John Degerman for some of the graphics
+  Markus Haggblad for some of the sounds
+
+This game uses the Simple Direct Media Layer (SDL). For more
+info about SDL check http://www.libsdl.org
